@@ -1,4 +1,4 @@
-export class Vertices {
+export class Vertex {
   constructor(
     public x: number = 0,
     public y: number = 0,
@@ -10,6 +10,6 @@ export class Vertices {
   }
 
   static load(array: number[]) {
-    return new Vertices(array[0], array[1], array[2]);
+    return new Vertex(array[0], array[1], array[2]);
   }
 }

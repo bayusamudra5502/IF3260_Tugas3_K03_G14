@@ -1,6 +1,6 @@
 import { Color } from "./Color";
 import { Matrix } from "./Transform";
-import { Vertices } from "./Vertices";
+import { Vertex } from "./Vertices";
 
 export type DrawMode =
   | "line"
@@ -11,7 +11,7 @@ export type DrawMode =
   | "triangle-fan";
 
 export default interface DrawInfo {
-  vertices: Vertices[];
+  vertices: Vertex[];
   colors: Color[];
   matrix: {
     transform: Matrix;

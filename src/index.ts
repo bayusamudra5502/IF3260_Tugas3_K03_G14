@@ -4,7 +4,7 @@ import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { Color } from "./object/Color";
 import { DEFAULT_TRANSFORM } from "./object/Transform";
-import { Vertices } from "./object/Vertices";
+import { Vertex } from "./object/Vertices";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -39,15 +39,15 @@ function main() {
     indices: [0, 1, 2, 0, 2, 3],
     mode: "triangle-strip",
     vertices: [
-      new Vertices(-0.3, 0, 0), // A
-      new Vertices(-0.3, 0.3, 0), // B
-      new Vertices(0.3, 0.3, 0), // C
-      new Vertices(0.3, 0, 0), // D
+      new Vertex(-0.3, 0, 0), // A
+      new Vertex(-0.3, 0.3, 0), // B
+      new Vertex(0.3, 0.3, 0), // C
+      new Vertex(0.3, 0, 0), // D
 
-      new Vertices(-0.3, 0, -0.3), // E
-      new Vertices(-0.3, 0.3, -0.3), // F
-      new Vertices(0.3, 0.3, -0.3), // G
-      new Vertices(0.3, 0, -0.3), // H
+      new Vertex(-0.3, 0, -0.3), // E
+      new Vertex(-0.3, 0.3, -0.3), // F
+      new Vertex(0.3, 0.3, -0.3), // G
+      new Vertex(0.3, 0, -0.3), // H
     ],
   });
 }

@@ -4,7 +4,7 @@ import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
 import { Color } from "./object/Color.js";
 import { DEFAULT_TRANSFORM } from "./object/Transform.js";
-import { Vertices } from "./object/Vertices.js";
+import { Vertex } from "./object/Vertices.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -27,14 +27,14 @@ function main() {
         indices: [0, 1, 2, 0, 2, 3],
         mode: "triangle-strip",
         vertices: [
-            new Vertices(-0.3, 0, 0),
-            new Vertices(-0.3, 0.3, 0),
-            new Vertices(0.3, 0.3, 0),
-            new Vertices(0.3, 0, 0),
-            new Vertices(-0.3, 0, -0.3),
-            new Vertices(-0.3, 0.3, -0.3),
-            new Vertices(0.3, 0.3, -0.3),
-            new Vertices(0.3, 0, -0.3), // H
+            new Vertex(-0.3, 0, 0),
+            new Vertex(-0.3, 0.3, 0),
+            new Vertex(0.3, 0.3, 0),
+            new Vertex(0.3, 0, 0),
+            new Vertex(-0.3, 0, -0.3),
+            new Vertex(-0.3, 0.3, -0.3),
+            new Vertex(0.3, 0.3, -0.3),
+            new Vertex(0.3, 0, -0.3), // H
         ],
     });
 }
