@@ -5,10 +5,13 @@ export class Canvas {
   private maxX: number;
   private maxY: number;
   private maxZ: number;
+  private canvas: HTMLCanvasElement;
 
   constructor(
     canvasId: string,
     box: RenderBox = {
+      maxX: 1,
+      maxY: 1,
       maxZ: 1,
     }
   ) {
@@ -18,6 +21,8 @@ export class Canvas {
   private fillContext(canvasId: string, { maxX, maxY, maxZ }: RenderBox) {
     const canvas = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
     this.webglContext = canvas.getContext("webgl");
+
+    this.canvas = canvas;
 
     if (!this.webglContext) {
       throw new Error("browser doesn't support webgl");
@@ -33,7 +38,7 @@ export class Canvas {
   }
 
   public setViewPort() {
-    this.webglContext.viewport(0.0, 0.0, this.boxX, this.boxY);
+    this.webglContext.viewport(0.0, 0.0, this.canvas.width, this.canvas.height);
   }
 
   public getContext() {

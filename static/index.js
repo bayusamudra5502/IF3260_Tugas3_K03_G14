@@ -7,9 +7,9 @@ import { DEFAULT_TRANSFORM } from "./object/Transform.js";
 import { Vertices } from "./object/Vertices.js";
 function main() {
     var canvas = new Canvas("drawing-canvas", {
-        maxX: 1000,
-        maxY: 1000,
-        maxZ: 1000,
+        maxX: 1,
+        maxY: 1,
+        maxZ: 1,
     });
     var buffer = new Buffer(canvas);
     var shader = new ShaderProgram("vertex-shader", "fragment-shader", canvas);
@@ -31,14 +31,14 @@ function main() {
         indices: [0, 1, 2, 0, 2, 3],
         mode: "triangle-strip",
         vertices: [
-            new Vertices(-300, 0, 0),
-            new Vertices(-300, 300, 0),
-            new Vertices(300, 300, 0),
-            new Vertices(300, 0, 0),
-            new Vertices(-300, 0, -300),
-            new Vertices(-300, 300, -300),
-            new Vertices(300, 300, -300),
-            new Vertices(300, 0, -300), // H
+            new Vertices(-0.3, 0, 0),
+            new Vertices(-0.3, 0.3, 0),
+            new Vertices(0.3, 0.3, 0),
+            new Vertices(0.3, 0, 0),
+            new Vertices(-0.3, 0, -0.3),
+            new Vertices(-0.3, 0.3, -0.3),
+            new Vertices(0.3, 0.3, -0.3),
+            new Vertices(0.3, 0, -0.3), // H
         ],
     });
 }

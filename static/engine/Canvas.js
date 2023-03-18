@@ -1,6 +1,8 @@
 var Canvas = /** @class */ (function () {
     function Canvas(canvasId, box) {
         if (box === void 0) { box = {
+            maxX: 1,
+            maxY: 1,
             maxZ: 1,
         }; }
         this.fillContext(canvasId, box);
@@ -9,6 +11,7 @@ var Canvas = /** @class */ (function () {
         var maxX = _a.maxX, maxY = _a.maxY, maxZ = _a.maxZ;
         var canvas = document.querySelector("#".concat(canvasId));
         this.webglContext = canvas.getContext("webgl");
+        this.canvas = canvas;
         if (!this.webglContext) {
             throw new Error("browser doesn't support webgl");
         }
@@ -19,7 +22,7 @@ var Canvas = /** @class */ (function () {
         this.setViewPort();
     };
     Canvas.prototype.setViewPort = function () {
-        this.webglContext.viewport(0.0, 0.0, this.boxX, this.boxY);
+        this.webglContext.viewport(0.0, 0.0, this.canvas.width, this.canvas.height);
     };
     Canvas.prototype.getContext = function () {
         return this.webglContext;

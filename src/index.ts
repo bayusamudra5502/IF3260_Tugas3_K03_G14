@@ -8,9 +8,9 @@ import { Vertices } from "./object/Vertices";
 
 function main() {
   const canvas = new Canvas("drawing-canvas", {
-    maxX: 1000,
-    maxY: 1000,
-    maxZ: 1000,
+    maxX: 1,
+    maxY: 1,
+    maxZ: 1,
   });
   const buffer = new Buffer(canvas);
   const shader = new ShaderProgram("vertex-shader", "fragment-shader", canvas);
@@ -43,15 +43,15 @@ function main() {
     indices: [0, 1, 2, 0, 2, 3],
     mode: "triangle-strip",
     vertices: [
-      new Vertices(-300, 0, 0), // A
-      new Vertices(-300, 300, 0), // B
-      new Vertices(300, 300, 0), // C
-      new Vertices(300, 0, 0), // D
+      new Vertices(-0.3, 0, 0), // A
+      new Vertices(-0.3, 0.3, 0), // B
+      new Vertices(0.3, 0.3, 0), // C
+      new Vertices(0.3, 0, 0), // D
 
-      new Vertices(-300, 0, -300), // E
-      new Vertices(-300, 300, -300), // F
-      new Vertices(300, 300, -300), // G
-      new Vertices(300, 0, -300), // H
+      new Vertices(-0.3, 0, -0.3), // E
+      new Vertices(-0.3, 0.3, -0.3), // F
+      new Vertices(0.3, 0.3, -0.3), // G
+      new Vertices(0.3, 0, -0.3), // H
     ],
   });
 }
