@@ -1,5 +1,5 @@
 import { Color } from "./Color";
-import { TransformMatrix } from "./Transform";
+import { Matrix } from "./Transform";
 import { Vertices } from "./Vertices";
 
 export type DrawMode =
@@ -14,7 +14,10 @@ export default interface DrawInfo {
   vertices: Vertices[];
   colors: Color[];
   matrix: {
-    transformation: TransformMatrix;
+    transform: Matrix;
+    projection: Matrix;
+    camera: Matrix;
   };
+  indices: number[];
   mode: DrawMode;
 }

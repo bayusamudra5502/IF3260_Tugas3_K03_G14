@@ -1,23 +1,18 @@
-export var SHADER_ATTR_DEFAULT = {
+export var PROGRAM_ATTR_DEFAULT = {
     color: "color",
-    matrix: {
-        transform: "Mmatrix",
-        camera: "Cmatrix",
-        projection: "Pmatrix",
-    },
     position: "position",
     resolution: "resolution",
 };
-var ShaderProgram = /** @class */ (function () {
-    function ShaderProgram(vertexShaderId, fragmentShaderId, canvas, shaderAttribute) {
-        if (shaderAttribute === void 0) { shaderAttribute = SHADER_ATTR_DEFAULT; }
+var Program = /** @class */ (function () {
+    function Program(vertexShaderId, fragmentShaderId, canvas, shaderAttribute) {
+        if (shaderAttribute === void 0) { shaderAttribute = PROGRAM_ATTR_DEFAULT; }
         this.vertexShaderId = vertexShaderId;
         this.fragmentShaderId = fragmentShaderId;
         this.shaderAttribute = shaderAttribute;
         this.isLoaded = false;
         this.gl = canvas.getContext();
     }
-    ShaderProgram.prototype.loadCode = function () {
+    Program.prototype.loadCode = function () {
         var vertexElmn = document.querySelector("#".concat(this.vertexShaderId));
         var fragmentElmn = document.querySelector("#".concat(this.fragmentShaderId));
         if (!vertexElmn) {
@@ -31,14 +26,14 @@ var ShaderProgram = /** @class */ (function () {
         this.isLoaded = true;
         return this;
     };
-    ShaderProgram.prototype.compileCode = function (type, code) {
+    Program.prototype.compileCode = function (type, code) {
         var shader = this.gl.createShader(type);
         this.gl.shaderSource(shader, code);
         this.gl.compileShader(shader);
         return shader;
     };
     /* Compile all vertex */
-    ShaderProgram.prototype.compile = function () {
+    Program.prototype.compile = function () {
         if (!this.isLoaded) {
             this.loadCode();
         }
@@ -51,20 +46,13 @@ var ShaderProgram = /** @class */ (function () {
         this.program = program;
         return this;
     };
-    ShaderProgram.prototype.load = function () {
+    Program.prototype.load = function () {
         this.gl.useProgram(this.program);
-        var transformMatrix = this.gl.getUniformLocation(this.program, this.shaderAttribute.matrix.transform);
-        var cameraMatrix = this.gl.getUniformLocation(this.program, this.shaderAttribute.matrix.camera);
-        var projectionMatrix = this.gl.getUniformLocation(this.program, this.shaderAttribute.matrix.projection);
+        var transformMatrix = this.gl.getUniformLocation(this.program, this.shaderAttribute.transformMatrix);
         var position = this.gl.getAttribLocation(this.program, this.shaderAttribute.position);
         var color = this.gl.getAttribLocation(this.program, this.shaderAttribute.color);
         var resolution = this.gl.getUniformLocation(this.program, this.shaderAttribute.resolution);
         return {
-            matrix: {
-                transform: transformMatrix,
-                camera: cameraMatrix,
-                projection: projectionMatrix,
-            },
             options: {
                 resolution: resolution,
             },
@@ -72,7 +60,7 @@ var ShaderProgram = /** @class */ (function () {
             color: color,
         };
     };
-    return ShaderProgram;
+    return Program;
 }());
-export { ShaderProgram };
-//# sourceMappingURL=Shader.js.map
+export { Program };
+//# sourceMappingURL=Program.js.map

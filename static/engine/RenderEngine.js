@@ -37,10 +37,12 @@ var RenderEngine = /** @class */ (function () {
         this.buffer.fillFloat("colors", primitive.color);
         this.buffer.fillUint("indices", primitive.indices);
         // Data binding
-        this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), primitive.size);
-        this.bind(this.shaderLocation.color, this.buffer.get("colors"), primitive.size);
+        this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
+        this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
         // Transformation Matrix
-        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.transform, false, primitive.matrix);
+        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.transform, false, primitive.matrix.transform);
+        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.camera, false, primitive.matrix.camera);
+        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.projection, false, primitive.matrix.projection);
         return primitive;
     };
     RenderEngine.prototype.render = function (object) {

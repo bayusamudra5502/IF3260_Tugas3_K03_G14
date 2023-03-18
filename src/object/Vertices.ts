@@ -8,4 +8,8 @@ export class Vertices {
   getVector() {
     return [this.x, this.y, this.z, 1.0];
   }
+
+  static load(array: number[]) {
+    return new Vertices(array[0], array[1], array[2]);
+  }
 }

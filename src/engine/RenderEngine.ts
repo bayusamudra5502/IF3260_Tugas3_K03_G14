@@ -1,9 +1,9 @@
 import { Color } from "../object/Color";
 import DrawInfo, { DrawMode } from "../object/DrawInfo";
 import { drawableToPrimitive } from "../util/util";
-import { EngineBuffer } from "./EngineBuffer";
-import { RenderCanvas } from "./RenderCanvas";
-import { Shader, ShaderVariableLocation } from "./Shader";
+import { Buffer } from "./Buffer";
+import { Canvas } from "./Canvas";
+import { ShaderProgram, ShaderVariableLocation } from "./Shader";
 
 type DrawTypeMap = {
   [key in DrawMode]: number;
@@ -15,9 +15,9 @@ export default class RenderEngine {
   private typeMap: DrawTypeMap;
 
   constructor(
-    private renderCanvas: RenderCanvas,
-    private buffer: EngineBuffer,
-    shader: Shader,
+    private renderCanvas: Canvas,
+    private buffer: Buffer,
+    shader: ShaderProgram,
     private backColor: Color = new Color(0, 0, 0, 0)
   ) {
     this.webglContext = renderCanvas.getContext();
@@ -71,22 +71,26 @@ export default class RenderEngine {
     this.buffer.fillUint("indices", primitive.indices);
 
     // Data binding
-    this.bind(
-      this.shaderLocation.vertices,
-      this.buffer.get("vertices"),
-      primitive.size
-    );
-    this.bind(
-      this.shaderLocation.color,
-      this.buffer.get("colors"),
-      primitive.size
-    );
+    this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
+    this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(
       this.shaderLocation.matrix.transform,
       false,
-      primitive.matrix
+      primitive.matrix.transform
+    );
+
+    this.webglContext.uniformMatrix4fv(
+      this.shaderLocation.matrix.camera,
+      false,
+      primitive.matrix.camera
+    );
+
+    this.webglContext.uniformMatrix4fv(
+      this.shaderLocation.matrix.projection,
+      false,
+      primitive.matrix.projection
     );
 
     return primitive;

@@ -10,6 +10,9 @@ var Vertices = /** @class */ (function () {
     Vertices.prototype.getVector = function () {
         return [this.x, this.y, this.z, 1.0];
     };
+    Vertices.load = function (array) {
+        return new Vertices(array[0], array[1], array[2]);
+    };
     return Vertices;
 }());
 export { Vertices };

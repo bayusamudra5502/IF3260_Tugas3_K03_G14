@@ -1,11 +1,11 @@
-var RenderCanvas = /** @class */ (function () {
-    function RenderCanvas(canvasId, box) {
+var Canvas = /** @class */ (function () {
+    function Canvas(canvasId, box) {
         if (box === void 0) { box = {
             maxZ: 1,
         }; }
         this.fillContext(canvasId, box);
     }
-    RenderCanvas.prototype.fillContext = function (canvasId, _a) {
+    Canvas.prototype.fillContext = function (canvasId, _a) {
         var maxX = _a.maxX, maxY = _a.maxY, maxZ = _a.maxZ;
         var canvas = document.querySelector("#".concat(canvasId));
         this.webglContext = canvas.getContext("webgl");
@@ -18,37 +18,37 @@ var RenderCanvas = /** @class */ (function () {
         this.maxZ = maxZ;
         this.setViewPort();
     };
-    RenderCanvas.prototype.setViewPort = function () {
+    Canvas.prototype.setViewPort = function () {
         this.webglContext.viewport(0.0, 0.0, this.boxX, this.boxY);
     };
-    RenderCanvas.prototype.getContext = function () {
+    Canvas.prototype.getContext = function () {
         return this.webglContext;
     };
-    RenderCanvas.prototype.bindResolution = function (resolutionId) {
+    Canvas.prototype.bindResolution = function (resolutionId) {
         this.webglContext.uniform3f(resolutionId, this.boxX, this.boxY, this.boxZ);
     };
-    Object.defineProperty(RenderCanvas.prototype, "boxX", {
+    Object.defineProperty(Canvas.prototype, "boxX", {
         get: function () {
             return this.maxX;
         },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(RenderCanvas.prototype, "boxY", {
+    Object.defineProperty(Canvas.prototype, "boxY", {
         get: function () {
             return this.maxY;
         },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(RenderCanvas.prototype, "boxZ", {
+    Object.defineProperty(Canvas.prototype, "boxZ", {
         get: function () {
             return this.maxZ;
         },
         enumerable: false,
         configurable: true
     });
-    return RenderCanvas;
+    return Canvas;
 }());
-export { RenderCanvas };
-//# sourceMappingURL=RenderCanvas.js.map
+export { Canvas };
+//# sourceMappingURL=Canvas.js.map

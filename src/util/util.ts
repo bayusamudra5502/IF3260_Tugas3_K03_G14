@@ -4,7 +4,11 @@ interface EnginePrimitive {
   vertices: Float32Array;
   color: Float32Array;
   indices: Uint16Array;
-  matrix: number[];
+  matrix: {
+    transform: number[];
+    camera: number[];
+    projection: number[];
+  };
   size: number;
 }
 
@@ -37,12 +41,11 @@ export function flatten(array: Array<any>) {
 
 export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
   const vertices = draw.vertices;
-  const matrix = draw.matrix.transformation;
   const colors = draw.colors;
-  const indices = increaseArray(vertices.length);
+  const indices = draw.indices ? draw.indices : increaseArray(vertices.length);
 
-  if (vertices.length != colors.length) {
-    throw new Error("color and vertices count is not equal");
+  if (indices.length != colors.length) {
+    throw new Error("color and index count is not equal");
   }
 
   const flatVertices = [];
@@ -65,7 +68,11 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     vertices: new Float32Array(flatVertices),
     color: new Float32Array(flatColor),
     indices: new Uint16Array(indices),
-    matrix: flatten(matrix),
-    size: vertices.length,
+    matrix: {
+      transform: flatten(draw.matrix.transform),
+      projection: flatten(draw.matrix.projection),
+      camera: flatten(draw.matrix.camera),
+    },
+    size: indices.length,
   };
 }

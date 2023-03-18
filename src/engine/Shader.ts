@@ -1,7 +1,11 @@
-import { RenderCanvas } from "./RenderCanvas";
+import { Canvas } from "./Canvas";
 
 export interface ShaderAttribute {
-  transformMatrix: string;
+  matrix: {
+    transform: string;
+    camera: string;
+    projection: string;
+  };
   position: string;
   color: string;
   resolution: string;
@@ -9,7 +13,11 @@ export interface ShaderAttribute {
 
 export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
   color: "color",
-  transformMatrix: "Mmatrix",
+  matrix: {
+    transform: "Mmatrix",
+    camera: "Cmatrix",
+    projection: "Pmatrix",
+  },
   position: "position",
   resolution: "resolution",
 };
@@ -17,6 +25,8 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
 export interface ShaderVariableLocation {
   matrix: {
     transform: WebGLUniformLocation;
+    camera: WebGLUniformLocation;
+    projection: WebGLUniformLocation;
   };
   options: {
     resolution: WebGLUniformLocation;
@@ -25,7 +35,7 @@ export interface ShaderVariableLocation {
   color: number;
 }
 
-export class Shader {
+export class ShaderProgram {
   private vertexCode: string;
   private fragmentCode: string;
   private gl: WebGLRenderingContext;
@@ -37,7 +47,7 @@ export class Shader {
   constructor(
     private vertexShaderId: string,
     private fragmentShaderId: string,
-    canvas: RenderCanvas,
+    canvas: Canvas,
     private shaderAttribute: ShaderAttribute = SHADER_ATTR_DEFAULT
   ) {
     this.gl = canvas.getContext();
@@ -100,8 +110,17 @@ export class Shader {
 
     const transformMatrix = this.gl.getUniformLocation(
       this.program,
-      this.shaderAttribute.transformMatrix
+      this.shaderAttribute.matrix.transform
     );
+    const cameraMatrix = this.gl.getUniformLocation(
+      this.program,
+      this.shaderAttribute.matrix.camera
+    );
+    const projectionMatrix = this.gl.getUniformLocation(
+      this.program,
+      this.shaderAttribute.matrix.projection
+    );
+
     const position = this.gl.getAttribLocation(
       this.program,
       this.shaderAttribute.position
@@ -118,6 +137,8 @@ export class Shader {
     return {
       matrix: {
         transform: transformMatrix,
+        camera: cameraMatrix,
+        projection: projectionMatrix,
       },
       options: {
         resolution,

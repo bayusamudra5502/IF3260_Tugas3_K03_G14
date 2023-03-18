@@ -1,10 +1,10 @@
-import { RenderCanvas } from "./RenderCanvas";
+import { Canvas } from "./Canvas";
 
-export class EngineBuffer {
+export class Buffer {
   private bufferData: StringMap<WebGLBuffer> = {};
   private webglContext: WebGLRenderingContext;
 
-  constructor(canvas: RenderCanvas) {
+  constructor(canvas: Canvas) {
     this.webglContext = canvas.getContext();
   }
 

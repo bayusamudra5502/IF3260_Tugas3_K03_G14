@@ -25,11 +25,10 @@ export function flatten(array) {
 }
 export function drawableToPrimitive(draw) {
     var vertices = draw.vertices;
-    var matrix = draw.matrix.transformation;
     var colors = draw.colors;
-    var indices = increaseArray(vertices.length);
-    if (vertices.length != colors.length) {
-        throw new Error("color and vertices count is not equal");
+    var indices = draw.indices ? draw.indices : increaseArray(vertices.length);
+    if (indices.length != colors.length) {
+        throw new Error("color and index count is not equal");
     }
     var flatVertices = [];
     for (var _i = 0, vertices_1 = vertices; _i < vertices_1.length; _i++) {
@@ -53,8 +52,12 @@ export function drawableToPrimitive(draw) {
         vertices: new Float32Array(flatVertices),
         color: new Float32Array(flatColor),
         indices: new Uint16Array(indices),
-        matrix: flatten(matrix),
-        size: vertices.length,
+        matrix: {
+            transform: flatten(draw.matrix.transform),
+            projection: flatten(draw.matrix.projection),
+            camera: flatten(draw.matrix.camera),
+        },
+        size: indices.length,
     };
 }
 //# sourceMappingURL=util.js.map
