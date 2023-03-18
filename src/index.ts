@@ -7,11 +7,7 @@ import { DEFAULT_TRANSFORM } from "./object/Transform";
 import { Vertices } from "./object/Vertices";
 
 function main() {
-  const canvas = new Canvas("drawing-canvas", {
-    maxX: 1,
-    maxY: 1,
-    maxZ: 1,
-  });
+  const canvas = new Canvas("drawing-canvas");
   const buffer = new Buffer(canvas);
   const shader = new ShaderProgram("vertex-shader", "fragment-shader", canvas);
 

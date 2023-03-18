@@ -6,11 +6,7 @@ import { Color } from "./object/Color.js";
 import { DEFAULT_TRANSFORM } from "./object/Transform.js";
 import { Vertices } from "./object/Vertices.js";
 function main() {
-    var canvas = new Canvas("drawing-canvas", {
-        maxX: 1,
-        maxY: 1,
-        maxZ: 1,
-    });
+    var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
     var shader = new ShaderProgram("vertex-shader", "fragment-shader", canvas);
     shader.compile();
