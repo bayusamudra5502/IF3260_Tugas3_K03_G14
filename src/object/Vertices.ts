@@ -5,7 +5,7 @@ export class Vertex {
     public z: number = 0
   ) {}
 
-  getVector() {
+  getArray() {
     return [this.x, this.y, this.z, 1.0];
   }
 

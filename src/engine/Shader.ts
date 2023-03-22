@@ -9,6 +9,9 @@ export interface ShaderAttribute {
   position: string;
   color: string;
   resolution: string;
+  normal: string;
+
+  lightSource: string;
 }
 
 export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
@@ -20,6 +23,8 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
   },
   position: "position",
   resolution: "resolution",
+  normal: "normal",
+  lightSource: "lightSource",
 };
 
 export interface ShaderVariableLocation {
@@ -33,6 +38,9 @@ export interface ShaderVariableLocation {
   };
   vertices: number;
   color: number;
+  normal: number;
+
+  lightSource: WebGLUniformLocation;
 }
 
 export class ShaderProgram {
@@ -133,6 +141,14 @@ export class ShaderProgram {
       this.program,
       this.shaderAttribute.resolution
     );
+    const lightSource = this.gl.getUniformLocation(
+      this.program,
+      this.shaderAttribute.lightSource
+    );
+    const normal = this.gl.getAttribLocation(
+      this.program,
+      this.shaderAttribute.normal
+    );
 
     return {
       matrix: {
@@ -145,6 +161,8 @@ export class ShaderProgram {
       },
       vertices: position,
       color,
+      normal,
+      lightSource,
     };
   }
 }

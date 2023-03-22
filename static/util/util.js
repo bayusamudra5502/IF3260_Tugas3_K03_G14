@@ -34,7 +34,7 @@ export function drawableToPrimitive(draw) {
     var flatVertices = [];
     for (var _i = 0, vertices_1 = vertices; _i < vertices_1.length; _i++) {
         var i = vertices_1[_i];
-        var vector = i.getVector();
+        var vector = i.getArray();
         for (var _a = 0, vector_1 = vector; _a < vector_1.length; _a++) {
             var j = vector_1[_a];
             flatVertices.push(j);
@@ -47,6 +47,15 @@ export function drawableToPrimitive(draw) {
         for (var _c = 0, vector_2 = vector; _c < vector_2.length; _c++) {
             var j = vector_2[_c];
             flatColor.push(j);
+        }
+    }
+    var flatNormal = [];
+    for (var _d = 0, _e = draw.normals; _d < _e.length; _d++) {
+        var i = _e[_d];
+        var value = i.getArray();
+        for (var _f = 0, value_1 = value; _f < value_1.length; _f++) {
+            var j = value_1[_f];
+            flatNormal.push(j);
         }
     }
     var tMatrix = Matrix.transpose(draw.matrix.transform);
@@ -62,6 +71,8 @@ export function drawableToPrimitive(draw) {
             view: flatten(vMatrix),
         },
         size: indices.length,
+        normals: new Float32Array(flatNormal),
+        lightSource: new Float32Array(draw.lightSource.getArray()),
     };
 }
 //# sourceMappingURL=util.js.map

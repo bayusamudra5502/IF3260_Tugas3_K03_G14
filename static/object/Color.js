@@ -15,6 +15,9 @@ var Color = /** @class */ (function () {
             ? new Color(parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255, 1)
             : null;
     };
+    Color.load = function (colors) {
+        return new Color(colors[0], colors[1], colors[2], 1);
+    };
     Color.prototype.getArray = function () {
         return [this.r, this.g, this.b, this.a];
     };

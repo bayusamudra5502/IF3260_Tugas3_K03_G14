@@ -3,6 +3,7 @@ import { Matrix } from "../matrix/Matrix";
 
 interface EnginePrimitive {
   vertices: Float32Array;
+  normals: Float32Array;
   color: Float32Array;
   indices: Uint16Array;
   matrix: {
@@ -11,6 +12,7 @@ interface EnginePrimitive {
     projection: number[];
   };
   size: number;
+  lightSource: Float32Array;
 }
 
 export function increaseArray(count: number, start: number = 0): number[] {
@@ -51,7 +53,7 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
 
   const flatVertices = [];
   for (let i of vertices) {
-    const vector = i.getVector();
+    const vector = i.getArray();
     for (let j of vector) {
       flatVertices.push(j);
     }
@@ -62,6 +64,14 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     const vector = i.getArray();
     for (let j of vector) {
       flatColor.push(j);
+    }
+  }
+
+  const flatNormal = [];
+  for (let i of draw.normals) {
+    const value = i.getArray();
+    for (let j of value) {
+      flatNormal.push(j);
     }
   }
 
@@ -79,5 +89,7 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
       view: flatten(vMatrix),
     },
     size: indices.length,
+    normals: new Float32Array(flatNormal),
+    lightSource: new Float32Array(draw.lightSource.getArray()),
   };
 }

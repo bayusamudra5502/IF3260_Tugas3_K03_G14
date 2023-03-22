@@ -1,6 +1,7 @@
 import { Color } from "./Color";
 import { Matrix } from "../matrix/Matrix";
 import { Vertex } from "./Vertices";
+import { Vector } from "./Vector";
 
 export type DrawMode =
   | "line"
@@ -19,5 +20,7 @@ export default interface DrawInfo {
     view: Matrix;
   };
   indices: number[];
+  normals: Vector[];
   mode: DrawMode;
+  lightSource: Vertex;
 }

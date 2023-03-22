@@ -20,6 +20,10 @@ export class Color {
       : null;
   }
 
+  static load(colors: number[]) {
+    return new Color(colors[0], colors[1], colors[2], 1);
+  }
+
   public getArray(): number[] {
     return [this.r, this.g, this.b, this.a];
   }

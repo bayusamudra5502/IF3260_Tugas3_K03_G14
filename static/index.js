@@ -5,6 +5,7 @@ import { ShaderProgram } from "./engine/Shader.js";
 import { Color } from "./object/Color.js";
 import { IDENTITY_MATRIX } from "./matrix/Matrix.js";
 import { Vertex } from "./object/Vertices.js";
+import { Vector } from "./object/Vector.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -36,6 +37,17 @@ function main() {
             new Vertex(0.3, 0.3, -0.3),
             new Vertex(0.3, 0, -0.3), // H
         ],
+        normals: [
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+            new Vector(1, 1, 1),
+        ],
+        lightSource: new Vertex(0, 0, 0),
     });
 }
 main();

@@ -7,7 +7,7 @@ var Vertex = /** @class */ (function () {
         this.y = y;
         this.z = z;
     }
-    Vertex.prototype.getVector = function () {
+    Vertex.prototype.getArray = function () {
         return [this.x, this.y, this.z, 1.0];
     };
     Vertex.load = function (array) {

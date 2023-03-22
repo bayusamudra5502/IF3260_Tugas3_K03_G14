@@ -8,30 +8,36 @@
   <title>2D Web Based</title>
   <link rel="stylesheet" href="./index.css" />
   <script id="vertex-shader" type="x-shader/x-vertex">
-      attribute vec3 position;
-      attribute vec3 color;
+      attribute vec4 position;
+      attribute vec4 normal;
+      attribute vec4 color;
+
       uniform mat4 Mmatrix;
       uniform mat4 Vmatrix;
       uniform mat4 Pmatrix;
       uniform vec3 resolution;
   
-      varying vec3 vColor;
+      varying vec4 vColor;
+      varying vec4 vNormal;
   
       void main(void) {
-        vec3 normalPos = position / resolution;
-        vec3 clipSpace = normalPos;
+        vec4 fixedPos = position / vec4(resolution, 1.0);
   
         vColor = color;
-  
-        gl_Position = Pmatrix * Vmatrix * Mmatrix * vec4(clipSpace, 1.);
+        vNormal = normal;
+
+        gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
       }
   </script>
   <script id="fragment-shader" type="x-shader/x-fragment">
       precision mediump float;
-      varying vec3 vColor;
+      varying vec4 vColor;
+      varying vec4 vNormal;
+
+      uniform vec3 lightSource;
   
       void main(void) {
-          gl_FragColor = vec4(vColor, 1.);
+          gl_FragColor = vColor;
       }
     </script>
 </head>

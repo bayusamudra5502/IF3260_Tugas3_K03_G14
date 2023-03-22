@@ -5,6 +5,7 @@ import { ShaderProgram } from "./engine/Shader";
 import { Color } from "./object/Color";
 import { IDENTITY_MATRIX } from "./matrix/Matrix";
 import { Vertex } from "./object/Vertices";
+import { Vector } from "./object/Vector";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -49,6 +50,18 @@ function main() {
       new Vertex(0.3, 0.3, -0.3), // G
       new Vertex(0.3, 0, -0.3), // H
     ],
+    normals: [
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+      new Vector(1, 1, 1),
+    ],
+    lightSource: new Vertex(0, 0, 0),
   });
 }
 

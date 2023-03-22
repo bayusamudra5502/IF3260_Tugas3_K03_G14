@@ -35,10 +35,15 @@ var RenderEngine = /** @class */ (function () {
         // Buffer data
         this.buffer.fillFloat("vertices", primitive.vertices);
         this.buffer.fillFloat("colors", primitive.color);
+        this.buffer.fillFloat("normal", primitive.normals);
+        this.buffer.fillFloat("lightSource", primitive.lightSource);
         this.buffer.fillUint("indices", primitive.indices);
         // Data binding
         this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
         this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
+        this.bind(this.shaderLocation.normal, this.buffer.get("normal"), 4);
+        // Lightsource bind
+        this.webglContext.uniform4fv(this.shaderLocation.lightSource, primitive.lightSource);
         // Transformation Matrix
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.transform, false, primitive.matrix.transform);
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.view, false, primitive.matrix.view);
