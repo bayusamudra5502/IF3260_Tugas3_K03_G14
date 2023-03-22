@@ -3,7 +3,7 @@ import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { Color } from "./object/Color";
-import { DEFAULT_TRANSFORM } from "./object/Transform";
+import { IDENTITY_MATRIX } from "./matrix/Matrix";
 import { Vertex } from "./object/Vertices";
 
 function main() {
@@ -32,9 +32,9 @@ function main() {
   engine.render({
     colors: [biru1, biru1, biru2, biru1, biru1, biru2],
     matrix: {
-      transform: DEFAULT_TRANSFORM,
-      camera: DEFAULT_TRANSFORM,
-      projection: DEFAULT_TRANSFORM,
+      transform: IDENTITY_MATRIX,
+      view: IDENTITY_MATRIX,
+      projection: IDENTITY_MATRIX,
     },
     indices: [0, 1, 2, 0, 2, 3],
     mode: "triangle-strip",

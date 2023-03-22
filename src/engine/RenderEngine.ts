@@ -82,9 +82,9 @@ export default class RenderEngine {
     );
 
     this.webglContext.uniformMatrix4fv(
-      this.shaderLocation.matrix.camera,
+      this.shaderLocation.matrix.view,
       false,
-      primitive.matrix.camera
+      primitive.matrix.view
     );
 
     this.webglContext.uniformMatrix4fv(

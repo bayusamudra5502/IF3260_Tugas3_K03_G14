@@ -1,4 +1,5 @@
 import DrawInfo from "../object/DrawInfo";
+import { Matrix } from "../matrix/Matrix";
 
 interface EnginePrimitive {
   vertices: Float32Array;
@@ -6,7 +7,7 @@ interface EnginePrimitive {
   indices: Uint16Array;
   matrix: {
     transform: number[];
-    camera: number[];
+    view: number[];
     projection: number[];
   };
   size: number;
@@ -64,14 +65,18 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     }
   }
 
+  const tMatrix = Matrix.transpose(draw.matrix.transform);
+  const pMatrix = Matrix.transpose(draw.matrix.projection);
+  const vMatrix = Matrix.transpose(draw.matrix.view);
+
   return {
     vertices: new Float32Array(flatVertices),
     color: new Float32Array(flatColor),
     indices: new Uint16Array(indices),
     matrix: {
-      transform: flatten(draw.matrix.transform),
-      projection: flatten(draw.matrix.projection),
-      camera: flatten(draw.matrix.camera),
+      transform: flatten(tMatrix),
+      projection: flatten(pMatrix),
+      view: flatten(vMatrix),
     },
     size: indices.length,
   };

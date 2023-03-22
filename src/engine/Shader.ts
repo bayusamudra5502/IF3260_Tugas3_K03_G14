@@ -15,7 +15,7 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
   color: "color",
   matrix: {
     transform: "Mmatrix",
-    camera: "Cmatrix",
+    camera: "Vmatrix",
     projection: "Pmatrix",
   },
   position: "position",
@@ -25,7 +25,7 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
 export interface ShaderVariableLocation {
   matrix: {
     transform: WebGLUniformLocation;
-    camera: WebGLUniformLocation;
+    view: WebGLUniformLocation;
     projection: WebGLUniformLocation;
   };
   options: {
@@ -137,7 +137,7 @@ export class ShaderProgram {
     return {
       matrix: {
         transform: transformMatrix,
-        camera: cameraMatrix,
+        view: cameraMatrix,
         projection: projectionMatrix,
       },
       options: {

@@ -3,7 +3,7 @@ import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
 import { Color } from "./object/Color.js";
-import { DEFAULT_TRANSFORM } from "./object/Transform.js";
+import { IDENTITY_MATRIX } from "./matrix/Matrix.js";
 import { Vertex } from "./object/Vertices.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
@@ -20,9 +20,9 @@ function main() {
     engine.render({
         colors: [biru1, biru1, biru2, biru1, biru1, biru2],
         matrix: {
-            transform: DEFAULT_TRANSFORM,
-            camera: DEFAULT_TRANSFORM,
-            projection: DEFAULT_TRANSFORM,
+            transform: IDENTITY_MATRIX,
+            view: IDENTITY_MATRIX,
+            projection: IDENTITY_MATRIX,
         },
         indices: [0, 1, 2, 0, 2, 3],
         mode: "triangle-strip",

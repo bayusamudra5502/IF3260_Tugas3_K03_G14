@@ -41,7 +41,7 @@ var RenderEngine = /** @class */ (function () {
         this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
         // Transformation Matrix
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.transform, false, primitive.matrix.transform);
-        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.camera, false, primitive.matrix.camera);
+        this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.view, false, primitive.matrix.view);
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.projection, false, primitive.matrix.projection);
         return primitive;
     };

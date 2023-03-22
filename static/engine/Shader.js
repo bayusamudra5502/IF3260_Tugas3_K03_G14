@@ -2,7 +2,7 @@ export var SHADER_ATTR_DEFAULT = {
     color: "color",
     matrix: {
         transform: "Mmatrix",
-        camera: "Cmatrix",
+        camera: "Vmatrix",
         projection: "Pmatrix",
     },
     position: "position",
@@ -62,7 +62,7 @@ var ShaderProgram = /** @class */ (function () {
         return {
             matrix: {
                 transform: transformMatrix,
-                camera: cameraMatrix,
+                view: cameraMatrix,
                 projection: projectionMatrix,
             },
             options: {

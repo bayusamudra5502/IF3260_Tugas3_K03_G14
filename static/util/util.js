@@ -1,3 +1,4 @@
+import { Matrix } from "../matrix/Matrix.js";
 export function increaseArray(count, start) {
     if (start === void 0) { start = 0; }
     var result = [];
@@ -48,14 +49,17 @@ export function drawableToPrimitive(draw) {
             flatColor.push(j);
         }
     }
+    var tMatrix = Matrix.transpose(draw.matrix.transform);
+    var pMatrix = Matrix.transpose(draw.matrix.projection);
+    var vMatrix = Matrix.transpose(draw.matrix.view);
     return {
         vertices: new Float32Array(flatVertices),
         color: new Float32Array(flatColor),
         indices: new Uint16Array(indices),
         matrix: {
-            transform: flatten(draw.matrix.transform),
-            projection: flatten(draw.matrix.projection),
-            camera: flatten(draw.matrix.camera),
+            transform: flatten(tMatrix),
+            projection: flatten(pMatrix),
+            view: flatten(vMatrix),
         },
         size: indices.length,
     };
