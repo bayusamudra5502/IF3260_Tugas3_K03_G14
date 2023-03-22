@@ -1,9 +1,15 @@
-import { IDENTITY_MATRIX, Matrix } from "./Matrix";
-import { Projector } from "./Projector";
+import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix";
+import { Projector } from "../matrix/Projector";
+import { Listenable } from "./Listenable";
 
-export class ProjectionMatrix {
+export class ProjectionManager extends Listenable {
   private projectors: Projector[] = [];
   private calculatedMatrix: Matrix = IDENTITY_MATRIX;
+
+  constructor() {
+    super();
+    this.subscribe(this.recalculate);
+  }
 
   get matrix(): Matrix {
     return this.calculatedMatrix;
@@ -11,7 +17,7 @@ export class ProjectionMatrix {
 
   addProjector(projector: Projector) {
     this.projectors.push(projector);
-    this.recalculate();
+    this.notify();
   }
 
   recalculate() {
