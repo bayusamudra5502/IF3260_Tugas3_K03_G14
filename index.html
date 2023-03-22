@@ -43,9 +43,9 @@
           vec3 normal = normalize(vec3(vNormal));
           vec3 light = vec3(lightSource);
 
-          vec3 diff = light - vec3(vPosition);
+          vec3 lightVector = light - vec3(vPosition);
 
-          float lightIlluminance = dot(normal, normalize(diff));
+          float lightIlluminance = dot(normal, normalize(lightVector));
           gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
       }
     </script>
@@ -62,7 +62,8 @@
     <div>
       <div class="controller-container">
         <h2>Load File</h2>
-        <input type="file" id="loadfile-input" />
+        <input type="file" id="loadfile-input" accept="application/json" />
+        <button id="loadfile-submit" type="button">Load</button>
       </div>
     </div>
   </div>
