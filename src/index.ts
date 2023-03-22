@@ -61,7 +61,7 @@ function main() {
       new Vector(1, 1, 1),
       new Vector(1, 1, 1),
     ],
-    lightSource: new Vertex(0, 0, 0),
+    lightSource: new Vertex(0.5, 0.5, 0.5),
   });
 }
 

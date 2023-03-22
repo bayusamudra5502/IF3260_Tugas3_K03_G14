@@ -34,10 +34,10 @@
       varying vec4 vColor;
       varying vec4 vNormal;
 
-      uniform vec3 lightSource;
+      uniform vec4 lightSource;
   
       void main(void) {
-          gl_FragColor = vColor;
+          gl_FragColor = lightSource * vColor;
       }
     </script>
 </head>
