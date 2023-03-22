@@ -23,12 +23,8 @@ function main() {
 
   engine.clear();
 
-  const cosVal = Math.cos((Math.PI * 45) / 180);
-  const sinVal = Math.sin((Math.PI * 45) / 180);
-
   const biru1 = Color.hex("#6096B4");
   const biru2 = Color.hex("#93BFCF");
-  const biru3 = Color.hex("#BDCDD6");
 
   engine.render({
     colors: [biru1, biru1, biru2, biru1, biru1, biru2],
@@ -51,17 +47,17 @@ function main() {
       new Vertex(0.3, 0, -0.3), // H
     ],
     normals: [
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
 
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
-      new Vector(1, 1, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
+      new Vector(0, 0, 1),
     ],
-    lightSource: new Vertex(0.5, 0.5, 0.5),
+    lightSource: new Vertex(0, 0, 10),
   });
 }
 

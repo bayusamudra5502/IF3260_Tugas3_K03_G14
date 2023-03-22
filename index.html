@@ -19,12 +19,14 @@
   
       varying vec4 vColor;
       varying vec4 vNormal;
+      varying vec4 vPosition;
   
       void main(void) {
         vec4 fixedPos = position / vec4(resolution, 1.0);
   
         vColor = color;
         vNormal = normal;
+        vPosition = position;
 
         gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
       }
@@ -33,11 +35,18 @@
       precision mediump float;
       varying vec4 vColor;
       varying vec4 vNormal;
+      varying vec4 vPosition;
 
       uniform vec4 lightSource;
   
       void main(void) {
-          gl_FragColor = lightSource * vColor;
+          vec3 normal = normalize(vec3(vNormal));
+          vec3 light = vec3(lightSource);
+
+          vec3 diff = light - vec3(vPosition);
+
+          float lightIlluminance = dot(normal, normalize(diff));
+          gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
       }
     </script>
 </head>

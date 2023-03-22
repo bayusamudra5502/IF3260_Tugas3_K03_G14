@@ -5,14 +5,15 @@ var Object3D = /** @class */ (function () {
     function Object3D(options) {
         this.options = options;
     }
-    Object3D.load = function (json, matrix) {
+    Object3D.load = function (json, global) {
         var _a, _b, _c;
         var data = JSON.parse(json);
         var options = {
             colors: [],
             vertices: [],
             normal: [],
-            matrix: matrix,
+            matrix: global,
+            light: global.light,
         };
         for (var _i = 0, _d = (_a = data.vertices) !== null && _a !== void 0 ? _a : []; _i < _d.length; _i++) {
             var vertex = _d[_i];
@@ -42,7 +43,7 @@ var Object3D = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(Object3D.prototype, "normals", {
+    Object.defineProperty(Object3D.prototype, "normal", {
         get: function () {
             return this.options.normal;
         },

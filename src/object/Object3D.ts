@@ -4,30 +4,36 @@ import { Color } from "./Color";
 import { Vector } from "./Vector";
 import { Vertex } from "./Vertices";
 
-export interface ObjectMatrix {
+export interface ObjectGlobal {
   transform: Transform;
   view: Transform;
   projection: Transform;
+  light: Vector;
 }
 
 export interface ObjectOptions {
   vertices: Vertex[];
   normal: Vector[];
   colors: Color[];
-
-  matrix: ObjectMatrix;
+  matrix: {
+    transform: Transform;
+    view: Transform;
+    projection: Transform;
+  };
+  light: Vector;
 }
 
 export class Object3D {
   constructor(private options: ObjectOptions) {}
 
-  static load(json: string, matrix: ObjectMatrix) {
+  static load(json: string, global: ObjectGlobal) {
     const data = JSON.parse(json);
     const options: ObjectOptions = {
       colors: [],
       vertices: [],
       normal: [],
-      matrix,
+      matrix: global,
+      light: global.light,
     };
 
     for (const vertex of data.vertices ?? []) {
@@ -53,7 +59,7 @@ export class Object3D {
     return this.options.vertices;
   }
 
-  get normals() {
+  get normal() {
     return this.options.normal;
   }
 
