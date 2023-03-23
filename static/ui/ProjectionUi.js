@@ -96,21 +96,21 @@ var ProjectionUi = /** @class */ (function (_super) {
         aovText.innerText = "".concat(proj.fieldOfView);
         /* Event handler */
         near.onchange = function (e) {
-            var newValue = parseInt(near.value);
+            var newValue = parseFloat(near.value);
             !Number.isNaN(newValue) &&
                 proj.configure({
                     zNear: newValue,
                 });
         };
         far.onchange = function (e) {
-            var newValue = parseInt(far.value);
+            var newValue = parseFloat(far.value);
             !Number.isNaN(newValue) &&
                 proj.configure({
                     zFar: newValue,
                 });
         };
         aov.onmousemove = function (e) {
-            var newValue = parseInt(aov.value);
+            var newValue = parseFloat(aov.value);
             !Number.isNaN(newValue) &&
                 proj.configure({
                     fieldOfView: newValue,
@@ -136,7 +136,7 @@ var ProjectionUi = /** @class */ (function (_super) {
         zproj.value = "".concat(obl.zProjection);
         /* Setup handler */
         xangle.onmousemove = function () {
-            var newValue = parseInt(xangle.value);
+            var newValue = parseFloat(xangle.value);
             !Number.isNaN(newValue) &&
                 obl.configure({
                     xAngle: newValue,
@@ -145,7 +145,7 @@ var ProjectionUi = /** @class */ (function (_super) {
         };
         xangle.onchange = xangle.onmousemove;
         yangle.onmousemove = function () {
-            var newValue = parseInt(yangle.value);
+            var newValue = parseFloat(yangle.value);
             !Number.isNaN(newValue) &&
                 obl.configure({
                     yAngle: newValue,
@@ -154,7 +154,7 @@ var ProjectionUi = /** @class */ (function (_super) {
         };
         yangle.onchange = yangle.onmousemove;
         zproj.onchange = function () {
-            var newValue = parseInt(zproj.value);
+            var newValue = parseFloat(zproj.value);
             !Number.isNaN(newValue) &&
                 obl.configure({
                     zProjection: newValue,
@@ -180,42 +180,42 @@ var ProjectionUi = /** @class */ (function (_super) {
         near.value = "".concat(orth.zNear);
         /* Setup handler */
         left.onchange = function () {
-            var newValue = parseInt(left.value);
+            var newValue = parseFloat(left.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     left: newValue,
                 });
         };
         right.onchange = function () {
-            var newValue = parseInt(right.value);
+            var newValue = parseFloat(right.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     right: newValue,
                 });
         };
         bottom.onchange = function () {
-            var newValue = parseInt(bottom.value);
+            var newValue = parseFloat(bottom.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     bottom: newValue,
                 });
         };
         top.onchange = function () {
-            var newValue = parseInt(top.value);
+            var newValue = parseFloat(top.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     top: newValue,
                 });
         };
         near.onchange = function () {
-            var newValue = parseInt(near.value);
+            var newValue = parseFloat(near.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     near: newValue,
                 });
         };
         far.onchange = function () {
-            var newValue = parseInt(far.value);
+            var newValue = parseFloat(far.value);
             !Number.isNaN(newValue) &&
                 orth.configure({
                     far: newValue,

@@ -45,6 +45,8 @@ export class Object3D {
               options.colors.push(Color.load(data.colors[faceIdx][i]));
             } else if (typeof data.colors[faceIdx][i] === "string") {
               options.colors.push(Color.hex(data.colors[faceIdx][i]));
+            } else if (typeof data.colors[faceIdx][0] === "number") {
+              options.colors.push(Color.load(data.colors[faceIdx]));
             } else {
               new Error("unknown color type");
             }

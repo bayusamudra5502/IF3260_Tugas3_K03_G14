@@ -99,7 +99,7 @@ export class ProjectionUi extends Listenable {
 
     /* Event handler */
     near.onchange = (e) => {
-      const newValue = parseInt(near.value);
+      const newValue = parseFloat(near.value);
       !Number.isNaN(newValue) &&
         proj.configure({
           zNear: newValue,
@@ -107,7 +107,7 @@ export class ProjectionUi extends Listenable {
     };
 
     far.onchange = (e) => {
-      const newValue = parseInt(far.value);
+      const newValue = parseFloat(far.value);
       !Number.isNaN(newValue) &&
         proj.configure({
           zFar: newValue,
@@ -115,7 +115,7 @@ export class ProjectionUi extends Listenable {
     };
 
     aov.onmousemove = (e) => {
-      const newValue = parseInt(aov.value);
+      const newValue = parseFloat(aov.value);
       !Number.isNaN(newValue) &&
         proj.configure({
           fieldOfView: newValue,
@@ -156,7 +156,7 @@ export class ProjectionUi extends Listenable {
 
     /* Setup handler */
     xangle.onmousemove = () => {
-      const newValue = parseInt(xangle.value);
+      const newValue = parseFloat(xangle.value);
       !Number.isNaN(newValue) &&
         obl.configure({
           xAngle: newValue,
@@ -166,7 +166,7 @@ export class ProjectionUi extends Listenable {
     xangle.onchange = xangle.onmousemove;
 
     yangle.onmousemove = () => {
-      const newValue = parseInt(yangle.value);
+      const newValue = parseFloat(yangle.value);
       !Number.isNaN(newValue) &&
         obl.configure({
           yAngle: newValue,
@@ -176,7 +176,7 @@ export class ProjectionUi extends Listenable {
     yangle.onchange = yangle.onmousemove;
 
     zproj.onchange = () => {
-      const newValue = parseInt(zproj.value);
+      const newValue = parseFloat(zproj.value);
       !Number.isNaN(newValue) &&
         obl.configure({
           zProjection: newValue,
@@ -218,7 +218,7 @@ export class ProjectionUi extends Listenable {
 
     /* Setup handler */
     left.onchange = () => {
-      const newValue = parseInt(left.value);
+      const newValue = parseFloat(left.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           left: newValue,
@@ -226,7 +226,7 @@ export class ProjectionUi extends Listenable {
     };
 
     right.onchange = () => {
-      const newValue = parseInt(right.value);
+      const newValue = parseFloat(right.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           right: newValue,
@@ -234,7 +234,7 @@ export class ProjectionUi extends Listenable {
     };
 
     bottom.onchange = () => {
-      const newValue = parseInt(bottom.value);
+      const newValue = parseFloat(bottom.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           bottom: newValue,
@@ -242,7 +242,7 @@ export class ProjectionUi extends Listenable {
     };
 
     top.onchange = () => {
-      const newValue = parseInt(top.value);
+      const newValue = parseFloat(top.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           top: newValue,
@@ -250,7 +250,7 @@ export class ProjectionUi extends Listenable {
     };
 
     near.onchange = () => {
-      const newValue = parseInt(near.value);
+      const newValue = parseFloat(near.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           near: newValue,
@@ -258,7 +258,7 @@ export class ProjectionUi extends Listenable {
     };
 
     far.onchange = () => {
-      const newValue = parseInt(far.value);
+      const newValue = parseFloat(far.value);
       !Number.isNaN(newValue) &&
         orth.configure({
           far: newValue,

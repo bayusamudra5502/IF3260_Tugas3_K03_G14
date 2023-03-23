@@ -18,7 +18,7 @@ export class Perspective extends Projector {
   private zFar: number = -1;
   private f: number = 1;
   private aspectRatio: number = 1;
-  private fieldOfViewAngle: number = 45;
+  private fieldOfViewAngle: number = 90;
 
   configure(option: PerspectiveOption) {
     option.zNear && (this.zNear = option.zNear);
@@ -46,18 +46,16 @@ export class Perspective extends Projector {
   }
 
   transform(matrix: Matrix): Matrix {
-    const rangeInverse = 1 / (this.zNear - this.zFar);
+    const near = this.zNear;
+    const far = this.zFar;
+
+    const rangeInverse = 1 / (near - far);
 
     const perspectiveMatrix = [
       [this.f / this.aspectRatio, 0, 0, 0],
       [0, this.f, 0, 0],
-      [
-        0,
-        0,
-        (this.zNear + this.zFar) * rangeInverse,
-        2 * (this.zNear * this.zFar) * rangeInverse,
-      ],
-      [0, 0, -1, 0],
+      [0, 0, (near + far) * rangeInverse, -2 * (near * far) * rangeInverse],
+      [0, 0, 1, 0],
     ];
 
     return Matrix.multiply(perspectiveMatrix, matrix);

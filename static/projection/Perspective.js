@@ -24,7 +24,7 @@ var Perspective = /** @class */ (function (_super) {
         _this.zFar = -1;
         _this.f = 1;
         _this.aspectRatio = 1;
-        _this.fieldOfViewAngle = 45;
+        _this.fieldOfViewAngle = 90;
         return _this;
     }
     Perspective.prototype.configure = function (option) {
@@ -58,17 +58,14 @@ var Perspective = /** @class */ (function (_super) {
         configurable: true
     });
     Perspective.prototype.transform = function (matrix) {
-        var rangeInverse = 1 / (this.zNear - this.zFar);
+        var near = this.zNear;
+        var far = this.zFar;
+        var rangeInverse = 1 / (near - far);
         var perspectiveMatrix = [
             [this.f / this.aspectRatio, 0, 0, 0],
             [0, this.f, 0, 0],
-            [
-                0,
-                0,
-                (this.zNear + this.zFar) * rangeInverse,
-                2 * (this.zNear * this.zFar) * rangeInverse,
-            ],
-            [0, 0, -1, 0],
+            [0, 0, (near + far) * rangeInverse, -2 * (near * far) * rangeInverse],
+            [0, 0, 1, 0],
         ];
         return Matrix.multiply(perspectiveMatrix, matrix);
     };
