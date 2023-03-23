@@ -30,6 +30,13 @@ var Canvas = /** @class */ (function () {
     Canvas.prototype.bindResolution = function (resolutionId) {
         this.webglContext.uniform3f(resolutionId, this.boxX, this.boxY, this.boxZ);
     };
+    Object.defineProperty(Canvas.prototype, "aspectRatio", {
+        get: function () {
+            return this.canvas.width / this.canvas.height;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(Canvas.prototype, "boxX", {
         get: function () {
             return this.maxX;

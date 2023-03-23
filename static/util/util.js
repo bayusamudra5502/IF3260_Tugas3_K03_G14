@@ -28,8 +28,11 @@ export function drawableToPrimitive(draw) {
     var vertices = draw.vertices;
     var colors = draw.colors;
     var indices = draw.indices ? draw.indices : increaseArray(vertices.length);
-    if (indices.length != colors.length) {
-        throw new Error("color and index count is not equal");
+    if (vertices.length != colors.length) {
+        throw new Error("color and vertices count is not equal");
+    }
+    if (draw.normals.length != vertices.length) {
+        throw new Error("normal and vertices count is not equal");
     }
     var flatVertices = [];
     for (var _i = 0, vertices_1 = vertices; _i < vertices_1.length; _i++) {

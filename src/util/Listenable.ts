@@ -1,13 +1,15 @@
-export class Listenable extends EventTarget {
+export class Listenable {
+  private eventTarget: EventTarget = new EventTarget();
+
   subscribe(func: () => void) {
-    this.addEventListener("update", func);
+    this.eventTarget.addEventListener("update", func);
   }
 
   unsubscribe(func: () => void) {
-    this.removeEventListener("update", func);
+    this.eventTarget.removeEventListener("update", func);
   }
 
   protected notify() {
-    this.dispatchEvent(new Event("update"));
+    this.eventTarget.dispatchEvent(new Event("update"));
   }
 }

@@ -33,9 +33,8 @@ export default class RenderEngine {
       "triangle-fan": this.webglContext.TRIANGLE_FAN,
     };
 
-    this.webglContext.enable(
-      this.webglContext.DEPTH_TEST | this.webglContext.CULL_FACE
-    );
+    this.webglContext.enable(this.webglContext.DEPTH_TEST);
+    this.webglContext.enable(this.webglContext.CULL_FACE);
   }
 
   public clear() {

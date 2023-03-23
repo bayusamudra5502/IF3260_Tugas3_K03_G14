@@ -4,6 +4,7 @@
     "module": "ESNext",
     "sourceMap": true,
     "outDir": "static",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["es2015", "DOM"]
   }
 }

@@ -24,6 +24,7 @@ var Perspective = /** @class */ (function (_super) {
         _this.zFar = -1;
         _this.f = 1;
         _this.aspectRatio = 1;
+        _this.fieldOfViewAngle = 45;
         return _this;
     }
     Perspective.prototype.configure = function (option) {
@@ -31,8 +32,31 @@ var Perspective = /** @class */ (function (_super) {
         option.zFar && (this.zNear = option.zFar);
         option.fieldOfView &&
             (this.f = Math.tan(Math.PI * 0.5 - 0.5 * Geometry.angleDegToRad(option.fieldOfView)));
+        option.fieldOfView && (this.fieldOfViewAngle = option.fieldOfView);
         option.aspectRatio && (this.aspectRatio = option.aspectRatio);
+        this.notify();
     };
+    Object.defineProperty(Perspective.prototype, "near", {
+        get: function () {
+            return this.zNear;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Perspective.prototype, "far", {
+        get: function () {
+            return this.zFar;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Perspective.prototype, "fieldOfView", {
+        get: function () {
+            return this.fieldOfViewAngle;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Perspective.prototype.transform = function (matrix) {
         var rangeInverse = 1 / (this.zNear - this.zFar);
         var perspectiveMatrix = [

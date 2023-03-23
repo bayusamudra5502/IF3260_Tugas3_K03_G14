@@ -35,11 +35,29 @@ export class Object3D {
       }
 
       for (let i = 0; i < length; i++) {
-        options.normal.push(data.normal[faceIdx]);
+        options.normal.push(Vector.load(data.normal[faceIdx]));
       }
 
       for (let i = 0; i < length; i++) {
-        options.colors.push(Color.load(data.colors[faceIdx][i]));
+        if (data.colors instanceof Array) {
+          if (data.colors[faceIdx] instanceof Array) {
+            if (data.colors[faceIdx][i] instanceof Array) {
+              options.colors.push(Color.load(data.colors[faceIdx][i]));
+            } else if (typeof data.colors[faceIdx][i] === "string") {
+              options.colors.push(Color.hex(data.colors[faceIdx][i]));
+            } else {
+              new Error("unknown color type");
+            }
+          } else if (typeof data.colors[faceIdx] === "string") {
+            options.colors.push(Color.hex(data.colors[faceIdx]));
+          } else {
+            new Error("unknown color type");
+          }
+        } else if (typeof data.colors === "string") {
+          options.colors.push(Color.hex(data.colors));
+        } else {
+          new Error("unknown color type");
+        }
       }
 
       length = 0;
@@ -48,7 +66,7 @@ export class Object3D {
 
     options.indicies = increaseArray(options.vertices.length);
 
-    return new Object3D(data);
+    return new Object3D(options);
   }
 
   get colors() {
@@ -64,7 +82,7 @@ export class Object3D {
   }
 
   get indicies() {
-    return this.indicies;
+    return this.options.indicies;
   }
 
   get transform() {

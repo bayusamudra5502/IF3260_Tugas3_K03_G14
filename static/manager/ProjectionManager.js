@@ -18,10 +18,9 @@ import { Listenable } from "../util/Listenable.js";
 var ProjectionManager = /** @class */ (function (_super) {
     __extends(ProjectionManager, _super);
     function ProjectionManager() {
-        var _this = _super.call(this) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.projectors = [];
         _this.calculatedMatrix = IDENTITY_MATRIX;
-        _this.subscribe(_this.recalculate);
         return _this;
     }
     Object.defineProperty(ProjectionManager.prototype, "matrix", {
@@ -33,15 +32,21 @@ var ProjectionManager = /** @class */ (function (_super) {
     });
     ProjectionManager.prototype.add = function (projector) {
         this.projectors.push(projector);
-        projector.subscribe(this.recalculate);
+        projector.subscribe(function () {
+            this.recalculate();
+            this.notify();
+        }.bind(this));
+        this.recalculate();
         this.notify();
     };
     ProjectionManager.prototype.delete = function (idx) {
         this.projectors.splice(idx, 1);
+        this.recalculate();
         this.notify();
     };
     ProjectionManager.prototype.reset = function () {
         this.projectors = [];
+        this.recalculate();
         this.notify();
     };
     ProjectionManager.prototype.recalculate = function () {

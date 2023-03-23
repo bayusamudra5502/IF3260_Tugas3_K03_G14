@@ -18,6 +18,7 @@ export class Perspective extends Projector {
   private zFar: number = -1;
   private f: number = 1;
   private aspectRatio: number = 1;
+  private fieldOfViewAngle: number = 45;
 
   configure(option: PerspectiveOption) {
     option.zNear && (this.zNear = option.zNear);
@@ -26,7 +27,22 @@ export class Perspective extends Projector {
       (this.f = Math.tan(
         Math.PI * 0.5 - 0.5 * Geometry.angleDegToRad(option.fieldOfView)
       ));
+    option.fieldOfView && (this.fieldOfViewAngle = option.fieldOfView);
     option.aspectRatio && (this.aspectRatio = option.aspectRatio);
+
+    this.notify();
+  }
+
+  get near() {
+    return this.zNear;
+  }
+
+  get far() {
+    return this.zFar;
+  }
+
+  get fieldOfView() {
+    return this.fieldOfViewAngle;
   }
 
   transform(matrix: Matrix): Matrix {

@@ -3,9 +3,13 @@ import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { Color } from "./object/Color";
-import { IDENTITY_MATRIX } from "./matrix/Matrix";
-import { Vertex } from "./object/Vertices";
-import { Vector } from "./object/Vector";
+import { EnvironmentManager } from "./manager/EnvironmentManager";
+import { ProjectionManager } from "./manager/ProjectionManager";
+import { TransformManager } from "./manager/TransformManager";
+import { ObjectManager } from "./manager/ObjectManager";
+import { Importer } from "./util/Importer";
+import { Oblique } from "./projection/Oblique";
+import { ProjectionUi } from "./ui/ProjectionUi";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -23,42 +27,46 @@ function main() {
 
   engine.clear();
 
-  const biru1 = Color.hex("#6096B4");
-  const biru2 = Color.hex("#93BFCF");
+  /* UI Setup */
+  const projectionUi = new ProjectionUi(canvas.aspectRatio);
 
-  engine.render({
-    colors: [biru1, biru1, biru2, biru1, biru1, biru2],
-    matrix: {
-      transform: IDENTITY_MATRIX,
-      view: IDENTITY_MATRIX,
-      projection: IDENTITY_MATRIX,
-    },
-    indices: [0, 1, 2, 0, 2, 3],
-    mode: "triangle-strip",
-    vertices: [
-      new Vertex(-0.3, 0, 0), // A
-      new Vertex(-0.3, 0.3, 0), // B
-      new Vertex(0.3, 0.3, 0), // C
-      new Vertex(0.3, 0, 0), // D
+  /* Setup manager */
+  const rerender = () => {
+    const objs = objManager.generateDrawInfo();
+    for (const obj of objs) {
+      engine.render(obj);
+    }
+  };
 
-      new Vertex(-0.3, 0, -0.3), // E
-      new Vertex(-0.3, 0.3, -0.3), // F
-      new Vertex(0.3, 0.3, -0.3), // G
-      new Vertex(0.3, 0, -0.3), // H
-    ],
-    normals: [
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-      new Vector(0, 0, 1),
-    ],
-    lightSource: new Vertex(0, 0, 1),
+  const projManager = new ProjectionManager();
+  const cameraManager = new TransformManager();
+  const envManager = new EnvironmentManager();
+  envManager.update({
+    cameraTransform: cameraManager,
+    projection: projManager,
   });
+
+  const objManager = new ObjectManager(envManager, "triangle");
+
+  /* Setup importer */
+  const importer = new Importer(objManager, "loadfile-input");
+
+  /* Bind Configuration */
+  projectionUi.subscribe(() => {
+    projManager.reset();
+    projManager.add(projectionUi.currentProjector);
+    rerender();
+  });
+
+  /* Event listeners */
+  document.querySelector("#loadfile-submit").addEventListener("click", () => {
+    importer.import();
+  });
+  objManager.subscribe(rerender);
+
+  projManager.subscribe(rerender);
+  cameraManager.subscribe(rerender);
+  envManager.subscribe(rerender);
 }
 
 main();

@@ -21,7 +21,6 @@ var TransformManager = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.transforms = [];
         _this.calculatedMatrix = IDENTITY_MATRIX;
-        _this.subscribe(_this.recalculate);
         return _this;
     }
     Object.defineProperty(TransformManager.prototype, "matrix", {
@@ -33,15 +32,21 @@ var TransformManager = /** @class */ (function (_super) {
     });
     TransformManager.prototype.add = function (transform) {
         this.transforms.push(transform);
-        transform.subscribe(this.recalculate);
+        transform.subscribe(function () {
+            this.recalculate();
+            this.notify();
+        }.bind(this));
+        this.recalculate();
         this.notify();
     };
     TransformManager.prototype.delete = function (idx) {
         this.transforms.splice(idx, 1);
+        this.recalculate();
         this.notify();
     };
     TransformManager.prototype.reset = function () {
         this.transforms = [];
+        this.recalculate();
         this.notify();
     };
     TransformManager.prototype.recalculate = function () {

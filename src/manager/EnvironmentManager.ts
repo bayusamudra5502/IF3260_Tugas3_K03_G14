@@ -35,7 +35,7 @@ export class EnvironmentManager extends Listenable {
   }
 
   get viewMatrix() {
-    return this.viewMatrix.matrix;
+    return this.viewTransform.matrix;
   }
 
   get projectionMatrix() {

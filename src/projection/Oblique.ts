@@ -15,23 +15,36 @@ export interface ObliqueOptions {
 }
 
 export class Oblique extends Projector {
-  private xAngle: number = Geometry.angleDegToRad(90);
-  private yAngle: number = Geometry.angleDegToRad(90);
-  private zProjection: number = 0;
+  private xAngleRad: number = Geometry.angleDegToRad(90);
+  private yAngleRad: number = Geometry.angleDegToRad(90);
+  private zProj: number = 0;
+
+  get xAngle() {
+    return Geometry.angleRadToDeg(this.xAngleRad);
+  }
+
+  get yAngle() {
+    return Geometry.angleRadToDeg(this.xAngleRad);
+  }
+
+  get zProjection() {
+    return this.zProj;
+  }
 
   configure(config: ObliqueOptions) {
-    config.xAngle && (this.xAngle = Geometry.angleDegToRad(config.xAngle));
-    config.yAngle && (this.yAngle = Geometry.angleDegToRad(config.yAngle));
-    config.zProjection && (this.zProjection = config.zProjection);
+    config.xAngle && (this.xAngleRad = Geometry.angleDegToRad(config.xAngle));
+    config.yAngle && (this.yAngleRad = Geometry.angleDegToRad(config.yAngle));
+    config.zProjection && (this.zProj = config.zProjection);
+    this.notify();
   }
 
   transform(matrix: Matrix): Matrix {
-    const cotX = Math.tan(0.5 * Math.PI - this.xAngle);
-    const cotY = Math.tan(0.5 * Math.PI - this.yAngle);
+    const cotX = Math.tan(0.5 * Math.PI - this.xAngleRad);
+    const cotY = Math.tan(0.5 * Math.PI - this.yAngleRad);
 
     const obliqueMatrix = [
-      [1, 0, cotX, -this.zProjection * cotX],
-      [0, 1, cotY, -this.zProjection * cotY],
+      [1, 0, cotX, -this.zProj * cotX],
+      [0, 1, cotY, -this.zProj * cotY],
       [0, 0, 1, 0],
       [0, 0, 0, 1],
     ];

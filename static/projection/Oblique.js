@@ -20,22 +20,44 @@ var Oblique = /** @class */ (function (_super) {
     __extends(Oblique, _super);
     function Oblique() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.xAngle = Geometry.angleDegToRad(90);
-        _this.yAngle = Geometry.angleDegToRad(90);
-        _this.zProjection = 0;
+        _this.xAngleRad = Geometry.angleDegToRad(90);
+        _this.yAngleRad = Geometry.angleDegToRad(90);
+        _this.zProj = 0;
         return _this;
     }
+    Object.defineProperty(Oblique.prototype, "xAngle", {
+        get: function () {
+            return Geometry.angleRadToDeg(this.xAngleRad);
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Oblique.prototype, "yAngle", {
+        get: function () {
+            return Geometry.angleRadToDeg(this.xAngleRad);
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Oblique.prototype, "zProjection", {
+        get: function () {
+            return this.zProj;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Oblique.prototype.configure = function (config) {
-        config.xAngle && (this.xAngle = Geometry.angleDegToRad(config.xAngle));
-        config.yAngle && (this.yAngle = Geometry.angleDegToRad(config.yAngle));
-        config.zProjection && (this.zProjection = config.zProjection);
+        config.xAngle && (this.xAngleRad = Geometry.angleDegToRad(config.xAngle));
+        config.yAngle && (this.yAngleRad = Geometry.angleDegToRad(config.yAngle));
+        config.zProjection && (this.zProj = config.zProjection);
+        this.notify();
     };
     Oblique.prototype.transform = function (matrix) {
-        var cotX = Math.tan(0.5 * Math.PI - this.xAngle);
-        var cotY = Math.tan(0.5 * Math.PI - this.yAngle);
+        var cotX = Math.tan(0.5 * Math.PI - this.xAngleRad);
+        var cotY = Math.tan(0.5 * Math.PI - this.yAngleRad);
         var obliqueMatrix = [
-            [1, 0, cotX, -this.zProjection * cotX],
-            [0, 1, cotY, -this.zProjection * cotY],
+            [1, 0, cotX, -this.zProj * cotX],
+            [0, 1, cotY, -this.zProj * cotY],
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ];

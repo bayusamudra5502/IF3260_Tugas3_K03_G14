@@ -48,7 +48,7 @@ var EnvironmentManager = /** @class */ (function (_super) {
     });
     Object.defineProperty(EnvironmentManager.prototype, "viewMatrix", {
         get: function () {
-            return this.viewMatrix.matrix;
+            return this.viewTransform.matrix;
         },
         enumerable: false,
         configurable: true

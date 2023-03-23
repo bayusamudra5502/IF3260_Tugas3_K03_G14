@@ -17,7 +17,8 @@ var RenderEngine = /** @class */ (function () {
             "triangle-strip": this.webglContext.TRIANGLE_STRIP,
             "triangle-fan": this.webglContext.TRIANGLE_FAN,
         };
-        this.webglContext.enable(this.webglContext.DEPTH_TEST | this.webglContext.CULL_FACE);
+        this.webglContext.enable(this.webglContext.DEPTH_TEST);
+        this.webglContext.enable(this.webglContext.CULL_FACE);
     }
     RenderEngine.prototype.clear = function () {
         this.webglContext.clearColor(this.backColor.r, this.backColor.g, this.backColor.b, this.backColor.a);

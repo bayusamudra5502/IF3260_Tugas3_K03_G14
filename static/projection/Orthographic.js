@@ -19,42 +19,85 @@ var Ortographic = /** @class */ (function (_super) {
     __extends(Ortographic, _super);
     function Ortographic() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.left = -1;
-        _this.right = 1;
-        _this.bottom = -1;
-        _this.top = 1;
-        _this.near = 1;
-        _this.far = -1;
+        _this.leftPos = -1;
+        _this.rightPos = 1;
+        _this.bottomPos = -1;
+        _this.topPos = 1;
+        _this.nearPos = 1;
+        _this.farPos = -1;
         return _this;
     }
     Ortographic.prototype.configure = function (options) {
-        options.left && (this.left = options.left);
-        options.right && (this.right = options.right);
-        options.bottom && (this.right = options.bottom);
-        options.up && (this.right = options.up);
-        options.near && (this.right = options.near);
-        options.far && (this.right = options.far);
+        options.left && (this.leftPos = options.left);
+        options.right && (this.rightPos = options.right);
+        options.bottom && (this.bottomPos = options.bottom);
+        options.top && (this.topPos = options.top);
+        options.near && (this.nearPos = options.near);
+        options.far && (this.farPos = options.far);
+        this.notify();
         return this;
     };
+    Object.defineProperty(Ortographic.prototype, "xLeft", {
+        get: function () {
+            return this.leftPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Ortographic.prototype, "xRight", {
+        get: function () {
+            return this.rightPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Ortographic.prototype, "yBottom", {
+        get: function () {
+            return this.bottomPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Ortographic.prototype, "yTop", {
+        get: function () {
+            return this.topPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Ortographic.prototype, "zNear", {
+        get: function () {
+            return this.nearPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(Ortographic.prototype, "zFar", {
+        get: function () {
+            return this.farPos;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Ortographic.prototype.transform = function (matrix) {
         var orthoMatrix = [
             [
-                2 / (this.right - this.left),
+                2 / (this.rightPos - this.leftPos),
                 0,
                 0,
-                (this.left + this.right) / (this.left - this.right),
+                (this.leftPos + this.rightPos) / (this.leftPos - this.rightPos),
             ],
             [
                 0,
-                2 / (this.top - this.bottom),
+                2 / (this.topPos - this.bottomPos),
                 0,
-                (this.bottom + this.top) / (this.bottom - this.top),
+                (this.bottomPos + this.topPos) / (this.bottomPos - this.topPos),
             ],
             [
                 0,
                 0,
-                2 / (this.near - this.far),
-                (this.near + this.far) / (this.near - this.far),
+                2 / (this.nearPos - this.farPos),
+                (this.nearPos + this.farPos) / (this.nearPos - this.farPos),
             ],
             [0, 0, 0, 1],
         ];

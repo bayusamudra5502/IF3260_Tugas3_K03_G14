@@ -9,7 +9,6 @@ export class TransformManager extends Listenable {
 
   constructor() {
     super();
-    this.subscribe(this.recalculate);
   }
 
   get matrix(): Matrix {
@@ -18,18 +17,26 @@ export class TransformManager extends Listenable {
 
   add(transform: Transformable) {
     this.transforms.push(transform);
-    transform.subscribe(this.recalculate);
+    transform.subscribe(
+      function () {
+        this.recalculate();
+        this.notify();
+      }.bind(this)
+    );
 
+    this.recalculate();
     this.notify();
   }
 
   delete(idx: number) {
     this.transforms.splice(idx, 1);
+    this.recalculate();
     this.notify();
   }
 
   reset() {
     this.transforms = [];
+    this.recalculate();
     this.notify();
   }
 

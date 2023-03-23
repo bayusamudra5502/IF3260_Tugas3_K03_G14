@@ -44,8 +44,11 @@
           vec3 light = vec3(lightSource);
 
           vec3 lightVector = light - vec3(vPosition);
+          
+          // float ambientIlluminance = 0.4;
+          // float lightIlluminance = ((dot(normal, normalize(lightVector)) + 1.0) / 2.0 + ambientIlluminance) / (1.0 + ambientIlluminance);
+          float lightIlluminance = 1.0;
 
-          float lightIlluminance = dot(normal, normalize(lightVector));
           gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
       }
     </script>
@@ -59,11 +62,76 @@
     <div class="canvas-container">
       <canvas id="drawing-canvas" width="800" height="800"></canvas>
     </div>
-    <div>
+    <div class="controller-list">
       <div class="controller-container">
         <h2>Load File</h2>
         <input type="file" id="loadfile-input" accept="application/json" />
         <button id="loadfile-submit" type="button">Load</button>
+      </div>
+      <div class="controller-container">
+        <h2>Projection</h2>
+        <div>
+          <label for="projection-type">Projection Type</label>
+          <select id="projection-type">
+            <option value="oblique">Oblique</option>
+            <option value="orthographic">Orthographic</option>
+            <option value="perspective">Perspective</option>
+          </select>
+        </div>
+        <div id="perspective-option" class="hide">
+          <h3>Options</h3>
+          <div class="option">
+            <label>Z Near <input type="number" id="perspective-znear"></label>
+          </div>
+          <div class="option">
+            <label>Z Far <input type="number" id="perspective-zfar"></label>
+          </div>
+          <div class="option">
+            <label>Angle Of View <input type="range" min="1" max="179" value="45" id="perspective-aov"> <span
+                id="perspective-aov-value">45</span> </label>
+          </div>
+        </div>
+        <div id="ortho-option" class="hide">
+          <h3>Options</h3>
+          <div class="option">
+            <label>X left <input type="number" id="ortho-xleft"></label>
+          </div>
+          <div class="option">
+            <label>X Right <input type="number" id="ortho-xright"></label>
+          </div>
+          <div class="option">
+            <label>Y top <input type="number" id="ortho-ytop"></label>
+          </div>
+          <div class="option">
+            <label>Y bottom <input type="number" id="ortho-ybottom"></label>
+          </div>
+          <div class="option">
+            <label>Z Near <input type="number" id="ortho-znear"></label>
+          </div>
+          <div class="option">
+            <label>Z Far <input type="number" id="ortho-zfar"></label>
+          </div>
+        </div>
+        <div id="oblique-option">
+          <h3>Options</h3>
+          <div class="option">
+            <label>X Angle <input type="range" min="1" max="179" value="45" id="oblique-xangle"> <span
+                id="oblique-xangle-value">45</span>
+            </label>
+          </div>
+          <div class="option">
+            <label>Y Angle <input type="range" min="1" max="179" value="45" id="oblique-yangle"> <span
+                id="oblique-yangle-value">45</span>
+            </label>
+          </div>
+          <div class="option">
+            <label>Z Projection <input type="number" id="oblique-zproj"></label>
+          </div>
+        </div>
+      </div>
+      <div class="controller-container">
+        <h2>Loaded Objects</h2>
+        <div id="loaded-container"></div>
       </div>
     </div>
   </div>

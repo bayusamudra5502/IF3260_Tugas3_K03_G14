@@ -47,8 +47,12 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
   const colors = draw.colors;
   const indices = draw.indices ? draw.indices : increaseArray(vertices.length);
 
-  if (indices.length != colors.length) {
-    throw new Error("color and index count is not equal");
+  if (vertices.length != colors.length) {
+    throw new Error("color and vertices count is not equal");
+  }
+
+  if (draw.normals.length != vertices.length) {
+    throw new Error("normal and vertices count is not equal");
   }
 
   const flatVertices = [];

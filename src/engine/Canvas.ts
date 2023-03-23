@@ -49,6 +49,10 @@ export class Canvas {
     this.webglContext.uniform3f(resolutionId, this.boxX, this.boxY, this.boxZ);
   }
 
+  get aspectRatio() {
+    return this.canvas.width / this.canvas.height;
+  }
+
   get boxX(): number {
     return this.maxX;
   }
