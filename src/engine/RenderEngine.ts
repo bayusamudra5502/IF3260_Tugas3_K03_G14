@@ -32,11 +32,13 @@ export default class RenderEngine {
       "triangle-strip": this.webglContext.TRIANGLE_STRIP,
       "triangle-fan": this.webglContext.TRIANGLE_FAN,
     };
+
+    this.webglContext.enable(
+      this.webglContext.DEPTH_TEST | this.webglContext.CULL_FACE
+    );
   }
 
   public clear() {
-    this.webglContext.enable(this.webglContext.DEPTH_TEST);
-
     this.webglContext.clearColor(
       this.backColor.r,
       this.backColor.g,

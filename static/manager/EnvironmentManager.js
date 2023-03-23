@@ -14,21 +14,28 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { ViewTransform } from "../matrix/ViewTransform.js";
+import { Vertex } from "../object/Vertices.js";
 import { Listenable } from "../util/Listenable.js";
 import { ProjectionManager } from "./ProjectionManager.js";
-import { TransformManager } from "./TransformManager.js";
 var EnvironmentManager = /** @class */ (function (_super) {
     __extends(EnvironmentManager, _super);
     function EnvironmentManager() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.sourceLightData = new Vertex(0, 0, 1);
         _this.projectionData = new ProjectionManager();
-        _this.cameraTransform = new TransformManager();
+        _this.viewTransform = new ViewTransform();
         return _this;
     }
-    EnvironmentManager.prototype.configureCamera = function (camera) { };
+    EnvironmentManager.prototype.configureCamera = function (camera) {
+        var _this = this;
+        this.viewTransform.update(camera.matrix);
+        camera.subscribe(function () {
+            _this.viewTransform.update(camera.matrix);
+        });
+    };
     EnvironmentManager.prototype.update = function (options) {
         options.projection && (this.projectionData = options.projection);
-        options.cameraTransform && (this.cameraTransform = options.cameraTransform);
+        options.cameraTransform && this.configureCamera(options.cameraTransform);
         options.sourceLight && (this.sourceLightData = options.sourceLight);
         this.notify();
     };
@@ -41,9 +48,7 @@ var EnvironmentManager = /** @class */ (function (_super) {
     });
     Object.defineProperty(EnvironmentManager.prototype, "viewMatrix", {
         get: function () {
-            var viewMatrix = new ViewTransform();
-            viewMatrix.update(this.cameraTransform.matrix);
-            return viewMatrix.matrix;
+            return this.viewMatrix.matrix;
         },
         enumerable: false,
         configurable: true

@@ -1,19 +1,13 @@
-export class Listenable {
-  private listener: Function[] = [];
-
+export class Listenable extends EventTarget {
   subscribe(func: () => void) {
-    const idx = this.listener.length;
-    this.listener.push(func);
-    return idx;
+    this.addEventListener("update", func);
   }
 
-  unsubscribe(idx: number) {
-    this.listener.splice(idx, 1);
+  unsubscribe(func: () => void) {
+    this.removeEventListener("update", func);
   }
 
   protected notify() {
-    for (const fn of this.listener) {
-      fn();
-    }
+    this.dispatchEvent(new Event("update"));
   }
 }

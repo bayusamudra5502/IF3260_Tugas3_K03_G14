@@ -17,9 +17,9 @@ var RenderEngine = /** @class */ (function () {
             "triangle-strip": this.webglContext.TRIANGLE_STRIP,
             "triangle-fan": this.webglContext.TRIANGLE_FAN,
         };
+        this.webglContext.enable(this.webglContext.DEPTH_TEST | this.webglContext.CULL_FACE);
     }
     RenderEngine.prototype.clear = function () {
-        this.webglContext.enable(this.webglContext.DEPTH_TEST);
         this.webglContext.clearColor(this.backColor.r, this.backColor.g, this.backColor.b, this.backColor.a);
         this.renderCanvas.setViewPort();
         this.webglContext.clear(this.webglContext.COLOR_BUFFER_BIT | this.webglContext.DEPTH_BUFFER_BIT);
