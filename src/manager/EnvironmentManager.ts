@@ -1,26 +1,25 @@
-import { Transform } from "../matrix/Transform";
 import { ViewTransform } from "../matrix/ViewTransform";
-import { Vector } from "../object/Vector";
 import { Vertex } from "../object/Vertices";
 import { Listenable } from "./Listenable";
 import { ProjectionManager } from "./ProjectionManager";
+import { TransformManager } from "./TransformManager";
 
 export interface EnvironmentOptions {
   sourceLight?: Vertex;
-  cameraTransform?: Transform;
+  cameraTransform?: TransformManager;
   projection?: ProjectionManager;
 }
 
 export class EnvironmentManager extends Listenable {
   private sourceLightData: Vertex;
-  private viewTransformData: ViewTransform = new ViewTransform();
   private projectionData: ProjectionManager = new ProjectionManager();
+  private cameraTransform: TransformManager = new TransformManager();
 
   update(options: EnvironmentOptions) {
     options.projection && (this.projectionData = options.projection);
-    options.cameraTransform &&
-      this.viewTransformData.update(options.cameraTransform.matrix);
+    options.cameraTransform && (this.cameraTransform = options.cameraTransform);
     options.sourceLight && (this.sourceLightData = options.sourceLight);
+
     this.notify();
   }
 
@@ -29,7 +28,10 @@ export class EnvironmentManager extends Listenable {
   }
 
   get viewMatrix() {
-    return this.viewTransformData.matrix;
+    const viewMatrix = new ViewTransform();
+    viewMatrix.update(this.cameraTransform.matrix);
+
+    return viewMatrix.matrix;
   }
 
   get projectionMatrix() {

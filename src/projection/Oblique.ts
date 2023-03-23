@@ -1,5 +1,5 @@
 import { Geometry } from "../object/Geometry";
-import { Matrix } from "./Matrix";
+import { Matrix } from "../matrix/Matrix";
 import { Ortographic } from "./Orthographic";
 import { Projector } from "./Projector";
 
@@ -14,7 +14,7 @@ export interface ObliqueOptions {
   zProjection?: number;
 }
 
-export class Oblique implements Projector {
+export class Oblique extends Projector {
   private xAngle: number = Geometry.angleDegToRad(90);
   private yAngle: number = Geometry.angleDegToRad(90);
   private zProjection: number = 0;

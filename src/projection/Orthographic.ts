@@ -1,4 +1,4 @@
-import { Matrix } from "./Matrix";
+import { Matrix } from "../matrix/Matrix";
 import { Projector } from "./Projector";
 
 export interface OrtographicOptions {
@@ -10,7 +10,7 @@ export interface OrtographicOptions {
   far?: number;
 }
 
-export class Ortographic implements Projector {
+export class Ortographic extends Projector {
   private left = -1;
   private right = 1;
   private bottom = -1;

@@ -1,9 +1,10 @@
 import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix";
-import { Projector } from "../projection/Projector";
+import { Transform } from "../matrix/Transform";
+import { Transformable } from "../transform/Transformable";
 import { Listenable } from "../util/Listenable";
 
-export class ProjectionManager extends Listenable {
-  private projectors: Projector[] = [];
+export class TransformManager extends Listenable {
+  private transforms: Transformable[] = [];
   private calculatedMatrix: Matrix = IDENTITY_MATRIX;
 
   constructor() {
@@ -15,28 +16,28 @@ export class ProjectionManager extends Listenable {
     return this.calculatedMatrix;
   }
 
-  add(projector: Projector) {
-    this.projectors.push(projector);
-    projector.subscribe(this.recalculate);
+  add(transform: Transformable) {
+    this.transforms.push(transform);
+    transform.subscribe(this.recalculate);
 
     this.notify();
   }
 
   delete(idx: number) {
-    this.projectors.splice(idx, 1);
+    this.transforms.splice(idx, 1);
     this.notify();
   }
 
   reset() {
-    this.projectors = [];
+    this.transforms = [];
     this.notify();
   }
 
   recalculate() {
     let result = IDENTITY_MATRIX;
 
-    for (const p of this.projectors) {
-      result = p.transform(result);
+    for (const p of this.transforms) {
+      result = Matrix.multiply(p.matrix, result);
     }
 
     this.calculatedMatrix = result;

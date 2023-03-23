@@ -8,7 +8,7 @@ export class ObjectManager extends Listenable {
 
   constructor(
     private env: EnvironmentManager,
-    private mode: DrawMode = "triangle-strip"
+    private mode: DrawMode = "triangle"
   ) {
     super();
   }
@@ -20,6 +20,16 @@ export class ObjectManager extends Listenable {
 
   get(idx: number): Object3D {
     return this.objects[idx];
+  }
+
+  delete(idx: number) {
+    this.objects.splice(idx, 1);
+    this.notify();
+  }
+
+  deleteAll() {
+    this.objects = [];
+    this.notify();
   }
 
   generateDrawInfo(): DrawInfo[] {

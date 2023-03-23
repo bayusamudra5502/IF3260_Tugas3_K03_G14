@@ -1,5 +1,5 @@
 import { Geometry } from "../object/Geometry";
-import { Matrix } from "./Matrix";
+import { Matrix } from "../matrix/Matrix";
 import { Projector } from "./Projector";
 
 export interface PerspectiveOption {
@@ -13,7 +13,7 @@ export interface PerspectiveOption {
   aspectRatio?: number;
 }
 
-export class Perspective implements Projector {
+export class Perspective extends Projector {
   private zNear: number = 1;
   private zFar: number = -1;
   private f: number = 1;

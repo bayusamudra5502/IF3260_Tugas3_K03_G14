@@ -38,15 +38,15 @@ export class Object3D {
         options.normal.push(data.normal[faceIdx]);
       }
 
+      for (let i = 0; i < length; i++) {
+        options.colors.push(Color.load(data.colors[faceIdx][i]));
+      }
+
       length = 0;
       faceIdx++;
     }
 
     options.indicies = increaseArray(options.vertices.length);
-
-    for (const color of data.colors ?? []) {
-      options.colors.push(Color.load(color));
-    }
 
     return new Object3D(data);
   }
