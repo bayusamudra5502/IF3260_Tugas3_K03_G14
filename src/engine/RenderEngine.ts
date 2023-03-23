@@ -83,6 +83,10 @@ export default class RenderEngine {
       this.shaderLocation.lightSource,
       primitive.lightSource
     );
+    this.webglContext.uniform1i(
+      this.shaderLocation.useShading,
+      primitive.useShading
+    );
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(

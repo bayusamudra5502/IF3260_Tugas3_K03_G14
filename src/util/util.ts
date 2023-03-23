@@ -13,6 +13,7 @@ interface EnginePrimitive {
   };
   size: number;
   lightSource: Float32Array;
+  useShading: number;
 }
 
 export function increaseArray(count: number, start: number = 0): number[] {
@@ -95,5 +96,6 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     size: indices.length,
     normals: new Float32Array(flatNormal),
     lightSource: new Float32Array(draw.lightSource.getArray()),
+    useShading: draw.useShading ? 1 : 0,
   };
 }

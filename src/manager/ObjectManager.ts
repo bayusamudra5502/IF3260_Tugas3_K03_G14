@@ -48,6 +48,7 @@ export class ObjectManager extends Listenable {
         },
         normals: obj.normal,
         vertices: obj.vertices,
+        useShading: this.env.useShading,
       };
       result.push(info);
     }

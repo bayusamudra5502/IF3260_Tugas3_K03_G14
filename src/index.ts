@@ -10,6 +10,7 @@ import { ObjectManager } from "./manager/ObjectManager";
 import { Importer } from "./util/Importer";
 import { Oblique } from "./projection/Oblique";
 import { ProjectionUi } from "./ui/ProjectionUi";
+import { LightUi } from "./ui/LightUi";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -29,6 +30,7 @@ function main() {
 
   /* UI Setup */
   const projectionUi = new ProjectionUi(canvas.aspectRatio);
+  const lightUi = new LightUi();
 
   /* Setup manager */
   const rerender = () => {
@@ -44,6 +46,7 @@ function main() {
   envManager.update({
     cameraTransform: cameraManager,
     projection: projManager,
+    useShading: true,
   });
 
   const objManager = new ObjectManager(envManager, "triangle");
@@ -57,6 +60,12 @@ function main() {
     projManager.add(projectionUi.currentProjector);
     rerender();
   });
+  lightUi.subscribe(() => {
+    envManager.update({
+      sourceLight: lightUi.lightPosition,
+      useShading: lightUi.useShading,
+    });
+  });
 
   /* Event listeners */
   document.querySelector("#loadfile-submit").addEventListener("click", () => {
@@ -67,6 +76,7 @@ function main() {
   projManager.subscribe(rerender);
   cameraManager.subscribe(rerender);
   envManager.subscribe(rerender);
+  lightUi.subscribe(rerender);
 }
 
 main();

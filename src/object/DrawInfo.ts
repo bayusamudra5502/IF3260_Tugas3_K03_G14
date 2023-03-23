@@ -23,4 +23,5 @@ export default interface DrawInfo {
   normals: Vector[];
   mode: DrawMode;
   lightSource: Vertex;
+  useShading: boolean;
 }

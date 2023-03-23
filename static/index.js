@@ -9,6 +9,7 @@ import { TransformManager } from "./manager/TransformManager.js";
 import { ObjectManager } from "./manager/ObjectManager.js";
 import { Importer } from "./util/Importer.js";
 import { ProjectionUi } from "./ui/ProjectionUi.js";
+import { LightUi } from "./ui/LightUi.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -18,6 +19,7 @@ function main() {
     engine.clear();
     /* UI Setup */
     var projectionUi = new ProjectionUi(canvas.aspectRatio);
+    var lightUi = new LightUi();
     /* Setup manager */
     var rerender = function () {
         var objs = objManager.generateDrawInfo();
@@ -32,6 +34,7 @@ function main() {
     envManager.update({
         cameraTransform: cameraManager,
         projection: projManager,
+        useShading: true,
     });
     var objManager = new ObjectManager(envManager, "triangle");
     /* Setup importer */
@@ -42,6 +45,12 @@ function main() {
         projManager.add(projectionUi.currentProjector);
         rerender();
     });
+    lightUi.subscribe(function () {
+        envManager.update({
+            sourceLight: lightUi.lightPosition,
+            useShading: lightUi.useShading,
+        });
+    });
     /* Event listeners */
     document.querySelector("#loadfile-submit").addEventListener("click", function () {
         importer.import();
@@ -50,6 +59,7 @@ function main() {
     projManager.subscribe(rerender);
     cameraManager.subscribe(rerender);
     envManager.subscribe(rerender);
+    lightUi.subscribe(rerender);
 }
 main();
 //# sourceMappingURL=index.js.map

@@ -55,6 +55,7 @@ var ObjectManager = /** @class */ (function (_super) {
                 },
                 normals: obj.normal,
                 vertices: obj.vertices,
+                useShading: this.env.useShading,
             };
             result.push(info);
         }

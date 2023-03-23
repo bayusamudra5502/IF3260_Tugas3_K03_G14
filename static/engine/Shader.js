@@ -9,6 +9,7 @@ export var SHADER_ATTR_DEFAULT = {
     resolution: "resolution",
     normal: "normal",
     lightSource: "lightSource",
+    useShading: "useShading",
 };
 var ShaderProgram = /** @class */ (function () {
     function ShaderProgram(vertexShaderId, fragmentShaderId, canvas, shaderAttribute) {
@@ -62,6 +63,7 @@ var ShaderProgram = /** @class */ (function () {
         var color = this.gl.getAttribLocation(this.program, this.shaderAttribute.color);
         var resolution = this.gl.getUniformLocation(this.program, this.shaderAttribute.resolution);
         var lightSource = this.gl.getUniformLocation(this.program, this.shaderAttribute.lightSource);
+        var useShading = this.gl.getUniformLocation(this.program, this.shaderAttribute.useShading);
         var normal = this.gl.getAttribLocation(this.program, this.shaderAttribute.normal);
         return {
             matrix: {
@@ -76,6 +78,7 @@ var ShaderProgram = /** @class */ (function () {
             color: color,
             normal: normal,
             lightSource: lightSource,
+            useShading: useShading,
         };
     };
     return ShaderProgram;

@@ -76,6 +76,7 @@ export function drawableToPrimitive(draw) {
         size: indices.length,
         normals: new Float32Array(flatNormal),
         lightSource: new Float32Array(draw.lightSource.getArray()),
+        useShading: draw.useShading ? 1 : 0,
     };
 }
 //# sourceMappingURL=util.js.map

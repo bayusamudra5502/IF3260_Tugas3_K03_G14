@@ -8,12 +8,14 @@ export interface EnvironmentOptions {
   sourceLight?: Vertex;
   cameraTransform?: TransformManager;
   projection?: ProjectionManager;
+  useShading?: boolean;
 }
 
 export class EnvironmentManager extends Listenable {
   private sourceLightData: Vertex = new Vertex(0, 0, 1);
   private projectionData: ProjectionManager = new ProjectionManager();
   private viewTransform: ViewTransform = new ViewTransform();
+  private useShadingData: boolean = true;
 
   private configureCamera(camera: TransformManager) {
     this.viewTransform.update(camera.matrix);
@@ -26,6 +28,8 @@ export class EnvironmentManager extends Listenable {
     options.projection && (this.projectionData = options.projection);
     options.cameraTransform && this.configureCamera(options.cameraTransform);
     options.sourceLight && (this.sourceLightData = options.sourceLight);
+    options.useShading != undefined &&
+      (this.useShadingData = options.useShading);
 
     this.notify();
   }
@@ -40,5 +44,9 @@ export class EnvironmentManager extends Listenable {
 
   get projectionMatrix() {
     return this.projectionData.matrix;
+  }
+
+  get useShading() {
+    return this.useShadingData;
   }
 }

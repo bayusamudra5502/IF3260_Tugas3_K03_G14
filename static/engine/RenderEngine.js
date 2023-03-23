@@ -45,6 +45,7 @@ var RenderEngine = /** @class */ (function () {
         this.bind(this.shaderLocation.normal, this.buffer.get("normal"), 4);
         // Lightsource bind
         this.webglContext.uniform4fv(this.shaderLocation.lightSource, primitive.lightSource);
+        this.webglContext.uniform1i(this.shaderLocation.useShading, primitive.useShading);
         // Transformation Matrix
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.transform, false, primitive.matrix.transform);
         this.webglContext.uniformMatrix4fv(this.shaderLocation.matrix.view, false, primitive.matrix.view);

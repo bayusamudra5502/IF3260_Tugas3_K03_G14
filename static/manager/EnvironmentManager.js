@@ -24,6 +24,7 @@ var EnvironmentManager = /** @class */ (function (_super) {
         _this.sourceLightData = new Vertex(0, 0, 1);
         _this.projectionData = new ProjectionManager();
         _this.viewTransform = new ViewTransform();
+        _this.useShadingData = true;
         return _this;
     }
     EnvironmentManager.prototype.configureCamera = function (camera) {
@@ -37,6 +38,8 @@ var EnvironmentManager = /** @class */ (function (_super) {
         options.projection && (this.projectionData = options.projection);
         options.cameraTransform && this.configureCamera(options.cameraTransform);
         options.sourceLight && (this.sourceLightData = options.sourceLight);
+        options.useShading != undefined &&
+            (this.useShadingData = options.useShading);
         this.notify();
     };
     Object.defineProperty(EnvironmentManager.prototype, "sourceLight", {
@@ -56,6 +59,13 @@ var EnvironmentManager = /** @class */ (function (_super) {
     Object.defineProperty(EnvironmentManager.prototype, "projectionMatrix", {
         get: function () {
             return this.projectionData.matrix;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(EnvironmentManager.prototype, "useShading", {
+        get: function () {
+            return this.useShadingData;
         },
         enumerable: false,
         configurable: true
