@@ -46,7 +46,8 @@
           vec3 lightVector = light - vec3(vPosition);
           
           float ambientIlluminance = 0.4;
-          float lightIlluminance = (abs(dot(normal, normalize(lightVector))) / 2.0 + ambientIlluminance) / (1.0 + ambientIlluminance);
+          float dotValue = dot(normal, normalize(lightVector));
+          float lightIlluminance = dotValue * (1.0 - ambientIlluminance) + ambientIlluminance;
           //float lightIlluminance = 1.0;
 
           gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
