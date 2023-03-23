@@ -1,5 +1,5 @@
-import { Geometry } from "../object/Geometry.js";
-import { Matrix } from "./Matrix.js";
+import { Geometry } from "../object/Geometry.js.js";
+import { Matrix } from "./Matrix.js.js";
 var Perspective = /** @class */ (function () {
     function Perspective() {
         this.zNear = 1;

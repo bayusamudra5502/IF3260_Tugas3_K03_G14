@@ -13,11 +13,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { Listenable } from "./Listenable.js";
+import { Listenable } from "../util/Listenable.js";
 var ObjectManager = /** @class */ (function (_super) {
     __extends(ObjectManager, _super);
     function ObjectManager(env, mode) {
-        if (mode === void 0) { mode = "triangle-strip"; }
+        if (mode === void 0) { mode = "triangle"; }
         var _this = _super.call(this) || this;
         _this.env = env;
         _this.mode = mode;
@@ -30,6 +30,14 @@ var ObjectManager = /** @class */ (function (_super) {
     };
     ObjectManager.prototype.get = function (idx) {
         return this.objects[idx];
+    };
+    ObjectManager.prototype.delete = function (idx) {
+        this.objects.splice(idx, 1);
+        this.notify();
+    };
+    ObjectManager.prototype.deleteAll = function () {
+        this.objects = [];
+        this.notify();
     };
     ObjectManager.prototype.generateDrawInfo = function () {
         var result = [];

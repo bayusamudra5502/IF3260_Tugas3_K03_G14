@@ -7,7 +7,7 @@ var Object3D = /** @class */ (function () {
         this.options = options;
     }
     Object3D.load = function (json) {
-        var _a, _b;
+        var _a;
         var data = JSON.parse(json);
         var options = {
             colors: [],
@@ -18,24 +18,23 @@ var Object3D = /** @class */ (function () {
         };
         var length = 0;
         var faceIdx = 0;
-        for (var _i = 0, _c = (_a = data.vertices) !== null && _a !== void 0 ? _a : []; _i < _c.length; _i++) {
-            var face = _c[_i];
-            for (var _d = 0, face_1 = face; _d < face_1.length; _d++) {
-                var vertex = face_1[_d];
+        for (var _i = 0, _b = (_a = data.vertices) !== null && _a !== void 0 ? _a : []; _i < _b.length; _i++) {
+            var face = _b[_i];
+            for (var _c = 0, face_1 = face; _c < face_1.length; _c++) {
+                var vertex = face_1[_c];
                 options.vertices.push(Vertex.load(vertex));
                 length++;
             }
             for (var i = 0; i < length; i++) {
                 options.normal.push(data.normal[faceIdx]);
             }
+            for (var i = 0; i < length; i++) {
+                options.colors.push(Color.load(data.colors[faceIdx][i]));
+            }
             length = 0;
             faceIdx++;
         }
         options.indicies = increaseArray(options.vertices.length);
-        for (var _e = 0, _f = (_b = data.colors) !== null && _b !== void 0 ? _b : []; _e < _f.length; _e++) {
-            var color = _f[_e];
-            options.colors.push(Color.load(color));
-        }
         return new Object3D(data);
     };
     Object.defineProperty(Object3D.prototype, "colors", {

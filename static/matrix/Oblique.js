@@ -1,5 +1,5 @@
-import { Geometry } from "../object/Geometry.js";
-import { Matrix } from "./Matrix.js";
+import { Geometry } from "../object/Geometry.js.js";
+import { Matrix } from "./Matrix.js.js";
 var Oblique = /** @class */ (function () {
     function Oblique() {
         this.xAngle = Geometry.angleDegToRad(90);

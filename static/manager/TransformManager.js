@@ -13,46 +13,46 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { IDENTITY_MATRIX } from "../matrix/Matrix.js";
+import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix.js";
 import { Listenable } from "../util/Listenable.js";
-var ProjectionManager = /** @class */ (function (_super) {
-    __extends(ProjectionManager, _super);
-    function ProjectionManager() {
+var TransformManager = /** @class */ (function (_super) {
+    __extends(TransformManager, _super);
+    function TransformManager() {
         var _this = _super.call(this) || this;
-        _this.projectors = [];
+        _this.transforms = [];
         _this.calculatedMatrix = IDENTITY_MATRIX;
         _this.subscribe(_this.recalculate);
         return _this;
     }
-    Object.defineProperty(ProjectionManager.prototype, "matrix", {
+    Object.defineProperty(TransformManager.prototype, "matrix", {
         get: function () {
             return this.calculatedMatrix;
         },
         enumerable: false,
         configurable: true
     });
-    ProjectionManager.prototype.add = function (projector) {
-        this.projectors.push(projector);
-        projector.subscribe(this.recalculate);
+    TransformManager.prototype.add = function (transform) {
+        this.transforms.push(transform);
+        transform.subscribe(this.recalculate);
         this.notify();
     };
-    ProjectionManager.prototype.delete = function (idx) {
-        this.projectors.splice(idx, 1);
+    TransformManager.prototype.delete = function (idx) {
+        this.transforms.splice(idx, 1);
         this.notify();
     };
-    ProjectionManager.prototype.reset = function () {
-        this.projectors = [];
+    TransformManager.prototype.reset = function () {
+        this.transforms = [];
         this.notify();
     };
-    ProjectionManager.prototype.recalculate = function () {
+    TransformManager.prototype.recalculate = function () {
         var result = IDENTITY_MATRIX;
-        for (var _i = 0, _a = this.projectors; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.transforms; _i < _a.length; _i++) {
             var p = _a[_i];
-            result = p.transform(result);
+            result = Matrix.multiply(p.matrix, result);
         }
         this.calculatedMatrix = result;
     };
-    return ProjectionManager;
+    return TransformManager;
 }(Listenable));
-export { ProjectionManager };
-//# sourceMappingURL=ProjectionManager.js.map
+export { TransformManager };
+//# sourceMappingURL=TransformManager.js.map

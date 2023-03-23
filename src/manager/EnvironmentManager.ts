@@ -1,6 +1,6 @@
 import { ViewTransform } from "../matrix/ViewTransform";
 import { Vertex } from "../object/Vertices";
-import { Listenable } from "./Listenable";
+import { Listenable } from "../util/Listenable";
 import { ProjectionManager } from "./ProjectionManager";
 import { TransformManager } from "./TransformManager";
 
@@ -14,6 +14,8 @@ export class EnvironmentManager extends Listenable {
   private sourceLightData: Vertex;
   private projectionData: ProjectionManager = new ProjectionManager();
   private cameraTransform: TransformManager = new TransformManager();
+
+  private configureCamera(camera: TransformManager) {}
 
   update(options: EnvironmentOptions) {
     options.projection && (this.projectionData = options.projection);

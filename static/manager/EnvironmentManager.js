@@ -14,20 +14,21 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { ViewTransform } from "../matrix/ViewTransform.js";
-import { Listenable } from "./Listenable.js";
+import { Listenable } from "../util/Listenable.js";
 import { ProjectionManager } from "./ProjectionManager.js";
+import { TransformManager } from "./TransformManager.js";
 var EnvironmentManager = /** @class */ (function (_super) {
     __extends(EnvironmentManager, _super);
     function EnvironmentManager() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.viewTransformData = new ViewTransform();
         _this.projectionData = new ProjectionManager();
+        _this.cameraTransform = new TransformManager();
         return _this;
     }
+    EnvironmentManager.prototype.configureCamera = function (camera) { };
     EnvironmentManager.prototype.update = function (options) {
         options.projection && (this.projectionData = options.projection);
-        options.cameraTransform &&
-            this.viewTransformData.update(options.cameraTransform.matrix);
+        options.cameraTransform && (this.cameraTransform = options.cameraTransform);
         options.sourceLight && (this.sourceLightData = options.sourceLight);
         this.notify();
     };
@@ -40,7 +41,9 @@ var EnvironmentManager = /** @class */ (function (_super) {
     });
     Object.defineProperty(EnvironmentManager.prototype, "viewMatrix", {
         get: function () {
-            return this.viewTransformData.matrix;
+            var viewMatrix = new ViewTransform();
+            viewMatrix.update(this.cameraTransform.matrix);
+            return viewMatrix.matrix;
         },
         enumerable: false,
         configurable: true
