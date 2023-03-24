@@ -134,5 +134,10 @@ export default class RenderEngine {
       this.webglContext.UNSIGNED_SHORT,
       0
     );
+
+    const err = this.webglContext.getError();
+    if (err != 0) {
+      throw new Error(`something happened when rendering: error code ${err}`);
+    }
   }
 }

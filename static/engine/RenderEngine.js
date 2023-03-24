@@ -61,6 +61,10 @@ var RenderEngine = /** @class */ (function () {
             throw new Error("unknown draw mode");
         }
         this.webglContext.drawElements(type, primitive.size, this.webglContext.UNSIGNED_SHORT, 0);
+        var err = this.webglContext.getError();
+        if (err != 0) {
+            throw new Error("something happened when rendering: error code ".concat(err));
+        }
     };
     return RenderEngine;
 }());
