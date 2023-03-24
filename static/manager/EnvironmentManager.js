@@ -14,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { ViewTransform } from "../matrix/ViewTransform.js";
+import { Color } from "../object/Color.js";
 import { Vertex } from "../object/Vertices.js";
 import { Listenable } from "../util/Listenable.js";
 import { ProjectionManager } from "./ProjectionManager.js";
@@ -25,6 +26,7 @@ var EnvironmentManager = /** @class */ (function (_super) {
         _this.projectionData = new ProjectionManager();
         _this.viewTransform = new ViewTransform();
         _this.useShadingData = true;
+        _this.sourceLightColor = Color.hex("#FFFFFF");
         return _this;
     }
     EnvironmentManager.prototype.configureCamera = function (camera) {
@@ -40,9 +42,18 @@ var EnvironmentManager = /** @class */ (function (_super) {
         options.sourceLight && (this.sourceLightData = options.sourceLight);
         options.useShading != undefined &&
             (this.useShadingData = options.useShading);
+        options.sourceLightColor &&
+            (this.sourceLightColor = options.sourceLightColor);
         this.notify();
     };
-    Object.defineProperty(EnvironmentManager.prototype, "sourceLight", {
+    Object.defineProperty(EnvironmentManager.prototype, "lightColor", {
+        get: function () {
+            return this.sourceLightColor;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(EnvironmentManager.prototype, "lightPosition", {
         get: function () {
             return this.sourceLightData;
         },

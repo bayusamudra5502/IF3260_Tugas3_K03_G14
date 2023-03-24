@@ -1,3 +1,5 @@
+import { padding } from "../util/util";
+
 export class Color {
   constructor(
     public r: number = 0,
@@ -26,5 +28,13 @@ export class Color {
 
   public getArray(): number[] {
     return [this.r, this.g, this.b, this.a];
+  }
+
+  public getHex() {
+    const r = padding((this.r * 255).toString(16));
+    const g = padding((this.g * 255).toString(16));
+    const b = padding((this.b * 255).toString(16));
+
+    return `#${r}${g}${b}`;
   }
 }

@@ -64,6 +64,7 @@ function main() {
     envManager.update({
       sourceLight: lightUi.lightPosition,
       useShading: lightUi.useShading,
+      sourceLightColor: lightUi.lightColor,
     });
   });
 

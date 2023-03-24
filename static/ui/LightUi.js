@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { Color } from "../object/Color.js";
 import { Vertex } from "../object/Vertices.js";
 import { Listenable } from "../util/Listenable.js";
 var LightUi = /** @class */ (function (_super) {
@@ -23,6 +24,7 @@ var LightUi = /** @class */ (function (_super) {
         _this.options = options;
         _this.currentUseShading = options.defaultUseShading;
         _this.currentLightPosition = Vertex.load(options.defaultPosition.getArray());
+        _this.currentLightColor = Color.load(options.defaultColor.getArray());
         _this.bind();
         _this.update();
         return _this;
@@ -41,25 +43,36 @@ var LightUi = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(LightUi.prototype, "lightColor", {
+        get: function () {
+            return this.currentLightColor;
+        },
+        enumerable: false,
+        configurable: true
+    });
     LightUi.prototype.update = function () {
-        this.setLocationValue();
+        this.setValue();
         this.setLocationState();
     };
-    LightUi.prototype.setLocationValue = function () {
+    LightUi.prototype.setValue = function () {
         var lightX = document.getElementById(this.options.idLightX);
         var lightY = document.getElementById(this.options.idLightY);
         var lightZ = document.getElementById(this.options.idLightZ);
+        var lightColor = document.getElementById(this.options.idLightColor);
         lightX.value = "".concat(this.currentLightPosition.x);
         lightY.value = "".concat(this.currentLightPosition.y);
         lightZ.value = "".concat(this.currentLightPosition.z);
+        lightColor.value = this.currentLightColor.getHex();
     };
     LightUi.prototype.setLocationState = function () {
         var lightX = document.getElementById(this.options.idLightX);
         var lightY = document.getElementById(this.options.idLightY);
         var lightZ = document.getElementById(this.options.idLightZ);
+        var lightColor = document.getElementById(this.options.idLightColor);
         lightX.disabled = !this.currentUseShading;
         lightY.disabled = !this.currentUseShading;
         lightZ.disabled = !this.currentUseShading;
+        lightColor.disabled = !this.currentUseShading;
     };
     LightUi.prototype.bind = function () {
         var _this = this;
@@ -67,6 +80,7 @@ var LightUi = /** @class */ (function (_super) {
         var lightX = document.getElementById(this.options.idLightX);
         var lightY = document.getElementById(this.options.idLightY);
         var lightZ = document.getElementById(this.options.idLightZ);
+        var lightColor = document.getElementById(this.options.idLightColor);
         checkbox.onchange = function () {
             _this.currentUseShading = checkbox.checked;
             _this.update();
@@ -87,6 +101,11 @@ var LightUi = /** @class */ (function (_super) {
             !Number.isNaN(value) && (_this.currentLightPosition.z = value);
             _this.notify();
         };
+        lightColor.onchange = function () {
+            var value = lightColor.value;
+            _this.currentLightColor = Color.hex(value);
+            _this.notify();
+        };
     };
     return LightUi;
 }(Listenable));
@@ -96,7 +115,9 @@ export var DEFAULT_LIGHTUI_OPTIONS = {
     idLightX: "light-x",
     idLightY: "light-y",
     idLightZ: "light-z",
+    idLightColor: "light-color",
     defaultUseShading: true,
     defaultPosition: new Vertex(0, 0, 1),
+    defaultColor: Color.hex("#FFFFFF"),
 };
 //# sourceMappingURL=LightUi.js.map

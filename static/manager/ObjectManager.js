@@ -46,7 +46,7 @@ var ObjectManager = /** @class */ (function (_super) {
             var info = {
                 colors: obj.colors,
                 indices: obj.indicies,
-                lightSource: this.env.sourceLight,
+                lightSource: this.env.lightPosition,
                 mode: this.mode,
                 matrix: {
                     projection: this.env.projectionMatrix,
@@ -56,6 +56,7 @@ var ObjectManager = /** @class */ (function (_super) {
                 normals: obj.normal,
                 vertices: obj.vertices,
                 useShading: this.env.useShading,
+                lightColor: this.env.lightColor,
             };
             result.push(info);
         }

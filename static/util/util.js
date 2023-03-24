@@ -1,4 +1,9 @@
 import { Matrix } from "../matrix/Matrix.js";
+export function padding(str, length, pad) {
+    if (length === void 0) { length = 2; }
+    if (pad === void 0) { pad = "0"; }
+    return pad.repeat(length - str.length) + str;
+}
 export function increaseArray(count, start) {
     if (start === void 0) { start = 0; }
     var result = [];
@@ -76,6 +81,7 @@ export function drawableToPrimitive(draw) {
         size: indices.length,
         normals: new Float32Array(flatNormal),
         lightSource: new Float32Array(draw.lightSource.getArray()),
+        lightColor: new Float32Array(draw.lightColor.getArray()),
         useShading: draw.useShading ? 1 : 0,
     };
 }

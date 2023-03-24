@@ -38,6 +38,7 @@
       varying vec4 vPosition;
 
       uniform vec4 lightSource;
+      uniform vec4 lightColor;
       uniform int useShading;
   
       void main(void) {
@@ -48,11 +49,14 @@
             vec3 lightVector = light - vec3(vPosition);
             float radius = dot(lightVector, lightVector) / 20.0;
 
-            float ambientIlluminance = 0.15;
-            float dotValue = dot(normal, normalize(lightVector)) / radius;
-            float lightIlluminance = dotValue * (1.0 - ambientIlluminance) + ambientIlluminance;
+            float ambientIlluminance = 0.1;
+            float dotValue = dot(normal, normalize(lightVector));
+            float factor = sign(dotValue) + 1.0;
+
+            float lightValue = min(abs(dotValue) / radius, 1.0);
+            float lightIlluminance = lightValue * factor * (1.0 - ambientIlluminance) + ambientIlluminance;
   
-            gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
+            gl_FragColor = vec4(lightIlluminance * lightColor.xyz * vColor.xyz, 1.0);
           } else {
             gl_FragColor = vec4(vColor.xyz, 1.0);
           }
@@ -142,6 +146,9 @@
         </div>
         <div>
           <h3>Location</h3>
+          <div class="option">
+            <label>x <input type="color" id="light-color"></label>
+          </div>
           <div class="option">
             <label>x <input type="number" id="light-x" step="0.05"></label>
           </div>

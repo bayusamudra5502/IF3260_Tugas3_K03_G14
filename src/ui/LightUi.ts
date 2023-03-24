@@ -1,15 +1,18 @@
+import { Color } from "../object/Color";
 import { Vertex } from "../object/Vertices";
 import { Listenable } from "../util/Listenable";
 
 export class LightUi extends Listenable {
   private currentUseShading: boolean;
   private currentLightPosition: Vertex;
+  private currentLightColor: Color;
 
   constructor(private options: LightUiOptions = DEFAULT_LIGHTUI_OPTIONS) {
     super();
 
     this.currentUseShading = options.defaultUseShading;
     this.currentLightPosition = Vertex.load(options.defaultPosition.getArray());
+    this.currentLightColor = Color.load(options.defaultColor.getArray());
 
     this.bind();
     this.update();
@@ -23,12 +26,16 @@ export class LightUi extends Listenable {
     return this.currentLightPosition;
   }
 
+  get lightColor() {
+    return this.currentLightColor;
+  }
+
   private update() {
-    this.setLocationValue();
+    this.setValue();
     this.setLocationState();
   }
 
-  private setLocationValue() {
+  private setValue() {
     const lightX = document.getElementById(
       this.options.idLightX
     ) as HTMLInputElement;
@@ -38,10 +45,14 @@ export class LightUi extends Listenable {
     const lightZ = document.getElementById(
       this.options.idLightZ
     ) as HTMLInputElement;
+    const lightColor = document.getElementById(
+      this.options.idLightColor
+    ) as HTMLInputElement;
 
     lightX.value = `${this.currentLightPosition.x}`;
     lightY.value = `${this.currentLightPosition.y}`;
     lightZ.value = `${this.currentLightPosition.z}`;
+    lightColor.value = this.currentLightColor.getHex();
   }
 
   private setLocationState() {
@@ -54,10 +65,14 @@ export class LightUi extends Listenable {
     const lightZ = document.getElementById(
       this.options.idLightZ
     ) as HTMLInputElement;
+    const lightColor = document.getElementById(
+      this.options.idLightColor
+    ) as HTMLInputElement;
 
     lightX.disabled = !this.currentUseShading;
     lightY.disabled = !this.currentUseShading;
     lightZ.disabled = !this.currentUseShading;
+    lightColor.disabled = !this.currentUseShading;
   }
 
   private bind() {
@@ -72,6 +87,9 @@ export class LightUi extends Listenable {
     ) as HTMLInputElement;
     const lightZ = document.getElementById(
       this.options.idLightZ
+    ) as HTMLInputElement;
+    const lightColor = document.getElementById(
+      this.options.idLightColor
     ) as HTMLInputElement;
 
     checkbox.onchange = () => {
@@ -97,6 +115,12 @@ export class LightUi extends Listenable {
       !Number.isNaN(value) && (this.currentLightPosition.z = value);
       this.notify();
     };
+
+    lightColor.onchange = () => {
+      const value = lightColor.value;
+      this.currentLightColor = Color.hex(value);
+      this.notify();
+    };
   }
 }
 
@@ -105,9 +129,11 @@ export interface LightUiOptions {
   idLightX: string;
   idLightY: string;
   idLightZ: string;
+  idLightColor: string;
 
   defaultUseShading: boolean;
   defaultPosition: Vertex;
+  defaultColor: Color;
 }
 
 export const DEFAULT_LIGHTUI_OPTIONS: LightUiOptions = {
@@ -115,7 +141,9 @@ export const DEFAULT_LIGHTUI_OPTIONS: LightUiOptions = {
   idLightX: "light-x",
   idLightY: "light-y",
   idLightZ: "light-z",
+  idLightColor: "light-color",
 
   defaultUseShading: true,
   defaultPosition: new Vertex(0, 0, 1),
+  defaultColor: Color.hex("#FFFFFF"),
 };

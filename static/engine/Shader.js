@@ -9,6 +9,7 @@ export var SHADER_ATTR_DEFAULT = {
     resolution: "resolution",
     normal: "normal",
     lightSource: "lightSource",
+    lightColor: "lightColor",
     useShading: "useShading",
 };
 var ShaderProgram = /** @class */ (function () {
@@ -63,6 +64,7 @@ var ShaderProgram = /** @class */ (function () {
         var color = this.gl.getAttribLocation(this.program, this.shaderAttribute.color);
         var resolution = this.gl.getUniformLocation(this.program, this.shaderAttribute.resolution);
         var lightSource = this.gl.getUniformLocation(this.program, this.shaderAttribute.lightSource);
+        var lightColor = this.gl.getUniformLocation(this.program, this.shaderAttribute.lightColor);
         var useShading = this.gl.getUniformLocation(this.program, this.shaderAttribute.useShading);
         var normal = this.gl.getAttribLocation(this.program, this.shaderAttribute.normal);
         return {
@@ -78,6 +80,7 @@ var ShaderProgram = /** @class */ (function () {
             color: color,
             normal: normal,
             lightSource: lightSource,
+            lightColor: lightColor,
             useShading: useShading,
         };
     };

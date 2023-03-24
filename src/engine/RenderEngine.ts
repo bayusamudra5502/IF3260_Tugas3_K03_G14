@@ -83,6 +83,10 @@ export default class RenderEngine {
       this.shaderLocation.lightSource,
       primitive.lightSource
     );
+    this.webglContext.uniform4fv(
+      this.shaderLocation.lightColor,
+      primitive.lightColor
+    );
     this.webglContext.uniform1i(
       this.shaderLocation.useShading,
       primitive.useShading

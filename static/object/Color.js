@@ -1,3 +1,4 @@
+import { padding } from "../util/util.js";
 var Color = /** @class */ (function () {
     function Color(r, g, b, a) {
         if (r === void 0) { r = 0; }
@@ -20,6 +21,12 @@ var Color = /** @class */ (function () {
     };
     Color.prototype.getArray = function () {
         return [this.r, this.g, this.b, this.a];
+    };
+    Color.prototype.getHex = function () {
+        var r = padding((this.r * 255).toString(16));
+        var g = padding((this.g * 255).toString(16));
+        var b = padding((this.b * 255).toString(16));
+        return "#".concat(r).concat(g).concat(b);
     };
     return Color;
 }());
