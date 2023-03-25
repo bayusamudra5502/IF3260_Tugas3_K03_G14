@@ -12,14 +12,17 @@ export class Color {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
       color.toLowerCase()
     );
-    return result
-      ? new Color(
-          parseInt(result[1], 16) / 255,
-          parseInt(result[2], 16) / 255,
-          parseInt(result[3], 16) / 255,
-          1
-        )
-      : null;
+
+    if (!result) {
+      throw new Error(`color ${color} is invalid`);
+    }
+
+    return new Color(
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255,
+      1
+    );
   }
 
   static load(colors: number[]) {

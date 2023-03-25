@@ -1,3 +1,4 @@
+import { Geometry } from "../object/Geometry";
 import { m4 } from "../util/camHelper";
 import { Matrix } from "./Matrix";
 import { Transform } from "./Transform";
@@ -31,7 +32,12 @@ export class ViewTransform extends Transform {
     console.log(radius, xAngle, yAngle, zAngle);
 
     let viewMatrix = m4.identity();
-    viewMatrix = m4.rotate(viewMatrix, xAngle, yAngle, zAngle);
+    viewMatrix = m4.rotate(
+      viewMatrix,
+      Geometry.angleDegToRad(xAngle),
+      Geometry.angleDegToRad(yAngle),
+      Geometry.angleDegToRad(zAngle)
+    );
     viewMatrix = m4.translate(viewMatrix, 0, 0, radius);
     viewMatrix = m4.lookAt(
       [viewMatrix[12], viewMatrix[13], viewMatrix[14]],
