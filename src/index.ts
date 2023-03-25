@@ -45,7 +45,7 @@ function main() {
       for (const obj of objs) {
         engine.render(obj);
       }
-    },0);
+    }, 0);
   };
 
   const projManager = new ProjectionManager();
@@ -142,7 +142,41 @@ function main() {
     importer.import();
     resetButton.removeAttribute("disabled");
     rerenderButton.removeAttribute("disabled");
+    requestAnimationFrame(loop);
   });
+
+  let angle = 0;
+  const rotationX = document.querySelector("#rotation-x") as HTMLInputElement;
+  const rotationY = document.querySelector("#rotation-y") as HTMLInputElement;
+  const rotationZ = document.querySelector("#rotation-z") as HTMLInputElement;
+
+  const isRotationX = document.querySelector(
+    "#check-rotate-x"
+  ) as HTMLInputElement;
+  const isRotationY = document.querySelector(
+    "#check-rotate-y"
+  ) as HTMLInputElement;
+  const isRotationZ = document.querySelector(
+    "#check-rotate-z"
+  ) as HTMLInputElement;
+
+  const loop = () => {
+    angle = (angle + 0.25) % 360;
+    if (isRotationX.checked) {
+      rotationX.value = angle.toString();
+      rotationX.dispatchEvent(new Event("change"));
+    }
+    if (isRotationY.checked) {
+      rotationY.value = angle.toString();
+      rotationY.dispatchEvent(new Event("change"));
+    }
+    if (isRotationZ.checked) {
+      rotationZ.value = angle.toString();
+      rotationZ.dispatchEvent(new Event("change"));
+    }
+
+    requestAnimationFrame(loop);
+  };
 }
 
 main();
