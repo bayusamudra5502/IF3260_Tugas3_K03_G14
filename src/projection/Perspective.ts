@@ -1,6 +1,7 @@
 import { Geometry } from "../object/Geometry";
 import { Matrix } from "../matrix/Matrix";
 import { Projector } from "./Projector";
+import { Translation } from "../transform/Translation";
 
 export interface PerspectiveOption {
   zNear?: number;
@@ -14,7 +15,7 @@ export interface PerspectiveOption {
 }
 
 export class Perspective extends Projector {
-  private zNear: number = 1;
+  private zNear: number = 1.05;
   private zFar: number = -1;
   private f: number = 1;
   private aspectRatio: number = 1;
@@ -46,8 +47,8 @@ export class Perspective extends Projector {
   }
 
   transform(matrix: Matrix): Matrix {
-    const near = this.zNear;
-    const far = this.zFar;
+    const near = this.zNear - 1;
+    const far = this.zFar - 1;
 
     const rangeInverse = 1 / (near - far);
 
@@ -58,6 +59,14 @@ export class Perspective extends Projector {
       [0, 0, -1, 0],
     ];
 
-    return Matrix.multiply(perspectiveMatrix, matrix);
+    const moveCamera = new Translation();
+    moveCamera.configure({
+      z: -2,
+    });
+
+    return Matrix.multiply(
+      perspectiveMatrix,
+      Matrix.multiply(moveCamera.matrix, matrix)
+    );
   }
 }
