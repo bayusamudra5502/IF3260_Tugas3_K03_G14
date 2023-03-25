@@ -8,23 +8,19 @@ export interface EnvironmentOptions {
   sourceLight?: Vertex;
   cameraTransform?: TransformManager;
   projection?: ProjectionManager;
+
+  viewTransform?: ViewTransform;
 }
 
 export class EnvironmentManager extends Listenable {
   private sourceLightData: Vertex = new Vertex(0, 0, 1);
   private projectionData: ProjectionManager = new ProjectionManager();
-  private viewTransform: ViewTransform = new ViewTransform();
-
-  private configureCamera(camera: TransformManager) {
-    this.viewTransform.update(camera.matrix);
-    camera.subscribe(() => {
-      this.viewTransform.update(camera.matrix);
-    });
-  }
+  private viewTransform: ViewTransform;
 
   update(options: EnvironmentOptions) {
     options.projection && (this.projectionData = options.projection);
-    options.cameraTransform && this.configureCamera(options.cameraTransform);
+    // options.cameraTransform && this.configureCamera(options.cameraTransform);
+    options.viewTransform && (this.viewTransform = options.viewTransform);
     options.sourceLight && (this.sourceLightData = options.sourceLight);
 
     this.notify();

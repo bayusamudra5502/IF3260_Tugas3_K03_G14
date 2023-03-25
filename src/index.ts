@@ -2,14 +2,14 @@ import { Buffer } from "./engine/Buffer";
 import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
-import { Color } from "./object/Color";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
+import { ObjectManager } from "./manager/ObjectManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
-import { ObjectManager } from "./manager/ObjectManager";
-import { Importer } from "./util/Importer";
-import { Oblique } from "./projection/Oblique";
+import { ViewTransform } from "./matrix/ViewTransform";
+import { Color } from "./object/Color";
 import { ProjectionUi } from "./ui/ProjectionUi";
+import { Importer } from "./util/Importer";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -40,9 +40,11 @@ function main() {
 
   const projManager = new ProjectionManager();
   const cameraManager = new TransformManager();
+  const viewTransform = new ViewTransform();
   const envManager = new EnvironmentManager();
   envManager.update({
     cameraTransform: cameraManager,
+    viewTransform: viewTransform,
     projection: projManager,
   });
 
@@ -66,6 +68,7 @@ function main() {
 
   projManager.subscribe(rerender);
   cameraManager.subscribe(rerender);
+  viewTransform.subscribe(rerender);
   envManager.subscribe(rerender);
 }
 
