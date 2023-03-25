@@ -1,8 +1,47 @@
 /* a 4x4 Matrix */
 export class Matrix extends Array {
   static inverse(matrix: Matrix): Matrix {
-    // TODO kawan
-    return matrix;
+    // create a copy of the matrix
+    const copy = matrix.map((row) => [...row]);
+    const result = IDENTITY_MATRIX.map((row) => [...row]);
+
+    // loop through each row
+    for (let i = 0; i < copy.length; i++) {
+      // find the row with the largest first element
+      let largest = i;
+      for (let j = i + 1; j < copy.length; j++) {
+        if (Math.abs(copy[j][i]) > Math.abs(copy[largest][i])) {
+          largest = j;
+        }
+      }
+
+      // swap the rows
+      [copy[i], copy[largest]] = [copy[largest], copy[i]];
+      [result[i], result[largest]] = [result[largest], result[i]];
+
+      // divide the row by the first element
+      const divisor = copy[i][i];
+      for (let j = 0; j < copy.length; j++) {
+        copy[i][j] /= divisor;
+        result[i][j] /= divisor;
+      }
+
+      // subtract the row from all other rows
+      for (let j = 0; j < copy.length; j++) {
+        if (j !== i) {
+          const multiplier = copy[j][i];
+          for (let k = 0; k < copy.length; k++) {
+            copy[j][k] -= copy[i][k] * multiplier;
+            result[j][k] -= result[i][k] * multiplier;
+          }
+
+          // set the first element to 0
+          copy[j][i] = 0;
+        }
+      }
+    }
+
+    return result;
   }
 
   static transpose(m: Matrix): Matrix {
