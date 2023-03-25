@@ -25,18 +25,18 @@ export class ViewTransform extends Transform {
     const yAngle = parseInt(
       (document.getElementById("camera-yangle") as HTMLInputElement).value
     );
-    const zAngle = parseInt(
-      (document.getElementById("camera-zangle") as HTMLInputElement).value
-    );
+    // const zAngle = parseInt(
+    //   (document.getElementById("camera-zangle") as HTMLInputElement).value
+    // );
 
-    console.log(radius, xAngle, yAngle, zAngle);
+    console.log(radius, xAngle, yAngle);
 
     let viewMatrix = m4.identity();
     viewMatrix = m4.rotate(
       viewMatrix,
       Geometry.angleDegToRad(xAngle),
       Geometry.angleDegToRad(yAngle),
-      Geometry.angleDegToRad(zAngle)
+      Geometry.angleDegToRad(0)
     );
     viewMatrix = m4.translate(viewMatrix, 0, 0, radius);
     viewMatrix = m4.lookAt(
@@ -44,6 +44,7 @@ export class ViewTransform extends Transform {
       [0, 0, 0],
       [0, 1, 0]
     );
+    viewMatrix = m4.toMatrix(viewMatrix);
     this.update(viewMatrix);
   }
 
@@ -64,9 +65,9 @@ export class ViewTransform extends Transform {
     let yAngleValue = document.getElementById(
       "camera-yangle-value"
     ) as HTMLInputElement;
-    let zAngleValue = document.getElementById(
-      "camera-zangle-value"
-    ) as HTMLInputElement;
+    // let zAngleValue = document.getElementById(
+    //   "camera-zangle-value"
+    // ) as HTMLInputElement;
 
     radius.oninput = () => {
       radiusValue.innerText = radius.value;
@@ -80,9 +81,9 @@ export class ViewTransform extends Transform {
       yAngleValue.innerText = yAngle.value;
       this.notify();
     };
-    zAngle.oninput = () => {
-      zAngleValue.innerText = zAngle.value;
-      this.notify();
-    };
+    // zAngle.oninput = () => {
+    //   zAngleValue.innerText = zAngle.value;
+    //   this.notify();
+    // };
   }
 }
