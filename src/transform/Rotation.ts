@@ -22,15 +22,10 @@ export interface RotationOptions {
 }
 
 export class Rotation extends Transformable {
-    private axis: RotationAxis = RotationAxis.X;
     private angleX: number = 0;
     private angleY: number = 0;
     private angleZ: number = 0;
     private center: Vertex = new Vertex(0, 0, 0);
-
-    get rotationAxis() {
-        return this.axis;
-    }
 
     get rotationAngleX() {
         return this.angleX;
@@ -45,7 +40,6 @@ export class Rotation extends Transformable {
     }   
 
     configure(config: RotationOptions) {
-        config.axis && (this.axis = config.axis);
         config.angleX && (this.angleX = config.angleX);
         config.angleY && (this.angleY = config.angleY);
         config.angleZ && (this.angleZ = config.angleZ);
@@ -53,26 +47,44 @@ export class Rotation extends Transformable {
         this.notify();
     }
 
-    get matrix(): Matrix {
-        let angleRad = 0;
-        if (this.axis === RotationAxis.X) {
-            angleRad = Geometry.angleDegToRad(this.angleX);
-        } else if (this.axis === RotationAxis.Y) {
-            angleRad = Geometry.angleDegToRad(this.angleY);
-        } else if (this.axis === RotationAxis.Z) {
-            angleRad = Geometry.angleDegToRad(this.angleZ);
-        }
+    private generateXRotation(angleRad: number) {
         const cos = Math.cos(angleRad);
         const sin = Math.sin(angleRad);
+        
+        return [
+            [1, 0, 0, 0],
+            [0, cos, -sin, 0],
+            [0, sin, cos, 0],
+            [0, 0, 0, 1],
+        ];
+    }
+    
+    private generateYRotation(angleRad: number) {
+        const cos = Math.cos(angleRad);
+        const sin = Math.sin(angleRad);
+        return [
+            [cos, 0, sin, 0],
+            [0, 1, 0, 0],
+            [-sin, 0, cos, 0],
+            [0, 0, 0, 1],
+        ]
+    }
+    
+    private generateZRotation(angleRad: number) {
+        const cos = Math.cos(angleRad);
+        const sin = Math.sin(angleRad);
+        return  [
+            [cos, -sin, 0, 0],
+            [sin, cos, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ]
+    }
 
-        // const cosX = Math.cos(Geometry.angleDegToRad(this.angleX));
-        // const sinX = Math.sin(Geometry.angleDegToRad(this.angleX));
-
-        // const cosY = Math.cos(Geometry.angleDegToRad(this.angleY));
-        // const sinY = Math.sin(Geometry.angleDegToRad(this.angleY));
-
-        // const cosZ = Math.cos(Geometry.angleDegToRad(this.angleZ));
-        // const sinZ = Math.sin(Geometry.angleDegToRad(this.angleZ));
+    get matrix(): Matrix {
+        const XMatrix = this.generateXRotation(Geometry.angleDegToRad(this.angleX));
+        const YMatrix = this.generateYRotation(Geometry.angleDegToRad(this.angleY));
+        const ZMatrix = this.generateZRotation(Geometry.angleDegToRad(this.angleZ));
 
         const moveToOrigin = new Translation();
         const moveBack = new Translation();
@@ -89,45 +101,18 @@ export class Rotation extends Transformable {
             z: this.center.z,
         })
 
-        switch (this.axis) {
-            case RotationAxis.X:
-                const matrixRotationX = [
-                    [1, 0, 0, 0],
-                    [0, cos, -sin, 0],
-                    [0, sin, cos, 0],
-                    [0, 0, 0, 1],
-                ]
-                return Matrix.multiply(
-                    moveBack.matrix,
+        return Matrix.multiply(
+            moveBack.matrix,
+            Matrix.multiply(
+                ZMatrix,
+                Matrix.multiply(
+                    YMatrix,
                     Matrix.multiply(
-                        matrixRotationX, moveToOrigin.matrix
-                ));
-            case RotationAxis.Y:
-                const matrixRotationY = [
-                    [cos, 0, sin, 0],
-                    [0, 1, 0, 0],
-                    [-sin, 0, cos, 0],
-                    [0, 0, 0, 1],
-                ]
-                return Matrix.multiply(
-                    moveBack.matrix,
-                    Matrix.multiply(
-                        matrixRotationY, moveToOrigin.matrix
+                        XMatrix,
+                        moveToOrigin.matrix
                     )
-                );
-            case RotationAxis.Z:
-                const matrixRotationZ = [
-                    [cos, -sin, 0, 0],
-                    [sin, cos, 0, 0],
-                    [0, 0, 1, 0],
-                    [0, 0, 0, 1],
-                ]
-                return Matrix.multiply(
-                    moveBack.matrix,
-                    Matrix.multiply(
-                        matrixRotationZ, moveToOrigin.matrix
-                    )
-                );
-        }
+                )
+            )
+        )
     }
 }

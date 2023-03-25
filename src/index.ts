@@ -91,7 +91,6 @@ function main() {
 
     // Rotation
     rotation.configure({
-      axis: transformUi.rotation.rotationAxis,
       angleX: transformUi.rotation.rotationAngleX,
       angleY: transformUi.rotation.rotationAngleY,
       angleZ: transformUi.rotation.rotationAngleZ,
