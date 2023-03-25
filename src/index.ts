@@ -83,20 +83,12 @@ function main() {
     const rotation = new Rotation();
     const scaling = new Scaling();
 
-    // Translation
-    translation.configure({
-      x: transformUi.translation.X,
-      y: transformUi.translation.Y,
-      z: transformUi.translation.Z,
-    })
-    transformManager.add(translation);
-
     // Rotation
     rotation.configure({
       axis: transformUi.rotation.rotationAxis,
       angle: transformUi.rotation.rotationAngle,
-      center: obj.center
-    })
+      center: obj.center,
+    });
     transformManager.add(rotation);
 
     // Scaling
@@ -104,11 +96,20 @@ function main() {
       sx: transformUi.scale.Sx,
       sy: transformUi.scale.Sy,
       sz: transformUi.scale.Sz,
-      center: obj.center
-    })
+      center: obj.center,
+    });
     transformManager.add(scaling);
 
-    obj.transform.update(transformManager.matrix)
+    // Translation
+    translation.configure({
+      x: transformUi.translation.X,
+      y: transformUi.translation.Y,
+      z: transformUi.translation.Z,
+    });
+    transformManager.add(translation);
+
+    obj.transform.update(transformManager.matrix);
+    rerender();
   });
 
   /* Event listeners */

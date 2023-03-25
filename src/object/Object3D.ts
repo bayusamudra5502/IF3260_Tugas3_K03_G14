@@ -1,3 +1,4 @@
+import { IDENTITY_MATRIX } from "../matrix/Matrix";
 import { Transform } from "../matrix/Transform";
 import { increaseArray } from "../util/util";
 import { Color } from "./Color";
@@ -24,7 +25,7 @@ export class Object3D {
       normal: [],
       transform: new Transform(),
       indicies: [],
-      center: new Vertex(0,0,0)
+      center: new Vertex(0, 0, 0),
     };
 
     let length = 0;
@@ -81,6 +82,10 @@ export class Object3D {
     return new Object3D(options);
   }
 
+  reset() {
+    this.options.transform = new Transform();
+  }
+
   get colors() {
     return this.options.colors;
   }
@@ -89,7 +94,7 @@ export class Object3D {
     return this.options.vertices;
   }
 
-  get center(){
+  get center() {
     return this.options.center;
   }
 
