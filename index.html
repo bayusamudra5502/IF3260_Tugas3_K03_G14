@@ -48,7 +48,7 @@
             vec3 lightVector = light - vec3(vPosition);
             float radius = dot(lightVector, lightVector) / 20.0;
 
-            float ambientIlluminance = 0.1;
+            float ambientIlluminance = 0.25;
             float dotValue = dot(normal, normalize(lightVector));
             float factor = sign(dotValue) + 1.0;
 
@@ -92,11 +92,11 @@
                 type="range"
                 min="-1"
                 max="3"
-                value="1"
+                value="0"
                 step="0.1"
                 id="camera-radius"
               />
-              <span id="camera-radius-value">1</span>
+              <span id="camera-radius-value">0</span>
             </label>
           </div>
           <div class="option">
@@ -273,21 +273,21 @@
           <h3>Translation</h3>
           <div class="option">
             <label
-              >x <input type="number" id="translation-x" step="0.05"
+              >x <input type="number" id="translation-x" step="0.05" min="-10" max="10"
             /></label>
           </div>
           <div class="option">
             <label
-              >y <input type="number" id="translation-y" step="0.05"
+              >y <input type="number" id="translation-y" step="0.05" min="-10" max="10"
             /></label>
           </div>
           <div class="option">
             <label
-              >z <input type="number" id="translation-z" step="0.05"
+              >z <input type="number" id="translation-z" step="0.05" min="-10" max="10"
             /></label>
           </div>
           <h3>Rotation</h3>
-          <div class="option">
+          <!-- <div class="option">
             <label>
               Axis
               <select id="rotation-type">
@@ -305,7 +305,43 @@
                 id="rotation-value"
                 min="-360"
                 max="360"
-                step="0.05"
+                step="1"
+                value="0"
+            /></label>
+          </div> -->
+          <div class="option">
+            <label
+              >x-axis
+              <input
+                type="number"
+                id="rotation-x"
+                min="-360"
+                max="360"
+                step="1"
+                value="0"
+            /></label>
+          </div>
+          <div class="option">
+            <label
+              >y-axis
+              <input
+                type="number"
+                id="rotation-y"
+                min="-360"
+                max="360"
+                step="1"
+                value="0"
+            /></label>
+          </div>
+          <div class="option">
+            <label
+              >z-axis
+              <input
+                type="number"
+                id="rotation-z"
+                min="-360"
+                max="360"
+                step="1"
                 value="0"
             /></label>
           </div>

@@ -10,6 +10,7 @@ export class TransformUi extends Listenable {
   private currentTranslation: Translation;
   private currentRotation: Rotation;
   private currentScale: Scaling;
+//   private currentRotationAxis: RotationAxis;
 
   constructor(
     private options: TransformUiOptions = TRANSFORM_UI_DEFAULT_OPTIONS
@@ -20,6 +21,7 @@ export class TransformUi extends Listenable {
     this.currentTranslation = new Translation();
     this.currentRotation = new Rotation();
     this.currentScale = new Scaling();
+    // this.currentRotationAxis = RotationAxis.X;
 
     this.bind();
     this.update();
@@ -61,12 +63,21 @@ export class TransformUi extends Listenable {
       this.options.idTranslationZ
     ) as HTMLInputElement;
 
-    const rotationType = document.getElementById(
-      this.options.idRotationType
-    ) as HTMLSelectElement;
-    const rotationValue = document.getElementById(
-      this.options.idRotationValue
-    ) as HTMLInputElement;
+    // const rotationType = document.getElementById(
+    //   this.options.idRotationType
+    // ) as HTMLSelectElement;
+    // const rotationValue = document.getElementById(
+    //   this.options.idRotationValue
+    // ) as HTMLInputElement;
+        const anglex = document.getElementById(
+        this.options.idRotationValueX
+        ) as HTMLInputElement;
+        const angley = document.getElementById(
+        this.options.idRotationValueY
+        ) as HTMLInputElement;
+        const anglez = document.getElementById(
+        this.options.idRotationValueZ
+        ) as HTMLInputElement;
 
     const scaleX = document.getElementById(
       this.options.idScaleX
@@ -84,8 +95,17 @@ export class TransformUi extends Listenable {
     translationY.value = `${this.currentTranslation.Y}`;
     translationZ.value = `${this.currentTranslation.Z}`;
 
-    rotationType.value = `${this.currentRotation.rotationAxis}`;
-    rotationValue.value = `${this.currentRotation.rotationAngle}`;
+    // rotationType.value = `${this.currentRotation.rotationAxis}`;
+    // if (this.currentRotation.rotationAxis === RotationAxis.X) {
+    //     rotationValue.value = `${this.currentRotation.rotationAngleX}`;
+    // } else if (this.currentRotation.rotationAxis === RotationAxis.Y) {
+    //     rotationValue.value = `${this.currentRotation.rotationAngleY}`;
+    // } else if (this.currentRotation.rotationAxis === RotationAxis.Z) {
+    //     rotationValue.value = `${this.currentRotation.rotationAngleZ}`;
+    // }
+    anglex.value = `${this.currentRotation.rotationAngleX}`;
+    angley.value = `${this.currentRotation.rotationAngleY}`;
+    anglez.value = `${this.currentRotation.rotationAngleZ}`;
 
     scaleX.value = `${this.currentScale.Sx}`;
     scaleY.value = `${this.currentScale.Sy}`;
@@ -107,11 +127,21 @@ export class TransformUi extends Listenable {
       this.options.idTranslationZ
     ) as HTMLInputElement;
 
-    const rotationType = document.getElementById(
-      this.options.idRotationType
-    ) as HTMLSelectElement;
-    const rotationValue = document.getElementById(
-      this.options.idRotationValue
+    // const rotationType = document.getElementById(
+    //   this.options.idRotationType
+    // ) as HTMLSelectElement;
+    // const rotationValue = document.getElementById(
+    //   this.options.idRotationValue
+    // ) as HTMLInputElement;
+
+    const anglex = document.getElementById(
+    this.options.idRotationValueX
+    ) as HTMLInputElement;
+    const angley = document.getElementById(
+    this.options.idRotationValueY
+    ) as HTMLInputElement;
+    const anglez = document.getElementById(
+    this.options.idRotationValueZ
     ) as HTMLInputElement;
 
     const scaleX = document.getElementById(
@@ -160,21 +190,64 @@ export class TransformUi extends Listenable {
       this.update();
     };
 
-    rotationType.onchange = () => {
-      const value = rotationType.value as RotationAxis;
-      this.currentRotation.configure({
-        axis: value,
-      });
-      this.update();
+    // rotationType.onchange = () => {
+    //   const value = rotationType.value as RotationAxis;
+    //   this.currentRotation.configure({
+    //     axis: value,
+    //   });
+    //   this.update();
+    // };
+
+    // rotationValue.onchange = () => {
+    //   const value = parseFloat(rotationValue.value);
+    //   !Number.isNaN(value) &&
+    //     (this.currentRotation.rotationAxis === RotationAxis.X
+    //         ? this.currentRotation.configure({
+    //             angleX: value,
+    //             })
+    //         : this.currentRotation.rotationAxis === RotationAxis.Y
+    //         ? this.currentRotation.configure({
+    //             angleY: value,
+    //             })
+    //         : 
+    //         this.currentRotation.configure({
+    //             angleZ: value,
+    //             })
+    //     );
+    //   this.update();
+    // };
+
+    anglex.onchange = () => {
+        // this.currentRotationAxis = RotationAxis.X;
+        const value = parseFloat(anglex.value);
+        !Number.isNaN(value) &&
+            this.currentRotation.configure({
+                axis: RotationAxis.X,
+                angleX: value,
+            });
+        this.update();
     };
 
-    rotationValue.onchange = () => {
-      const value = parseFloat(rotationValue.value);
-      !Number.isNaN(value) &&
-        this.currentRotation.configure({
-          angle: value,
-        });
-      this.update();
+    angley.onchange = () => {
+        // this.currentRotationAxis = RotationAxis.Y;
+        const value = parseFloat(angley.value);
+        !Number.isNaN(value) &&
+            this.currentRotation.configure({
+                axis: RotationAxis.Y,
+                angleY: value,
+            });
+        this.update();
+    };
+
+    anglez.onchange = () => {
+        // this.currentRotationAxis = RotationAxis.Z;
+        const value = parseFloat(anglez.value);
+        !Number.isNaN(value) &&
+            this.currentRotation.configure({
+                axis: RotationAxis.Z,
+                angleZ: value,
+            });
+        this.update();
     };
 
     scaleX.onchange = () => {
@@ -213,8 +286,11 @@ export interface TransformUiOptions {
   idTranslationY: string;
   idTranslationZ: string;
 
-  idRotationType: string;
-  idRotationValue: string;
+//   idRotationType: string;
+//   idRotationValue: string;
+    idRotationValueX: string;
+    idRotationValueY: string;
+    idRotationValueZ: string;
 
   idScaleX: string;
   idScaleY: string;
@@ -228,8 +304,11 @@ export const TRANSFORM_UI_DEFAULT_OPTIONS: TransformUiOptions = {
   idTranslationY: "translation-y",
   idTranslationZ: "translation-z",
 
-  idRotationType: "rotation-type",
-  idRotationValue: "rotation-value",
+//   idRotationType: "rotation-type",
+//   idRotationValue: "rotation-value",
+    idRotationValueX: "rotation-x",
+    idRotationValueY: "rotation-y",
+    idRotationValueZ: "rotation-z",
 
   idScaleX: "scale-x",
   idScaleY: "scale-y",

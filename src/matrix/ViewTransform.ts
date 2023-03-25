@@ -39,11 +39,11 @@ export class ViewTransform extends Transform {
       Geometry.angleDegToRad(0)
     );
     viewMatrix = m4.translate(viewMatrix, 0, 0, radius);
-    viewMatrix = m4.lookAt(
-      [viewMatrix[12], viewMatrix[13], viewMatrix[14]],
-      [0, 0, 0],
-      [0, 1, 0]
-    );
+    // viewMatrix = m4.lookAt(
+    //   [viewMatrix[12], viewMatrix[13], viewMatrix[14]],
+    //   [0, 0, 0],
+    //   [0, 1, 0]
+    // );
     viewMatrix = m4.toMatrix(viewMatrix);
     this.update(viewMatrix);
   }

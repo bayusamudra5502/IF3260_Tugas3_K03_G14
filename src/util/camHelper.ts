@@ -24,7 +24,10 @@ export const m4 = {
   },
 
   translation: function (tx: number, ty: number, tz: number): Array<number> {
-    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, tx, ty, tz, 1];
+    return [1, 0, 0, 0, 
+            0, 1, 0, 0, 
+            0, 0, 1, 0, 
+            tx, ty, tz, 1];
   },
 
   xRotation: function (angleInRadians: number) {
