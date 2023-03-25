@@ -116,7 +116,7 @@ export class LightUi extends Listenable {
       this.notify();
     };
 
-    lightColor.onchange = () => {
+    lightColor.oninput = () => {
       const value = lightColor.value;
       this.currentLightColor = Color.hex(value);
       this.notify();

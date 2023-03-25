@@ -8,8 +8,8 @@ import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { ViewTransform } from "./matrix/ViewTransform";
 import { Color } from "./object/Color";
-import { ProjectionUi } from "./ui/ProjectionUi";
 import { LightUi } from "./ui/LightUi";
+import { ProjectionUi } from "./ui/ProjectionUi";
 import { Importer } from "./util/Importer";
 import { TransformUi } from "./ui/TransformUi";
 import { Scaling } from "./transform/Scaling";
@@ -116,8 +116,13 @@ function main() {
   document.querySelector("#loadfile-submit").addEventListener("click", () => {
     importer.import();
   });
-  objManager.subscribe(rerender);
 
+  document.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+    }
+  });
+
+  objManager.subscribe(rerender);
   projManager.subscribe(rerender);
   cameraManager.subscribe(rerender);
   viewTransform.subscribe(rerender);
