@@ -83,6 +83,14 @@ export default class RenderEngine {
       this.shaderLocation.lightSource,
       primitive.lightSource
     );
+    this.webglContext.uniform4fv(
+      this.shaderLocation.lightColor,
+      primitive.lightColor
+    );
+    this.webglContext.uniform1i(
+      this.shaderLocation.useShading,
+      primitive.useShading
+    );
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(
@@ -126,5 +134,10 @@ export default class RenderEngine {
       this.webglContext.UNSIGNED_SHORT,
       0
     );
+
+    const err = this.webglContext.getError();
+    if (err != 0) {
+      throw new Error(`something happened when rendering: error code ${err}`);
+    }
   }
 }

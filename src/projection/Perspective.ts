@@ -54,8 +54,8 @@ export class Perspective extends Projector {
     const perspectiveMatrix = [
       [this.f / this.aspectRatio, 0, 0, 0],
       [0, this.f, 0, 0],
-      [0, 0, (near + far) * rangeInverse, -2 * (near * far) * rangeInverse],
-      [0, 0, 1, 0],
+      [0, 0, (near + far) * rangeInverse, 2 * (near * far) * rangeInverse],
+      [0, 0, -1, 0],
     ];
 
     return Matrix.multiply(perspectiveMatrix, matrix);

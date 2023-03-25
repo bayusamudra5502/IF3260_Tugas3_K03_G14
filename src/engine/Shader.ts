@@ -12,6 +12,8 @@ export interface ShaderAttribute {
   normal: string;
 
   lightSource: string;
+  lightColor: string;
+  useShading: string;
 }
 
 export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
@@ -25,6 +27,8 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
   resolution: "resolution",
   normal: "normal",
   lightSource: "lightSource",
+  lightColor: "lightColor",
+  useShading: "useShading",
 };
 
 export interface ShaderVariableLocation {
@@ -41,6 +45,8 @@ export interface ShaderVariableLocation {
   normal: number;
 
   lightSource: WebGLUniformLocation;
+  lightColor: WebGLUniformLocation;
+  useShading: WebGLUniformLocation;
 }
 
 export class ShaderProgram {
@@ -145,6 +151,14 @@ export class ShaderProgram {
       this.program,
       this.shaderAttribute.lightSource
     );
+    const lightColor = this.gl.getUniformLocation(
+      this.program,
+      this.shaderAttribute.lightColor
+    );
+    const useShading = this.gl.getUniformLocation(
+      this.program,
+      this.shaderAttribute.useShading
+    );
     const normal = this.gl.getAttribLocation(
       this.program,
       this.shaderAttribute.normal
@@ -163,6 +177,8 @@ export class ShaderProgram {
       color,
       normal,
       lightSource,
+      lightColor,
+      useShading,
     };
   }
 }

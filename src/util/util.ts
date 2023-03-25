@@ -13,6 +13,12 @@ interface EnginePrimitive {
   };
   size: number;
   lightSource: Float32Array;
+  lightColor: Float32Array;
+  useShading: number;
+}
+
+export function padding(str: string, length: number = 2, pad: string = "0") {
+  return pad.repeat(length - str.length) + str;
 }
 
 export function increaseArray(count: number, start: number = 0): number[] {
@@ -96,5 +102,7 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     size: indices.length,
     normals: new Float32Array(flatNormal),
     lightSource: new Float32Array(draw.lightSource.getArray()),
+    lightColor: new Float32Array(draw.lightColor.getArray()),
+    useShading: draw.useShading ? 1 : 0,
   };
 }

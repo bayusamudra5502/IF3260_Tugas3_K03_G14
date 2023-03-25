@@ -9,6 +9,7 @@ import { TransformManager } from "./manager/TransformManager";
 import { ViewTransform } from "./matrix/ViewTransform";
 import { Color } from "./object/Color";
 import { ProjectionUi } from "./ui/ProjectionUi";
+import { LightUi } from "./ui/LightUi";
 import { Importer } from "./util/Importer";
 
 function main() {
@@ -29,6 +30,7 @@ function main() {
 
   /* UI Setup */
   const projectionUi = new ProjectionUi(canvas.aspectRatio);
+  const lightUi = new LightUi();
 
   /* Setup manager */
   const rerender = () => {
@@ -46,6 +48,7 @@ function main() {
     cameraTransform: cameraManager,
     viewTransform: viewTransform,
     projection: projManager,
+    useShading: true,
   });
 
   const objManager = new ObjectManager(envManager, "triangle");
@@ -59,6 +62,13 @@ function main() {
     projManager.add(projectionUi.currentProjector);
     rerender();
   });
+  lightUi.subscribe(() => {
+    envManager.update({
+      sourceLight: lightUi.lightPosition,
+      useShading: lightUi.useShading,
+      sourceLightColor: lightUi.lightColor,
+    });
+  });
 
   /* Event listeners */
   document.querySelector("#loadfile-submit").addEventListener("click", () => {
@@ -70,6 +80,7 @@ function main() {
   cameraManager.subscribe(rerender);
   viewTransform.subscribe(rerender);
   envManager.subscribe(rerender);
+  lightUi.subscribe(rerender);
 }
 
 main();

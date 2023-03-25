@@ -22,7 +22,7 @@
       varying vec4 vPosition;
   
       void main(void) {
-        vec4 fixedPos = position / vec4(resolution, 1.0);
+        vec4 fixedPos = position;
   
         vColor = color;
         vNormal = normal;
@@ -38,19 +38,28 @@
       varying vec4 vPosition;
 
       uniform vec4 lightSource;
+      uniform vec4 lightColor;
+      uniform int useShading;
   
       void main(void) {
           vec3 normal = normalize(vec3(vNormal));
           vec3 light = vec3(lightSource);
 
-          vec3 lightVector = light - vec3(vPosition);
-          
-          float ambientIlluminance = 0.4;
-          float dotValue = dot(normal, normalize(lightVector));
-          float lightIlluminance = dotValue * (1.0 - ambientIlluminance) + ambientIlluminance;
-          //float lightIlluminance = 1.0;
+          if (useShading != 0) {
+            vec3 lightVector = light - vec3(vPosition);
+            float radius = dot(lightVector, lightVector) / 20.0;
 
-          gl_FragColor = vec4(lightIlluminance * vColor.xyz, 1.0);
+            float ambientIlluminance = 0.1;
+            float dotValue = dot(normal, normalize(lightVector));
+            float factor = sign(dotValue) + 1.0;
+
+            float lightValue = min(abs(dotValue) / radius, 1.0);
+            float lightIlluminance = lightValue * factor * (1.0 - ambientIlluminance) + ambientIlluminance;
+  
+            gl_FragColor = vec4(lightIlluminance * lightColor.xyz * vColor.xyz, 1.0);
+          } else {
+            gl_FragColor = vec4(vColor.xyz, 1.0);
+          }
       }
     </script>
 </head>
@@ -158,8 +167,64 @@
         </div>
       </div>
       <div class="controller-container">
-        <h2>Loaded Objects</h2>
-        <div id="loaded-container"></div>
+        <h2>Light Source</h2>
+        <div>
+          <label><input type="checkbox" id="use-shading-check" checked> Use shading</label>
+        </div>
+        <div>
+          <h3>Location</h3>
+          <div class="option">
+            <label>x <input type="color" id="light-color"></label>
+          </div>
+          <div class="option">
+            <label>x <input type="number" id="light-x" step="0.05"></label>
+          </div>
+          <div class="option">
+            <label>y <input type="number" id="light-y" step="0.05"></label>
+          </div>
+          <div class="option">
+            <label>z <input type="number" id="light-z" step="0.05"></label>
+          </div>
+        </div>
+      </div>
+      <div class="controller-container">
+        <h2>Transformation</h2>
+        <div class="option">
+          <label>Index <input type="number" id="object-idx"></label>
+        </div>
+        <h3>Translation</h3>
+        <div class="option">
+          <label>x <input type="number" id="translation-x" step="0.05"></label>
+        </div>
+        <div class="option">
+          <label>y <input type="number" id="translation-x" step="0.05"></label>
+        </div>
+        <div class="option">
+          <label>z <input type="number" id="light-z" step="0.05"></label>
+        </div>
+        <h3>Rotation</h3>
+        <div class="option">
+          <label>
+            Axis <select id="rotation-type">
+              <option value="x">x</option>
+              <option value="y">y</option>
+              <option value="z">z</option>
+            </select>
+          </label>
+        </div>
+        <div class="option">
+          <label>Angle <input type="number" id="translation-x" min="-360" max="360" step="0.05"></label>
+        </div>
+        <h3>Scaling</h3>
+        <div class="option">
+          <label>x <input type="number" id="translation-x" step="0.05"></label>
+        </div>
+        <div class="option">
+          <label>y <input type="number" id="translation-x" step="0.05"></label>
+        </div>
+        <div class="option">
+          <label>z <input type="number" id="light-z" step="0.05"></label>
+        </div>
       </div>
     </div>
   </div>

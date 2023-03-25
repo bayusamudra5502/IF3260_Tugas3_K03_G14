@@ -39,7 +39,7 @@ export class ObjectManager extends Listenable {
       const info: DrawInfo = {
         colors: obj.colors,
         indices: obj.indicies,
-        lightSource: this.env.sourceLight,
+        lightSource: this.env.lightPosition,
         mode: this.mode,
         matrix: {
           projection: this.env.projectionMatrix,
@@ -48,6 +48,8 @@ export class ObjectManager extends Listenable {
         },
         normals: obj.normal,
         vertices: obj.vertices,
+        useShading: this.env.useShading,
+        lightColor: this.env.lightColor,
       };
       result.push(info);
     }
