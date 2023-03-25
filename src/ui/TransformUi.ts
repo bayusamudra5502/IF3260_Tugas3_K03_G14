@@ -1,24 +1,25 @@
 import { Vertex } from "../object/Vertices";
+import { Rotation, RotationAxis } from "../transform/Rotation";
+import { Scaling } from "../transform/Scaling";
+import { Transformable } from "../transform/Transformable";
+import { Translation } from "../transform/Translation";
 import { Listenable } from "../util/Listenable";
 
 export class TransformUi extends Listenable {
     private currentTransformIndex: number;
-    private currentTranslation: Vertex;
-    private currentRotation: string;
-    private currentRotationValue: Vertex;
-    private currentScale: Vertex;
+    private currentTranslation: Translation;
+    private currentRotation: Rotation;
+    private currentScale: Scaling;
 
     constructor(
-        defaultRotation: "z" | "y" | "x" = "x",
         private options: TransformUiOptions = TRANSFORM_UI_DEFAULT_OPTIONS
         ) {
         super();
 
         this.currentTransformIndex = 0;
-        this.currentTranslation = Vertex.load([0, 0, 0]);
-        this.currentRotation = defaultRotation;
-        this.currentRotationValue = Vertex.load([0, 0, 0]);
-        this.currentScale = Vertex.load([1, 1, 1]);
+        this.currentTranslation = new Translation();
+        this.currentRotation = new Rotation();
+        this.currentScale = new Scaling();
 
         this.bind();
         this.update();
@@ -42,6 +43,7 @@ export class TransformUi extends Listenable {
 
     private update() {
         this.setValue();
+        this.notify();
     }
 
     private setValue() {
@@ -78,16 +80,17 @@ export class TransformUi extends Listenable {
 
         transformIndex.value = `${this.currentTransformIndex}`;
 
-        translationX.value = `${this.currentTranslation.x}`;
-        translationY.value = `${this.currentTranslation.y}`;
-        translationZ.value = `${this.currentTranslation.z}`;
+        translationX.value = `${this.currentTranslation.X}`;
+        translationY.value = `${this.currentTranslation.Y}`;
+        translationZ.value = `${this.currentTranslation.Z}`;
 
-        rotationType.value = this.currentRotation;
-        rotationValue.value = `${this.currentRotation}`;
+        rotationType.value = `${this.currentRotation.rotationAxis}`;
+        rotationValue.value = `${this.currentRotation.rotationAngle}`;
 
-        scaleX.value = `${this.currentScale.x}`;
-        scaleY.value = `${this.currentScale.y}`;
-        scaleZ.value = `${this.currentScale.z}`;
+        scaleX.value = `${this.currentScale.Sx}`;
+        scaleY.value = `${this.currentScale.Sy}`;
+        scaleZ.value = `${this.currentScale.Sz}`;
+        
     }
 
     private bind() {
@@ -126,71 +129,75 @@ export class TransformUi extends Listenable {
             const value = parseInt(transformIndex.value);
             !Number.isNaN(value) && (this.currentTransformIndex = value);
             this.update();
-            this.notify();
         }
 
         translationX.onchange = () => {
             const value = parseFloat(translationX.value);
-            !Number.isNaN(value) && (this.currentTranslation.x = value);
+            !Number.isNaN(value) && (
+                // this.currentTranslation.X = value
+                this.currentTranslation.configure({
+                    x: value
+                })
+            );
             this.update();
-            this.notify();
         }
 
         translationY.onchange = () => {
             const value = parseFloat(translationY.value);
-            !Number.isNaN(value) && (this.currentTranslation.y = value);
+            !Number.isNaN(value) && (
+                // this.currentTranslation.y = value
+                this.currentTranslation.configure({
+                    y: value
+                })
+            );
             this.update();
-            this.notify();
         }
 
         translationZ.onchange = () => {
             const value = parseFloat(translationZ.value);
-            !Number.isNaN(value) && (this.currentTranslation.z = value);
+            !Number.isNaN(value) && (
+                // this.currentTranslation.z = value
+                this.currentTranslation.configure({
+                    z: value
+                })
+            );
             this.update();
-            this.notify();
         }
 
         rotationType.onchange = () => {
-            const value = rotationType.value;
-            this.currentRotation = value;
+            const value = rotationType.value as RotationAxis;
+            this.currentRotation.configure({
+                axis: value
+            });
             this.update();
-            this.notify();
         }
 
         rotationValue.onchange = () => {
             const value = parseFloat(rotationValue.value);
-            if (!Number.isNaN(value)) {
-                if (this.currentRotation === "x") {
-                    this.currentRotationValue.x = value;
-                } else if (this.currentRotation === "y") {
-                    this.currentRotationValue.y = value;
-                } else if (this.currentRotation === "z") {
-                    this.currentRotationValue.z = value;
-                }
-            }
+            !Number.isNaN(value) && (
+                this.currentRotation.configure({
+                    angle: value
+                })
+            );
             this.update();
-            this.notify();
         }
 
         scaleX.onchange = () => {
             const value = parseFloat(scaleX.value);
             !Number.isNaN(value) && (this.currentScale.x = value);
             this.update();
-            this.notify();
         }
 
         scaleY.onchange = () => {
             const value = parseFloat(scaleY.value);
             !Number.isNaN(value) && (this.currentScale.y = value);
             this.update();
-            this.notify();
         }
 
         scaleZ.onchange = () => {
             const value = parseFloat(scaleZ.value);
             !Number.isNaN(value) && (this.currentScale.z = value);
             this.update();
-            this.notify();
         }
     }
 }

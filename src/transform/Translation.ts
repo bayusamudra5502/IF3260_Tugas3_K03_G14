@@ -20,6 +20,18 @@ export class Translation extends Transformable {
     return this;
   }
 
+  get X() {
+    return this.x;
+  }
+
+  get Y() {
+    return this.y;
+  }
+  
+  get Z() {
+    return this.z;
+  }
+  
   get matrix(): Matrix {
     return [
       [1, 0, 0, this.x],

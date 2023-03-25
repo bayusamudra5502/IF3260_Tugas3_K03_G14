@@ -10,6 +10,7 @@ export interface ObjectOptions {
   colors: Color[];
   indicies: number[];
   transform: Transform;
+  center: Vertex;
 }
 
 export class Object3D {
@@ -23,6 +24,7 @@ export class Object3D {
       normal: [],
       transform: new Transform(),
       indicies: [],
+      center: new Vertex(0,0,0)
     };
 
     let length = 0;
@@ -31,6 +33,10 @@ export class Object3D {
     for (const face of data.vertices ?? []) {
       for (const vertex of face) {
         options.vertices.push(Vertex.load(vertex));
+        options.center.x += vertex.x;
+        options.center.y += vertex.y;
+        options.center.z += vertex.z;
+
         length++;
       }
 
@@ -66,6 +72,10 @@ export class Object3D {
       faceIdx++;
     }
 
+    options.center.x /= options.vertices.length;
+    options.center.y /= options.vertices.length;
+    options.center.z /= options.vertices.length;
+
     options.indicies = increaseArray(options.vertices.length);
 
     return new Object3D(options);
@@ -77,6 +87,10 @@ export class Object3D {
 
   get vertices() {
     return this.options.vertices;
+  }
+
+  get center(){
+    return this.options.center;
   }
 
   get normal() {
