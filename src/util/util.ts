@@ -1,5 +1,5 @@
-import DrawInfo from "../object/DrawInfo";
 import { Matrix } from "../matrix/Matrix";
+import DrawInfo from "../object/DrawInfo";
 
 interface EnginePrimitive {
   vertices: Float32Array;
@@ -87,7 +87,8 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
 
   const tMatrix = Matrix.transpose(draw.matrix.transform);
   const pMatrix = Matrix.transpose(draw.matrix.projection);
-  const vMatrix = Matrix.transpose(draw.matrix.view);
+  //   const vMatrix = Matrix.transpose(draw.matrix.view);
+  const vMatrix = draw.matrix.view;
 
   return {
     vertices: new Float32Array(flatVertices),

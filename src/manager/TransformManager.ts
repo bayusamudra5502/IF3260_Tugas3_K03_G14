@@ -1,5 +1,4 @@
 import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix";
-import { Transform } from "../matrix/Transform";
 import { Transformable } from "../transform/Transformable";
 import { Listenable } from "../util/Listenable";
 
