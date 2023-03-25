@@ -10,7 +10,7 @@ export class ViewTransform extends Transform {
   }
 
   update(cameraTransform: Matrix) {
-    super.update(cameraTransform);
+    super.update(Matrix.inverse(cameraTransform));
     super.notify();
     return this;
   }
