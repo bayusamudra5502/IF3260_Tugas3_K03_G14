@@ -23,9 +23,10 @@ export function reset(rerender: () => void) {
   resetElementValue("translation-y", "change", "0");
   resetElementValue("translation-z", "change", "0");
   // Reset rotation
-  resetElementValue("rotation-type", "change", "x");
-  resetElementValue("rotation-value", "change", "0");
-
+  resetElementValue("rotation-x", "change", "0");
+  resetElementValue("rotation-y", "change", "0");
+  resetElementValue("rotation-z", "change", "0");
+  
   // Reset scale
   resetElementValue("scale-x", "change", "1");
   resetElementValue("scale-y", "change", "1");
