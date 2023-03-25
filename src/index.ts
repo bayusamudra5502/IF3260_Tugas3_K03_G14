@@ -79,6 +79,9 @@ function main() {
     const idx = transformUi.transformIndex;
 
     const obj = objManager.get(idx);
+
+    if (!obj) return;
+
     const translation = new Translation();
     const rotation = new Rotation();
     const scaling = new Scaling();

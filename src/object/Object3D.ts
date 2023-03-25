@@ -33,10 +33,11 @@ export class Object3D {
 
     for (const face of data.vertices ?? []) {
       for (const vertex of face) {
-        options.vertices.push(Vertex.load(vertex));
-        options.center.x += vertex.x;
-        options.center.y += vertex.y;
-        options.center.z += vertex.z;
+        const vert = Vertex.load(vertex);
+        options.vertices.push(vert);
+        options.center.x += vert.x;
+        options.center.y += vert.y;
+        options.center.z += vert.z;
 
         length++;
       }

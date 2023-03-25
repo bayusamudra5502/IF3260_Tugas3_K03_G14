@@ -22,12 +22,6 @@ export class EnvironmentManager extends Listenable {
   private useShadingData: boolean = true;
   private sourceLightColor: Color = Color.hex("#FFFFFF");
 
-  reset() {
-    this.sourceLightData = new Vertex(0, 0, 1);
-    this.projectionData = new ProjectionManager();
-    // LANJUTIN
-  }
-
   update(options: EnvironmentOptions) {
     options.projection && (this.projectionData = options.projection);
     // options.cameraTransform && this.configureCamera(options.cameraTransform);
