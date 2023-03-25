@@ -1,8 +1,8 @@
-export function reset() {
-  console.log("reset");
+import RenderEngine from "../engine/RenderEngine";
 
+export function reset(rerender: () => void) {
   // Reset the camera
-  resetElementValue("camera-radius", "input", "1");
+  resetElementValue("camera-radius", "input", "0");
   resetElementValue("camera-xangle", "input", "0");
   resetElementValue("camera-yangle", "input", "0");
 
@@ -30,6 +30,10 @@ export function reset() {
   resetElementValue("scale-x", "change", "1");
   resetElementValue("scale-y", "change", "1");
   resetElementValue("scale-z", "change", "1");
+
+  setTimeout(() => {
+    rerender();
+  }, 0);
 }
 
 function resetElementValue(id: string, eventName: string, value: string) {

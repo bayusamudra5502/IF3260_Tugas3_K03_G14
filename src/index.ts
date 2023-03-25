@@ -40,10 +40,12 @@ function main() {
 
   /* Setup manager */
   const rerender = () => {
-    const objs = objManager.generateDrawInfo();
-    for (const obj of objs) {
-      engine.render(obj);
-    }
+    setTimeout(() => {
+      const objs = objManager.generateDrawInfo();
+      for (const obj of objs) {
+        engine.render(obj);
+      }
+    },0);
   };
 
   const projManager = new ProjectionManager();
@@ -128,7 +130,7 @@ function main() {
   const rerenderButton = document.querySelector("#rerender-button");
 
   resetButton.addEventListener("click", () => {
-    reset();
+    reset(rerender);
   });
 
   rerenderButton.addEventListener("click", () => {
