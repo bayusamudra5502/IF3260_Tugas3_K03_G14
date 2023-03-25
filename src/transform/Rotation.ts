@@ -15,34 +15,64 @@ export interface RotationOptions {
     //Rotation axis
     axis?: RotationAxis;
     //Rotation angle in degree
-    angle?: number;
+    angleX?: number;
+    angleY?: number;
+    angleZ?: number;
     center?: Vertex;
 }
 
 export class Rotation extends Transformable {
     private axis: RotationAxis = RotationAxis.X;
-    private angle: number = 0;
+    private angleX: number = 0;
+    private angleY: number = 0;
+    private angleZ: number = 0;
     private center: Vertex = new Vertex(0, 0, 0);
 
     get rotationAxis() {
         return this.axis;
     }
 
-    get rotationAngle() {
-        return this.angle;
+    get rotationAngleX() {
+        return this.angleX;
     }
+
+    get rotationAngleY() {
+        return this.angleY;
+    }
+
+    get rotationAngleZ() {
+        return this.angleZ;
+    }   
 
     configure(config: RotationOptions) {
         config.axis && (this.axis = config.axis);
-        config.angle && (this.angle = config.angle);
+        config.angleX && (this.angleX = config.angleX);
+        config.angleY && (this.angleY = config.angleY);
+        config.angleZ && (this.angleZ = config.angleZ);
         config.center && (this.center = config.center);
         this.notify();
     }
 
     get matrix(): Matrix {
-        const angleRad = Geometry.angleDegToRad(this.angle);
+        let angleRad = 0;
+        if (this.axis === RotationAxis.X) {
+            angleRad = Geometry.angleDegToRad(this.angleX);
+        } else if (this.axis === RotationAxis.Y) {
+            angleRad = Geometry.angleDegToRad(this.angleY);
+        } else if (this.axis === RotationAxis.Z) {
+            angleRad = Geometry.angleDegToRad(this.angleZ);
+        }
         const cos = Math.cos(angleRad);
         const sin = Math.sin(angleRad);
+
+        // const cosX = Math.cos(Geometry.angleDegToRad(this.angleX));
+        // const sinX = Math.sin(Geometry.angleDegToRad(this.angleX));
+
+        // const cosY = Math.cos(Geometry.angleDegToRad(this.angleY));
+        // const sinY = Math.sin(Geometry.angleDegToRad(this.angleY));
+
+        // const cosZ = Math.cos(Geometry.angleDegToRad(this.angleZ));
+        // const sinZ = Math.sin(Geometry.angleDegToRad(this.angleZ));
 
         const moveToOrigin = new Translation();
         const moveBack = new Translation();
