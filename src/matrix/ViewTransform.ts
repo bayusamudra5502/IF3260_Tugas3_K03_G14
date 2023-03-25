@@ -29,7 +29,7 @@ export class ViewTransform extends Transform {
     //   (document.getElementById("camera-zangle") as HTMLInputElement).value
     // );
 
-    console.log(radius, xAngle, yAngle);
+    // console.log(radius, xAngle, yAngle);
 
     let viewMatrix = m4.identity();
     viewMatrix = m4.rotate(
@@ -54,7 +54,7 @@ export class ViewTransform extends Transform {
     const radius = document.getElementById("camera-radius") as HTMLInputElement;
     const xAngle = document.getElementById("camera-xangle") as HTMLInputElement;
     const yAngle = document.getElementById("camera-yangle") as HTMLInputElement;
-    const zAngle = document.getElementById("camera-zangle") as HTMLInputElement;
+    // const zAngle = document.getElementById("camera-zangle") as HTMLInputElement;
 
     let radiusValue = document.getElementById(
       "camera-radius-value"

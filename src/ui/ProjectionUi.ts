@@ -1,4 +1,3 @@
-import { Canvas } from "../engine/Canvas";
 import { Oblique } from "../projection/Oblique";
 import { Ortographic } from "../projection/Orthographic";
 import { Perspective } from "../projection/Perspective";
@@ -29,7 +28,7 @@ export class ProjectionUi extends Listenable {
     return this.projector;
   }
 
-  private setType(type) {
+  private setType(type: string) {
     switch (type) {
       case "oblique":
         this.useOblique();

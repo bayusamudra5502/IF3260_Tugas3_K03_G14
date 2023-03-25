@@ -8,13 +8,14 @@ import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { ViewTransform } from "./matrix/ViewTransform";
 import { Color } from "./object/Color";
-import { LightUi } from "./ui/LightUi";
-import { ProjectionUi } from "./ui/ProjectionUi";
-import { Importer } from "./util/Importer";
-import { TransformUi } from "./ui/TransformUi";
+import { reset } from "./reset";
+import { Rotation } from "./transform/Rotation";
 import { Scaling } from "./transform/Scaling";
 import { Translation } from "./transform/Translation";
-import { Rotation } from "./transform/Rotation";
+import { LightUi } from "./ui/LightUi";
+import { ProjectionUi } from "./ui/ProjectionUi";
+import { TransformUi } from "./ui/TransformUi";
+import { Importer } from "./util/Importer";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -122,6 +123,7 @@ function main() {
 
   document.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
+      reset();
     }
   });
 
@@ -131,6 +133,13 @@ function main() {
   viewTransform.subscribe(rerender);
   envManager.subscribe(rerender);
   lightUi.subscribe(rerender);
+
+  //   let angle = 0;
+  //   const loop = () => {
+  //     angle = (angle + 1) % 360;
+  //     requestAnimationFrame(loop);
+  //   };
+  //   requestAnimationFrame(loop);
 }
 
 main();

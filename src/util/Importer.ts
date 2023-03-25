@@ -3,6 +3,7 @@ import { Object3D } from "../object/Object3D";
 
 export class Importer {
   private fileObject: HTMLInputElement;
+  private prevFile: string;
 
   constructor(private objectManager: ObjectManager, fileId: string) {
     const obj = document.getElementById(fileId);
@@ -20,8 +21,12 @@ export class Importer {
 
   async import() {
     const fileData = await this.getFileData();
-    const object = Object3D.load(fileData);
+    if (fileData === this.prevFile) {
+      return;
+    }
+    this.prevFile = fileData;
 
+    const object = Object3D.load(fileData);
     this.objectManager.add(object);
   }
 }

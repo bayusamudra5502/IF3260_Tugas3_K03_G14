@@ -1,7 +1,7 @@
 import DrawInfo, { DrawMode } from "../object/DrawInfo";
 import { Object3D } from "../object/Object3D";
-import { EnvironmentManager } from "./EnvironmentManager";
 import { Listenable } from "../util/Listenable";
+import { EnvironmentManager } from "./EnvironmentManager";
 
 export class ObjectManager extends Listenable {
   private objects: Object3D[] = [];
