@@ -2,7 +2,9 @@ import { Matrix } from "../matrix/Matrix";
 import { Transformable } from "./Transformable";
 
 export interface ScalingOptions {
-    s?: number;
+    sx?: number;
+    sy?: number;
+    sz?: number;
 }
 
 export class Scaling extends Transformable {
@@ -11,7 +13,9 @@ export class Scaling extends Transformable {
     private sz = 1;
 
     configure(option: ScalingOptions) {
-        option.s && (this.sx = this.sy = this.sz = option.s);
+        option.sx && (this.sx = option.sx);
+        option.sy && (this.sy = option.sy);
+        option.sz && (this.sz = option.sz);
 
         return this;
     }
