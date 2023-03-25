@@ -11,6 +11,10 @@ import { Color } from "./object/Color";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { Importer } from "./util/Importer";
+import { TransformUi } from "./ui/TransformUi";
+import { Scaling } from "./transform/Scaling";
+import { Translation } from "./transform/Translation";
+import { Rotation } from "./transform/Rotation";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -31,6 +35,7 @@ function main() {
   /* UI Setup */
   const projectionUi = new ProjectionUi(canvas.aspectRatio);
   const lightUi = new LightUi();
+  const transformUi = new TransformUi();
 
   /* Setup manager */
   const rerender = () => {
@@ -68,6 +73,42 @@ function main() {
       useShading: lightUi.useShading,
       sourceLightColor: lightUi.lightColor,
     });
+  });
+  transformUi.subscribe(() => {
+    const transformManager = new TransformManager();
+    const idx = transformUi.transformIndex;
+
+    const obj = objManager.get(idx);
+    const translation = new Translation();
+    const rotation = new Rotation();
+    const scaling = new Scaling();
+
+    // Translation
+    translation.configure({
+      x: transformUi.translation.X,
+      y: transformUi.translation.Y,
+      z: transformUi.translation.Z,
+    })
+    transformManager.add(translation);
+
+    // Rotation
+    rotation.configure({
+      axis: transformUi.rotation.rotationAxis,
+      angle: transformUi.rotation.rotationAngle,
+      center: obj.center
+    })
+    transformManager.add(rotation);
+
+    // Scaling
+    scaling.configure({
+      sx: transformUi.scale.Sx,
+      sy: transformUi.scale.Sy,
+      sz: transformUi.scale.Sz,
+      center: obj.center
+    })
+    transformManager.add(scaling);
+
+    obj.transform.update(transformManager.matrix)
   });
 
   /* Event listeners */
