@@ -3,4 +3,4 @@ node_modules/
 package.json
 yarn*
 package-lock.json
-static
+static/
