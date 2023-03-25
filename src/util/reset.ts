@@ -2,7 +2,7 @@ export function reset() {
   console.log("reset");
 
   // Reset the camera
-  resetElementValue("camera-radius", "input", "0");
+  resetElementValue("camera-radius", "input", "1");
   resetElementValue("camera-xangle", "input", "0");
   resetElementValue("camera-yangle", "input", "0");
 

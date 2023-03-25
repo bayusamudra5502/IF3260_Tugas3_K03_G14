@@ -8,7 +8,6 @@ import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { ViewTransform } from "./matrix/ViewTransform";
 import { Color } from "./object/Color";
-import { reset } from "./reset";
 import { Rotation } from "./transform/Rotation";
 import { Scaling } from "./transform/Scaling";
 import { Translation } from "./transform/Translation";
@@ -16,6 +15,7 @@ import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
 import { Importer } from "./util/Importer";
+import { reset } from "./util/reset";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -116,17 +116,6 @@ function main() {
     rerender();
   });
 
-  /* Event listeners */
-  document.querySelector("#loadfile-submit").addEventListener("click", () => {
-    importer.import();
-  });
-
-  document.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      reset();
-    }
-  });
-
   objManager.subscribe(rerender);
   projManager.subscribe(rerender);
   cameraManager.subscribe(rerender);
@@ -134,12 +123,23 @@ function main() {
   envManager.subscribe(rerender);
   lightUi.subscribe(rerender);
 
-  //   let angle = 0;
-  //   const loop = () => {
-  //     angle = (angle + 1) % 360;
-  //     requestAnimationFrame(loop);
-  //   };
-  //   requestAnimationFrame(loop);
+  /* Event listeners */
+  const resetButton = document.querySelector("#reset-button");
+  const rerenderButton = document.querySelector("#rerender-button");
+
+  resetButton.addEventListener("click", () => {
+    reset();
+  });
+
+  rerenderButton.addEventListener("click", () => {
+    rerender();
+  });
+
+  document.querySelector("#loadfile-submit").addEventListener("click", () => {
+    importer.import();
+    resetButton.removeAttribute("disabled");
+    rerenderButton.removeAttribute("disabled");
+  });
 }
 
 main();
