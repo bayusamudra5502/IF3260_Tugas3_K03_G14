@@ -145,7 +145,9 @@ function main() {
     requestAnimationFrame(loop);
   });
 
-  let angle = 0;
+  let angleX = 0;
+  let angleY = 0;
+  let angleZ = 0;
   const rotationX = document.querySelector("#rotation-x") as HTMLInputElement;
   const rotationY = document.querySelector("#rotation-y") as HTMLInputElement;
   const rotationZ = document.querySelector("#rotation-z") as HTMLInputElement;
@@ -161,20 +163,24 @@ function main() {
   ) as HTMLInputElement;
 
   const loop = () => {
-    angle = (angle + 0.25) % 360;
     if (isRotationX.checked) {
-      rotationX.value = angle.toString();
+      angleX = (angleX + 0.25) % 360;
+      rotationX.value = angleX.toString();
       rotationX.dispatchEvent(new Event("change"));
     }
+    
     if (isRotationY.checked) {
-      rotationY.value = angle.toString();
+      angleY = (angleY + 0.25) % 360;
+      rotationY.value = angleY.toString();
       rotationY.dispatchEvent(new Event("change"));
     }
+    
     if (isRotationZ.checked) {
-      rotationZ.value = angle.toString();
+      angleZ = (angleZ + 0.25) % 360;
+      rotationZ.value = angleZ.toString();
       rotationZ.dispatchEvent(new Event("change"));
     }
-
+    
     requestAnimationFrame(loop);
   };
 }
