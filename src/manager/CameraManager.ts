@@ -14,17 +14,17 @@ export class CameraManager extends Transform {
 
     const rotation = new Rotation();
 
-    rotation.configure({
-      angleX: transformValue.xAngle,
-      angleY: transformValue.yAngle,
-    });
-    transformCalc.add(rotation);
-
     const translation = new Translation();
     translation.configure({
       z: transformValue.radius,
     });
     transformCalc.add(translation);
+
+    rotation.configure({
+      angleX: transformValue.xAngle,
+      angleY: transformValue.yAngle,
+    });
+    transformCalc.add(rotation);
 
     const newMatrix = Matrix.inverse(Matrix.transpose(transformCalc.matrix));
     super.updateMatrix(newMatrix);
