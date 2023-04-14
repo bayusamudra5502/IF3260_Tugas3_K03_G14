@@ -18,9 +18,9 @@ import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { CameraUi } from "./ui/CameraUi";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { LightRenderExtension } from "./engine/extensions/local/LightRender";
+import { LightRenderExtension } from "./engine/extensions/object/LightRender";
 import DrawInfo from "./object/DrawInfo";
-import { RenderModeExtension } from "./engine/extensions/global/RenderMode";
+import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -39,7 +39,7 @@ function main() {
   );
 
   /* Setup global extension */
-  engine.addGlobalExtension(extensionBuilder.build(RenderModeExtension, {}));
+  engine.addInitialExtension(extensionBuilder.build(RenderModeExtension, {}));
 
   /* */
   engine.clear();

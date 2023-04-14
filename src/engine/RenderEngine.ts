@@ -14,7 +14,7 @@ export default class RenderEngine {
   private webglContext: WebGLRenderingContext;
   private shaderLocation: ShaderVariableLocation;
   private typeMap: DrawTypeMap;
-  private globalExtensions: RenderExtension[] = [];
+  private initialExtensions: RenderExtension[] = [];
 
   constructor(
     private renderCanvas: Canvas,
@@ -36,8 +36,8 @@ export default class RenderEngine {
     };
   }
 
-  addGlobalExtension(...extensions: RenderExtension[]) {
-    this.globalExtensions = this.globalExtensions.concat(extensions);
+  addInitialExtension(...extensions: RenderExtension[]) {
+    this.initialExtensions = this.initialExtensions.concat(extensions);
     return this;
   }
 
@@ -52,7 +52,7 @@ export default class RenderEngine {
     this.renderCanvas.setViewPort();
 
     /* Run all global extensions */
-    for (const extension of this.globalExtensions) {
+    for (const extension of this.initialExtensions) {
       extension.run(this.webglContext, this.buffer);
     }
   }
