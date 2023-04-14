@@ -15,7 +15,7 @@ jobs:
       - name: Building Website
         run: ./compile.sh
       - name: Menambahkan file CNAME
-        run: echo "articulated-model.bayusamudra.my.id" > ./build/CNAME
+        run: echo "articulated-model.bayusamudra.my.id" > CNAME
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3
         with:
