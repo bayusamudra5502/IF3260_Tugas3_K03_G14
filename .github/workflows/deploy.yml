@@ -14,12 +14,15 @@ jobs:
         run: chmod +x compile.sh
       - name: Building Website
         run: ./compile.sh
-      - name: Menambahkan file CNAME
-        run: echo "articulated-model.bayusamudra.my.id" > CNAME
       - name: Remove gitignore and src
         run: rm .gitignore && rm -r src
+      - name: Move builded files to build folder
+        run: |
+          mkdir build && mv *.html build && mv *.css build && mv -r static build && mv -r doc build
+      - name: Menambahkan file CNAME
+        run: echo "articulated-model.bayusamudra.my.id" > ./build/CNAME
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./build
