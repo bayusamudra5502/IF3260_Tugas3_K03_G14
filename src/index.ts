@@ -17,6 +17,9 @@ import { TransformUi } from "./ui/TransformUi";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { CameraUi } from "./ui/CameraUi";
+import { ExtensionBuilder } from "./engine/ExtensionBuilder";
+import { LightRender } from "./engine/extensions/LightRender";
+import DrawInfo from "./object/DrawInfo";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -24,6 +27,8 @@ function main() {
   const shader = new ShaderProgram("vertex-shader", "fragment-shader", canvas);
 
   shader.compile();
+
+  const extensionBuilder = new ExtensionBuilder(shader);
 
   const engine = new RenderEngine(
     canvas,
@@ -45,7 +50,17 @@ function main() {
     setTimeout(() => {
       const objs = objManager.generateDrawInfo();
       for (const obj of objs) {
-        engine.render(obj);
+        const extension = extensionBuilder.build(LightRender, {
+          lightColor: obj.lightColor,
+          lightSource: obj.lightSource,
+          normals: obj.normals,
+          useShading: obj.useShading,
+        });
+
+        engine.render({
+          ...obj,
+          extensions: [extension],
+        } as DrawInfo);
       }
     }, 0);
   };

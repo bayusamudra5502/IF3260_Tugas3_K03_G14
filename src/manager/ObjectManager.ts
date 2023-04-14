@@ -50,6 +50,7 @@ export class ObjectManager extends Listenable {
         vertices: obj.vertices,
         useShading: this.env.useShading,
         lightColor: this.env.lightColor,
+        extensions: [],
       };
       result.push(info);
     }

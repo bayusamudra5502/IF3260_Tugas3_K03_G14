@@ -9,11 +9,6 @@ export interface ShaderAttribute {
   position: string;
   color: string;
   resolution: string;
-  normal: string;
-
-  lightSource: string;
-  lightColor: string;
-  useShading: string;
 }
 
 export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
@@ -25,10 +20,6 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
   },
   position: "position",
   resolution: "resolution",
-  normal: "normal",
-  lightSource: "lightSource",
-  lightColor: "lightColor",
-  useShading: "useShading",
 };
 
 export interface ShaderVariableLocation {
@@ -42,11 +33,6 @@ export interface ShaderVariableLocation {
   };
   vertices: number;
   color: number;
-  normal: number;
-
-  lightSource: WebGLUniformLocation;
-  lightColor: WebGLUniformLocation;
-  useShading: WebGLUniformLocation;
 }
 
 export class ShaderProgram {
@@ -56,7 +42,7 @@ export class ShaderProgram {
 
   private isLoaded: boolean = false;
 
-  private program: WebGLProgram;
+  private webglProgram: WebGLProgram;
 
   constructor(
     private vertexShaderId: string,
@@ -65,6 +51,14 @@ export class ShaderProgram {
     private shaderAttribute: ShaderAttribute = SHADER_ATTR_DEFAULT
   ) {
     this.gl = canvas.getContext();
+  }
+
+  public getAttributeLocation(variableName: string) {
+    return this.gl.getAttribLocation(this.webglProgram, variableName);
+  }
+
+  public getUniformLocation(variableName: string) {
+    return this.gl.getUniformLocation(this.webglProgram, variableName);
   }
 
   public loadCode() {
@@ -114,55 +108,26 @@ export class ShaderProgram {
     this.gl.attachShader(program, fragmentShader);
     this.gl.linkProgram(program);
 
-    this.program = program;
+    this.webglProgram = program;
 
     return this;
   }
 
   public load(): ShaderVariableLocation {
-    this.gl.useProgram(this.program);
+    this.gl.useProgram(this.webglProgram);
 
-    const transformMatrix = this.gl.getUniformLocation(
-      this.program,
+    const transformMatrix = this.getUniformLocation(
       this.shaderAttribute.matrix.transform
     );
-    const cameraMatrix = this.gl.getUniformLocation(
-      this.program,
+    const cameraMatrix = this.getUniformLocation(
       this.shaderAttribute.matrix.camera
     );
-    const projectionMatrix = this.gl.getUniformLocation(
-      this.program,
+    const projectionMatrix = this.getUniformLocation(
       this.shaderAttribute.matrix.projection
     );
-
-    const position = this.gl.getAttribLocation(
-      this.program,
-      this.shaderAttribute.position
-    );
-    const color = this.gl.getAttribLocation(
-      this.program,
-      this.shaderAttribute.color
-    );
-    const resolution = this.gl.getUniformLocation(
-      this.program,
-      this.shaderAttribute.resolution
-    );
-    const lightSource = this.gl.getUniformLocation(
-      this.program,
-      this.shaderAttribute.lightSource
-    );
-    const lightColor = this.gl.getUniformLocation(
-      this.program,
-      this.shaderAttribute.lightColor
-    );
-    const useShading = this.gl.getUniformLocation(
-      this.program,
-      this.shaderAttribute.useShading
-    );
-    const normal = this.gl.getAttribLocation(
-      this.program,
-      this.shaderAttribute.normal
-    );
+    const position = this.getAttributeLocation(this.shaderAttribute.position);
+    const color = this.getAttributeLocation(this.shaderAttribute.color);
+    const resolution = this.getUniformLocation(this.shaderAttribute.resolution);
 
     return {
       matrix: {
@@ -175,10 +140,6 @@ export class ShaderProgram {
       },
       vertices: position,
       color,
-      normal,
-      lightSource,
-      lightColor,
-      useShading,
     };
   }
 }

@@ -3,7 +3,6 @@ import DrawInfo from "../object/DrawInfo";
 
 interface EnginePrimitive {
   vertices: Float32Array;
-  normals: Float32Array;
   color: Float32Array;
   indices: Uint16Array;
   matrix: {
@@ -12,9 +11,6 @@ interface EnginePrimitive {
     projection: number[];
   };
   size: number;
-  lightSource: Float32Array;
-  lightColor: Float32Array;
-  useShading: number;
 }
 
 export function padding(str: string, length: number = 2, pad: string = "0") {
@@ -77,14 +73,6 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     }
   }
 
-  const flatNormal = [];
-  for (let i of draw.normals) {
-    const value = i.getArray();
-    for (let j of value) {
-      flatNormal.push(j);
-    }
-  }
-
   const tMatrix = Matrix.transpose(draw.matrix.transform);
   const pMatrix = Matrix.transpose(draw.matrix.projection);
   //   const vMatrix = Matrix.transpose(draw.matrix.view);
@@ -100,9 +88,5 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
       view: flatten(vMatrix),
     },
     size: indices.length,
-    normals: new Float32Array(flatNormal),
-    lightSource: new Float32Array(draw.lightSource.getArray()),
-    lightColor: new Float32Array(draw.lightColor.getArray()),
-    useShading: draw.useShading ? 1 : 0,
   };
 }

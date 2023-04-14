@@ -3,6 +3,7 @@ import DrawInfo, { DrawMode } from "../object/DrawInfo";
 import { drawableToPrimitive } from "../util/util";
 import { Buffer } from "./Buffer";
 import { Canvas } from "./Canvas";
+import { RenderExtension } from "./RenderExtension";
 import { ShaderProgram, ShaderVariableLocation } from "./Shader";
 
 type DrawTypeMap = {
@@ -13,6 +14,7 @@ export default class RenderEngine {
   private webglContext: WebGLRenderingContext;
   private shaderLocation: ShaderVariableLocation;
   private typeMap: DrawTypeMap;
+  private initialExtensions: RenderExtension[] = [];
 
   constructor(
     private renderCanvas: Canvas,
@@ -37,6 +39,11 @@ export default class RenderEngine {
     this.webglContext.enable(this.webglContext.CULL_FACE);
   }
 
+  addInitialExtension(...extensions: RenderExtension[]) {
+    this.initialExtensions = this.initialExtensions.concat(extensions);
+    return this;
+  }
+
   public clear() {
     this.webglContext.clearColor(
       this.backColor.r,
@@ -46,6 +53,10 @@ export default class RenderEngine {
     );
 
     this.renderCanvas.setViewPort();
+
+    for (const extension of this.initialExtensions) {
+      extension.run(this.webglContext, this.buffer);
+    }
 
     this.webglContext.clear(
       this.webglContext.COLOR_BUFFER_BIT | this.webglContext.DEPTH_BUFFER_BIT
@@ -69,28 +80,11 @@ export default class RenderEngine {
     // Buffer data
     this.buffer.fillFloat("vertices", primitive.vertices);
     this.buffer.fillFloat("colors", primitive.color);
-    this.buffer.fillFloat("normal", primitive.normals);
-    this.buffer.fillFloat("lightSource", primitive.lightSource);
     this.buffer.fillUint("indices", primitive.indices);
 
     // Data binding
     this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
     this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
-    this.bind(this.shaderLocation.normal, this.buffer.get("normal"), 4);
-
-    // Lightsource bind
-    this.webglContext.uniform4fv(
-      this.shaderLocation.lightSource,
-      primitive.lightSource
-    );
-    this.webglContext.uniform4fv(
-      this.shaderLocation.lightColor,
-      primitive.lightColor
-    );
-    this.webglContext.uniform1i(
-      this.shaderLocation.useShading,
-      primitive.useShading
-    );
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(
@@ -115,6 +109,10 @@ export default class RenderEngine {
   }
 
   public render(object: DrawInfo) {
+    for (const renderExtension of object.extensions) {
+      renderExtension.run(this.webglContext, this.buffer);
+    }
+
     const primitive = this.prepareBuffer(object);
 
     this.webglContext.bindBuffer(

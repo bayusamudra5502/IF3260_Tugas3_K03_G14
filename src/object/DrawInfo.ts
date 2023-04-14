@@ -2,6 +2,7 @@ import { Color } from "./Color";
 import { Matrix } from "../matrix/Matrix";
 import { Vertex } from "./Vertices";
 import { Vector } from "./Vector";
+import { RenderExtension } from "../engine/RenderExtension";
 
 export type DrawMode =
   | "line"
@@ -25,4 +26,5 @@ export default interface DrawInfo {
   lightSource: Vertex;
   lightColor: Color;
   useShading: boolean;
+  extensions: RenderExtension[];
 }
