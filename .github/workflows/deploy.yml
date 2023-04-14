@@ -1,0 +1,25 @@
+name: Deploy Website Grafkom
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Menginstall Depedencies
+        run: npm install -g tsc
+      - name: Allow ./compile.sh
+        run: chmod +x compile.sh
+      - name: Building Website
+        run: ./compile.sh
+      - name: Menambahkan file CNAME
+        run: echo "articulated-model.bayusamudra.my.id" > ./build/CNAME
+      - name: Deploy Website
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
