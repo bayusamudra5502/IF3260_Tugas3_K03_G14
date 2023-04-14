@@ -1,8 +1,8 @@
-import { Color } from "../../object/Color";
-import { Vertex } from "../../object/Vertices";
-import { Buffer } from "../Buffer";
-import { RenderExtension } from "../RenderExtension";
-import { ShaderProgram } from "../Shader";
+import { Color } from "../../../object/Color";
+import { Vertex } from "../../../object/Vertices";
+import { Buffer } from "../../Buffer";
+import { RenderExtension } from "../../RenderExtension";
+import { ShaderProgram } from "../../Shader";
 
 export interface LightRenderOption {
   lightColor: Color;
@@ -12,7 +12,7 @@ export interface LightRenderOption {
   renderAttribute?: LightRenderShaderAttribute;
 }
 
-export class LightRender extends RenderExtension {
+export class LightRenderExtension extends RenderExtension {
   private shaderLocation: LightRenderShaderLocation;
   private lightColor: Color;
   private lightSource: Vertex;

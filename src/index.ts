@@ -18,8 +18,9 @@ import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { CameraUi } from "./ui/CameraUi";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { LightRender } from "./engine/extensions/LightRender";
+import { LightRenderExtension } from "./engine/extensions/local/LightRender";
 import DrawInfo from "./object/DrawInfo";
+import { RenderModeExtension } from "./engine/extensions/global/RenderMode";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -37,6 +38,10 @@ function main() {
     new Color(0.5, 0.5, 0.5, 1)
   );
 
+  /* Setup global extension */
+  engine.addGlobalExtension(extensionBuilder.build(RenderModeExtension, {}));
+
+  /* */
   engine.clear();
 
   /* UI Setup */
@@ -50,7 +55,7 @@ function main() {
     setTimeout(() => {
       const objs = objManager.generateDrawInfo();
       for (const obj of objs) {
-        const extension = extensionBuilder.build(LightRender, {
+        const extension = extensionBuilder.build(LightRenderExtension, {
           lightColor: obj.lightColor,
           lightSource: obj.lightSource,
           normals: obj.normals,

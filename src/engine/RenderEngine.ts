@@ -14,7 +14,7 @@ export default class RenderEngine {
   private webglContext: WebGLRenderingContext;
   private shaderLocation: ShaderVariableLocation;
   private typeMap: DrawTypeMap;
-  private initialExtensions: RenderExtension[] = [];
+  private globalExtensions: RenderExtension[] = [];
 
   constructor(
     private renderCanvas: Canvas,
@@ -34,13 +34,10 @@ export default class RenderEngine {
       "triangle-strip": this.webglContext.TRIANGLE_STRIP,
       "triangle-fan": this.webglContext.TRIANGLE_FAN,
     };
-
-    this.webglContext.enable(this.webglContext.DEPTH_TEST);
-    this.webglContext.enable(this.webglContext.CULL_FACE);
   }
 
-  addInitialExtension(...extensions: RenderExtension[]) {
-    this.initialExtensions = this.initialExtensions.concat(extensions);
+  addGlobalExtension(...extensions: RenderExtension[]) {
+    this.globalExtensions = this.globalExtensions.concat(extensions);
     return this;
   }
 
@@ -54,13 +51,10 @@ export default class RenderEngine {
 
     this.renderCanvas.setViewPort();
 
-    for (const extension of this.initialExtensions) {
+    /* Run all global extensions */
+    for (const extension of this.globalExtensions) {
       extension.run(this.webglContext, this.buffer);
     }
-
-    this.webglContext.clear(
-      this.webglContext.COLOR_BUFFER_BIT | this.webglContext.DEPTH_BUFFER_BIT
-    );
   }
 
   private bind(
@@ -109,10 +103,12 @@ export default class RenderEngine {
   }
 
   public render(object: DrawInfo) {
+    /* Run all local extension */
     for (const renderExtension of object.extensions) {
       renderExtension.run(this.webglContext, this.buffer);
     }
 
+    /* Bind all object to buffer */
     const primitive = this.prepareBuffer(object);
 
     this.webglContext.bindBuffer(

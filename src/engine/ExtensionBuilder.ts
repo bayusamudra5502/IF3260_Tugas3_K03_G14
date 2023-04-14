@@ -4,7 +4,7 @@ import { ShaderProgram } from "./Shader";
 export class ExtensionBuilder {
   constructor(private program: ShaderProgram) {}
 
-  build<T, U>(
+  build<T, U extends RenderExtension>(
     extensionConstructor: new (program: ShaderProgram, option: T) => U,
     options: T
   ): U {
