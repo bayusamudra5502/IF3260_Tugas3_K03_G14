@@ -6,7 +6,7 @@ import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ObjectManager } from "./manager/ObjectManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
-import { ViewTransform } from "./matrix/ViewTransform";
+import { CameraManager } from "./manager/CameraManager";
 import { Color } from "./object/Color";
 import { Rotation } from "./transform/Rotation";
 import { Scaling } from "./transform/Scaling";
@@ -16,6 +16,7 @@ import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
+import { CameraUi } from "./ui/CameraUi";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -37,6 +38,7 @@ function main() {
   const projectionUi = new ProjectionUi(canvas.aspectRatio);
   const lightUi = new LightUi();
   const transformUi = new TransformUi();
+  const cameraUi = new CameraUi();
 
   /* Setup manager */
   const rerender = () => {
@@ -49,12 +51,10 @@ function main() {
   };
 
   const projManager = new ProjectionManager();
-  const cameraManager = new TransformManager();
-  const viewTransform = new ViewTransform();
+  const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
   envManager.update({
-    cameraTransform: cameraManager,
-    viewTransform: viewTransform,
+    cameraManager: cameraManager,
     projection: projManager,
     useShading: true,
   });
@@ -115,14 +115,20 @@ function main() {
     });
     transformManager.add(translation);
 
-    obj.transform.update(transformManager.matrix);
+    obj.transform.updateMatrix(transformManager.matrix);
     rerender();
+  });
+  cameraUi.subscribe(() => {
+    cameraManager.update({
+      radius: cameraUi.radius,
+      xAngle: cameraUi.xAngle,
+      yAngle: cameraUi.yAngle,
+    });
   });
 
   objManager.subscribe(rerender);
   projManager.subscribe(rerender);
   cameraManager.subscribe(rerender);
-  viewTransform.subscribe(rerender);
   envManager.subscribe(rerender);
   lightUi.subscribe(rerender);
 
@@ -168,19 +174,19 @@ function main() {
       rotationX.value = angleX.toString();
       rotationX.dispatchEvent(new Event("change"));
     }
-    
+
     if (isRotationY.checked) {
       angleY = (angleY + 0.25) % 360;
       rotationY.value = angleY.toString();
       rotationY.dispatchEvent(new Event("change"));
     }
-    
+
     if (isRotationZ.checked) {
       angleZ = (angleZ + 0.25) % 360;
       rotationZ.value = angleZ.toString();
       rotationZ.dispatchEvent(new Event("change"));
     }
-    
+
     requestAnimationFrame(loop);
   };
 }

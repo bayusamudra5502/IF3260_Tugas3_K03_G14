@@ -1,4 +1,4 @@
-import { ViewTransform } from "../matrix/ViewTransform";
+import { CameraManager } from "./CameraManager";
 import { Color } from "../object/Color";
 import { Vertex } from "../object/Vertices";
 import { Listenable } from "../util/Listenable";
@@ -8,24 +8,22 @@ import { TransformManager } from "./TransformManager";
 export interface EnvironmentOptions {
   sourceLight?: Vertex;
   sourceLightColor?: Color;
-  cameraTransform?: TransformManager;
   projection?: ProjectionManager;
 
-  viewTransform?: ViewTransform;
+  cameraManager?: CameraManager;
   useShading?: boolean;
 }
 
 export class EnvironmentManager extends Listenable {
   private sourceLightData: Vertex = new Vertex(0, 0, 1);
   private projectionData: ProjectionManager = new ProjectionManager();
-  private viewTransform: ViewTransform;
+  private cameraManager: CameraManager;
   private useShadingData: boolean = true;
   private sourceLightColor: Color = Color.hex("#FFFFFF");
 
   update(options: EnvironmentOptions) {
     options.projection && (this.projectionData = options.projection);
-    // options.cameraTransform && this.configureCamera(options.cameraTransform);
-    options.viewTransform && (this.viewTransform = options.viewTransform);
+    options.cameraManager && (this.cameraManager = options.cameraManager);
     options.sourceLight && (this.sourceLightData = options.sourceLight);
     options.useShading != undefined &&
       (this.useShadingData = options.useShading);
@@ -44,7 +42,7 @@ export class EnvironmentManager extends Listenable {
   }
 
   get viewMatrix() {
-    return this.viewTransform.matrix;
+    return this.cameraManager.matrix;
   }
 
   get projectionMatrix() {
