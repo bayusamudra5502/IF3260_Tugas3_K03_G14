@@ -1,0 +1,1 @@
+{"version":3,"file":"ExtensionBuilder.js","sourceRoot":"","sources":["../../src/engine/ExtensionBuilder.ts"],"names":[],"mappings":"AAGA;IACE,0BAAoB,OAAsB;QAAtB,YAAO,GAAP,OAAO,CAAe;IAAG,CAAC;IAE9C,gCAAK,GAAL,UACE,oBAAkE,EAClE,OAAU;QAEV,OAAO,IAAI,oBAAoB,CAAC,IAAI,CAAC,OAAO,EAAE,OAAO,CAAC,CAAC;IACzD,CAAC;IACH,uBAAC;AAAD,CAAC,AATD,IASC"}
