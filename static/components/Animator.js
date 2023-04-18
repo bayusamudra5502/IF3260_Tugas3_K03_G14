@@ -45,6 +45,48 @@ var RotationAnimator = /** @class */ (function (_super) {
         this.transform.updateMatrix(rotation.matrix);
         return null;
     };
+    RotationAnimator.fromConfig = function (config) {
+        if (config.max_degree < config.min_degree) {
+            throw new Error("max degree must be greater or equal to min degree");
+        }
+        if (config.start_degree > config.max_degree) {
+            throw new Error("max degree must be greater or equal to start degree");
+        }
+        if (config.min_degree > config.start_degree) {
+            throw new Error("star degree must be greater or equal to min degree");
+        }
+        var framesDegree = [config.start_degree];
+        var loopSize = Math.abs(config.max_degree - config.min_degree) +
+            Math.abs(config.start_degree - config.max_degree) +
+            Math.abs(config.max_degree - config.start_degree);
+        var deltaSize = loopSize / config.frame_count;
+        var currentDegree = config.start_degree;
+        // From start to max
+        while (currentDegree < config.max_degree) {
+            currentDegree += deltaSize;
+            framesDegree.push(currentDegree);
+        }
+        // From max to min
+        currentDegree = 2 * config.max_degree - currentDegree;
+        framesDegree.push(currentDegree);
+        while (currentDegree > config.min_degree) {
+            currentDegree -= deltaSize;
+            framesDegree.push(currentDegree);
+        }
+        // From min to start
+        currentDegree = 2 * config.min_degree + currentDegree;
+        framesDegree.push(currentDegree);
+        while (currentDegree < config.start_degree) {
+            currentDegree += deltaSize;
+            framesDegree.push(currentDegree);
+        }
+        var frames = config.clockwise ? framesDegree : framesDegree.reverse();
+        return new RotationAnimator({
+            axis: config.start_degree,
+            degreeFrames: frames,
+            transform: config.transform,
+        });
+    };
     return RotationAnimator;
 }(StateComponent));
 export { RotationAnimator };

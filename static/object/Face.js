@@ -4,13 +4,21 @@ var Face = /** @class */ (function () {
         this.verticesData = options.isInverted
             ? options.vertices.reverse()
             : options.vertices;
-        this.colorsData = options.colors;
+        if (options.color instanceof Array) {
+            this.colorsData = options.color;
+        }
+        else {
+            this.colorsData = [];
+            for (var i = 0; i < this.verticesData.length; i++) {
+                this.colorsData.push(options.color);
+            }
+        }
         this.makeTriangle();
         this.calculateNormal();
     }
     Object.defineProperty(Face.prototype, "vertices", {
         get: function () {
-            return this.indiciesData;
+            return this.vertices;
         },
         enumerable: false,
         configurable: true
