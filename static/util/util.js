@@ -36,9 +36,6 @@ export function drawableToPrimitive(draw) {
     if (vertices.length != colors.length) {
         throw new Error("color and vertices count is not equal");
     }
-    if (draw.normals.length != vertices.length) {
-        throw new Error("normal and vertices count is not equal");
-    }
     var flatVertices = [];
     for (var _i = 0, vertices_1 = vertices; _i < vertices_1.length; _i++) {
         var i = vertices_1[_i];

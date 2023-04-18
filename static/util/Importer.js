@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { Object3D } from "../object/Object3D.js";
+import { ObjectOld3D } from "../object/ObjectOld3D.js";
 var Importer = /** @class */ (function () {
     function Importer(objectManager, fileId) {
         this.objectManager = objectManager;
@@ -67,7 +67,7 @@ var Importer = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         this.prevFile = fileData;
-                        object = Object3D.load(fileData);
+                        object = ObjectOld3D.load(fileData);
                         this.objectManager.add(object);
                         return [2 /*return*/];
                 }

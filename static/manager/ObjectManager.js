@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { Listenable } from "../util/Listenable.js";
-var ObjectManager = /** @class */ (function (_super) {
-    __extends(ObjectManager, _super);
-    function ObjectManager(env, mode) {
+var ObjectManagerOld = /** @class */ (function (_super) {
+    __extends(ObjectManagerOld, _super);
+    function ObjectManagerOld(env, mode) {
         if (mode === void 0) { mode = "triangle"; }
         var _this = _super.call(this) || this;
         _this.env = env;
@@ -24,46 +24,43 @@ var ObjectManager = /** @class */ (function (_super) {
         _this.objects = [];
         return _this;
     }
-    ObjectManager.prototype.add = function (object) {
+    ObjectManagerOld.prototype.add = function (object) {
         this.objects.push(object);
         this.notify();
     };
-    ObjectManager.prototype.get = function (idx) {
+    ObjectManagerOld.prototype.get = function (idx) {
         return this.objects[idx];
     };
-    ObjectManager.prototype.delete = function (idx) {
+    ObjectManagerOld.prototype.delete = function (idx) {
         this.objects.splice(idx, 1);
         this.notify();
     };
-    ObjectManager.prototype.deleteAll = function () {
+    ObjectManagerOld.prototype.deleteAll = function () {
         this.objects = [];
         this.notify();
     };
-    ObjectManager.prototype.generateDrawInfo = function () {
+    ObjectManagerOld.prototype.generateDrawInfo = function () {
         var result = [];
         for (var _i = 0, _a = this.objects; _i < _a.length; _i++) {
             var obj = _a[_i];
             var info = {
                 colors: obj.colors,
                 indices: obj.indicies,
-                lightSource: this.env.lightPosition,
                 mode: this.mode,
                 matrix: {
                     projection: this.env.projectionMatrix,
                     transform: obj.transform.matrix,
                     view: this.env.viewMatrix,
                 },
-                normals: obj.normal,
                 vertices: obj.vertices,
-                useShading: this.env.useShading,
-                lightColor: this.env.lightColor,
+                normals: obj.normal,
                 extensions: [],
             };
             result.push(info);
         }
         return result;
     };
-    return ObjectManager;
+    return ObjectManagerOld;
 }(Listenable));
-export { ObjectManager };
+export { ObjectManagerOld };
 //# sourceMappingURL=ObjectManager.js.map

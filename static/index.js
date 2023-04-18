@@ -14,7 +14,7 @@ import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
 import { EnvironmentManager } from "./manager/EnvironmentManager.js";
-import { ObjectManager } from "./manager/ObjectManager.js";
+import { ObjectManagerOld } from "./manager/ObjectManager.js";
 import { ProjectionManager } from "./manager/ProjectionManager.js";
 import { TransformManager } from "./manager/TransformManager.js";
 import { CameraManager } from "./manager/CameraManager.js";
@@ -54,10 +54,10 @@ function main() {
             for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
                 var obj = objs_1[_i];
                 var extension = extensionBuilder.build(LightRenderExtension, {
-                    lightColor: obj.lightColor,
-                    lightSource: obj.lightSource,
+                    lightColor: envManager.lightColor,
+                    lightSource: envManager.lightPosition,
                     normals: obj.normals,
-                    useShading: obj.useShading,
+                    useShading: envManager.useShading,
                 });
                 engine.render(__assign(__assign({}, obj), { extensions: [extension] }));
             }
@@ -71,7 +71,7 @@ function main() {
         projection: projManager,
         useShading: true,
     });
-    var objManager = new ObjectManager(envManager, "triangle");
+    var objManager = new ObjectManagerOld(envManager, "triangle");
     /* Setup importer */
     var importer = new Importer(objManager, "loadfile-input");
     /* Bind Configuration */
