@@ -1,5 +1,4 @@
 import { Transform } from "../matrix/Transform";
-import { getNormal, vectorFromVertex } from "../util/vector";
 import { Color } from "./Color";
 import { Vector } from "./Vector";
 import { Vertex } from "./Vertices";
@@ -62,10 +61,10 @@ export class Face {
       throw new Error("vertices length at least 3");
     }
 
-    const v1 = vectorFromVertex(this.verticesData[0], this.verticesData[1]);
-    const v2 = vectorFromVertex(this.verticesData[1], this.verticesData[2]);
+    const v1 = Vector.fromVertex(this.verticesData[0], this.verticesData[1]);
+    const v2 = Vector.fromVertex(this.verticesData[1], this.verticesData[2]);
 
-    const normal = getNormal(v1, v2);
+    const normal = Vector.normal(v1, v2);
 
     for (let i = 0; i < this.indiciesData.length; i++) {
       this.normalData.push(normal);
