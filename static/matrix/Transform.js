@@ -28,11 +28,14 @@ var Transform = /** @class */ (function (_super) {
     };
     Object.defineProperty(Transform.prototype, "matrix", {
         get: function () {
-            return this.matrixData;
+            return this.getMatrix();
         },
         enumerable: false,
         configurable: true
     });
+    Transform.prototype.getMatrix = function () {
+        return this.matrixData;
+    };
     return Transform;
 }(Listenable));
 export { Transform };
