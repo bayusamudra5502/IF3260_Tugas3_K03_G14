@@ -46,4 +46,66 @@ export class RotationAnimator extends StateComponent {
 
     return null;
   }
+
+  static fromConfig(config: AnimatorConfig) {
+    if (config.max_degree < config.min_degree) {
+      throw new Error("max degree must be greater or equal to min degree");
+    }
+    if (config.start_degree > config.max_degree) {
+      throw new Error("max degree must be greater or equal to start degree");
+    }
+    if (config.min_degree > config.start_degree) {
+      throw new Error("star degree must be greater or equal to min degree");
+    }
+
+    const framesDegree: number[] = [config.start_degree];
+    const loopSize =
+      Math.abs(config.max_degree - config.min_degree) +
+      Math.abs(config.start_degree - config.max_degree) +
+      Math.abs(config.max_degree - config.start_degree);
+
+    const deltaSize = loopSize / config.frame_count;
+    let currentDegree = config.start_degree;
+
+    // From start to max
+    while (currentDegree < config.max_degree) {
+      currentDegree += deltaSize;
+      framesDegree.push(currentDegree);
+    }
+
+    // From max to min
+    currentDegree = 2 * config.max_degree - currentDegree;
+    framesDegree.push(currentDegree);
+
+    while (currentDegree > config.min_degree) {
+      currentDegree -= deltaSize;
+      framesDegree.push(currentDegree);
+    }
+
+    // From min to start
+    currentDegree = 2 * config.min_degree + currentDegree;
+    framesDegree.push(currentDegree);
+
+    while (currentDegree < config.start_degree) {
+      currentDegree += deltaSize;
+      framesDegree.push(currentDegree);
+    }
+
+    const frames = config.clockwise ? framesDegree : framesDegree.reverse();
+    return new RotationAnimator({
+      axis: config.start_degree,
+      degreeFrames: frames,
+      transform: config.transform,
+    });
+  }
+}
+
+export interface AnimatorConfig {
+  rotation_axis: RotationAxis;
+  max_degree: number;
+  min_degree: number;
+  start_degree: number;
+  clockwise: number;
+  frame_count: number;
+  transform: Transform;
 }

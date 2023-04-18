@@ -1,4 +1,5 @@
 import { Transform } from "../matrix/Transform";
+import { Color } from "./Color";
 import { Component } from "./Component";
 import { Face } from "./Face";
 import { Vertex } from "./Vertices";

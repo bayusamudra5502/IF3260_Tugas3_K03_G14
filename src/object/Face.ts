@@ -5,7 +5,7 @@ import { Vertex } from "./Vertices";
 
 export interface FaceOptions {
   vertices: Vertex[];
-  colors: Color[];
+  color: Color[] | Color;
   isInverted: boolean;
 }
 
@@ -21,14 +21,22 @@ export class Face {
       ? options.vertices.reverse()
       : options.vertices;
 
-    this.colorsData = options.colors;
+    if (options.color instanceof Array) {
+      this.colorsData = options.color;
+    } else {
+      this.colorsData = [];
+
+      for (let i = 0; i < this.verticesData.length; i++) {
+        this.colorsData.push(options.color);
+      }
+    }
 
     this.makeTriangle();
     this.calculateNormal();
   }
 
   get vertices() {
-    return this.indiciesData;
+    return this.vertices;
   }
 
   get colors() {
