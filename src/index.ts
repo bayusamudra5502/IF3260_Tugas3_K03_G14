@@ -3,7 +3,7 @@ import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
-import { ObjectManagerOld } from "./manager/ObjectManager";
+import { ObjectManagerOld } from "./manager/ObjectManagerOld";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { CameraManager } from "./manager/CameraManager";

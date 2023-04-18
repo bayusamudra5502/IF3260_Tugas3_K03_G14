@@ -1,4 +1,4 @@
-import { ObjectManagerOld } from "../manager/ObjectManager";
+import { ObjectManagerOld } from "../manager/ObjectManagerOld";
 import { ObjectOld3D } from "../object/ObjectOld3D";
 
 export class Importer {
