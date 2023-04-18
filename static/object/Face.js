@@ -1,4 +1,4 @@
-import { getNormal, vectorFromVertex } from "../util/vector.js";
+import { Vector } from "./Vector.js";
 var Face = /** @class */ (function () {
     function Face(options) {
         this.verticesData = options.isInverted
@@ -50,9 +50,9 @@ var Face = /** @class */ (function () {
         if (this.indiciesData.length < 3) {
             throw new Error("vertices length at least 3");
         }
-        var v1 = vectorFromVertex(this.verticesData[0], this.verticesData[1]);
-        var v2 = vectorFromVertex(this.verticesData[1], this.verticesData[2]);
-        var normal = getNormal(v1, v2);
+        var v1 = Vector.fromVertex(this.verticesData[0], this.verticesData[1]);
+        var v2 = Vector.fromVertex(this.verticesData[1], this.verticesData[2]);
+        var normal = Vector.normal(v1, v2);
         for (var i = 0; i < this.indiciesData.length; i++) {
             this.normalData.push(normal);
         }
