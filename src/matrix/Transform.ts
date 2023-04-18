@@ -10,6 +10,10 @@ export class Transform extends Listenable {
   }
 
   get matrix() {
+    return this.getMatrix();
+  }
+
+  getMatrix() {
     return this.matrixData;
   }
 }
