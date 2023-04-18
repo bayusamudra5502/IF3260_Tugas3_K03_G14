@@ -53,10 +53,6 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     throw new Error("color and vertices count is not equal");
   }
 
-  if (draw.normals.length != vertices.length) {
-    throw new Error("normal and vertices count is not equal");
-  }
-
   const flatVertices = [];
   for (let i of vertices) {
     const vector = i.getArray();

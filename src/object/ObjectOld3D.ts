@@ -14,7 +14,7 @@ export interface ObjectOptions {
   center: Vertex;
 }
 
-export class Object3D {
+export class ObjectOld3D {
   constructor(private options: ObjectOptions) {}
 
   static load(json: string) {
@@ -80,7 +80,7 @@ export class Object3D {
 
     options.indicies = increaseArray(options.vertices.length);
 
-    return new Object3D(options);
+    return new ObjectOld3D(options);
   }
 
   reset() {

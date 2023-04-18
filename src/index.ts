@@ -3,7 +3,7 @@ import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
-import { ObjectManager } from "./manager/ObjectManager";
+import { ObjectManagerOld } from "./manager/ObjectManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { CameraManager } from "./manager/CameraManager";
@@ -56,10 +56,10 @@ function main() {
       const objs = objManager.generateDrawInfo();
       for (const obj of objs) {
         const extension = extensionBuilder.build(LightRenderExtension, {
-          lightColor: obj.lightColor,
-          lightSource: obj.lightSource,
+          lightColor: envManager.lightColor,
+          lightSource: envManager.lightPosition,
           normals: obj.normals,
-          useShading: obj.useShading,
+          useShading: envManager.useShading,
         });
 
         engine.render({
@@ -79,7 +79,7 @@ function main() {
     useShading: true,
   });
 
-  const objManager = new ObjectManager(envManager, "triangle");
+  const objManager = new ObjectManagerOld(envManager, "triangle");
 
   /* Setup importer */
   const importer = new Importer(objManager, "loadfile-input");

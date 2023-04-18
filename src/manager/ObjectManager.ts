@@ -1,10 +1,10 @@
 import DrawInfo, { DrawMode } from "../object/DrawInfo";
-import { Object3D } from "../object/Object3D";
+import { ObjectOld3D } from "../object/ObjectOld3D";
 import { Listenable } from "../util/Listenable";
 import { EnvironmentManager } from "./EnvironmentManager";
 
-export class ObjectManager extends Listenable {
-  private objects: Object3D[] = [];
+export class ObjectManagerOld extends Listenable {
+  private objects: ObjectOld3D[] = [];
 
   constructor(
     private env: EnvironmentManager,
@@ -13,12 +13,12 @@ export class ObjectManager extends Listenable {
     super();
   }
 
-  add(object: Object3D) {
+  add(object: ObjectOld3D) {
     this.objects.push(object);
     this.notify();
   }
 
-  get(idx: number): Object3D {
+  get(idx: number): ObjectOld3D {
     return this.objects[idx];
   }
 
@@ -39,17 +39,14 @@ export class ObjectManager extends Listenable {
       const info: DrawInfo = {
         colors: obj.colors,
         indices: obj.indicies,
-        lightSource: this.env.lightPosition,
         mode: this.mode,
         matrix: {
           projection: this.env.projectionMatrix,
           transform: obj.transform.matrix,
           view: this.env.viewMatrix,
         },
-        normals: obj.normal,
         vertices: obj.vertices,
-        useShading: this.env.useShading,
-        lightColor: this.env.lightColor,
+        normals: obj.normal,
         extensions: [],
       };
       result.push(info);

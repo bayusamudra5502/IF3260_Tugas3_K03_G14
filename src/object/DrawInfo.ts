@@ -21,10 +21,7 @@ export default interface DrawInfo {
     view: Matrix;
   };
   indices: number[];
-  normals: Vector[];
   mode: DrawMode;
-  lightSource: Vertex;
-  lightColor: Color;
-  useShading: boolean;
+  normals?: Vector[];
   extensions: RenderExtension[];
 }
