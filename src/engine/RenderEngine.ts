@@ -13,6 +13,8 @@ type DrawTypeMap = {
 export default class RenderEngine {
   private webglContext: WebGLRenderingContext;
   private shaderLocation: ShaderVariableLocation;
+  private textureCoordinateBuffer: WebGLBuffer;
+  private texture: WebGLTexture;
   private typeMap: DrawTypeMap;
   private initialExtensions: RenderExtension[] = [];
 
@@ -24,6 +26,8 @@ export default class RenderEngine {
   ) {
     this.webglContext = renderCanvas.getContext();
     this.shaderLocation = shader.load();
+    this.texture = shader.loadTexture();
+    this.textureCoordinateBuffer = shader.initTextureBuffer();
     renderCanvas.bindResolution(this.shaderLocation.options.resolution);
 
     this.typeMap = {
@@ -68,9 +72,29 @@ export default class RenderEngine {
     this.webglContext.enableVertexAttribArray(pointer);
   }
 
+  // tell webgl how to pull out the texture coordinates from buffer
+  private setTextureAttribute() {
+    const gl = this.webglContext;
+    const num = 2; // every coordinate composed of 2 values
+    const type = gl.FLOAT; // the data in the buffer is 32-bit float
+    const normalize = false; // don't normalize
+    const stride = 0; // how many bytes to get from one set to the next
+    const offset = 0; // how many bytes inside the buffer to start from
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);
+    gl.vertexAttribPointer(
+      this.shaderLocation.texture,
+      num,
+      type,
+      normalize,
+      stride,
+      offset
+    );
+    gl.enableVertexAttribArray(this.shaderLocation.texture);
+  }
+
   public prepareBuffer(object: DrawInfo) {
     const primitive = drawableToPrimitive(object);
-
+    
     // Buffer data
     this.buffer.fillFloat("vertices", primitive.vertices);
     this.buffer.fillFloat("colors", primitive.color);
@@ -79,6 +103,7 @@ export default class RenderEngine {
     // Data binding
     this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
     this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
+    this.setTextureAttribute();
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(
@@ -98,7 +123,16 @@ export default class RenderEngine {
       false,
       primitive.matrix.projection
     );
+    
+    // Tell WebGL we want to affect texture unit 0
+    const gl = this.webglContext;
+    gl.activeTexture(gl.TEXTURE0);
 
+    // Bind the texture to texture unit 0
+    gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+    // Tell the shader we bound the texture to texture unit 0
+    gl.uniform1i(this.shaderLocation.sampler, 0);
     return primitive;
   }
 

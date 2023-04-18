@@ -20,7 +20,7 @@ export class Canvas {
 
   private fillContext(canvasId: string, { maxX, maxY, maxZ }: RenderBox) {
     const canvas = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
-    this.webglContext = canvas.getContext("webgl");
+    this.webglContext = canvas.getContext("webgl2");
 
     this.canvas = canvas;
 
