@@ -14,7 +14,7 @@ import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
 import { EnvironmentManager } from "./manager/EnvironmentManager.js";
-import { ObjectManagerOld } from "./manager/ObjectManager.js";
+import { ObjectManagerOld } from "./manager/ObjectManagerOld.js";
 import { ProjectionManager } from "./manager/ProjectionManager.js";
 import { TransformManager } from "./manager/TransformManager.js";
 import { CameraManager } from "./manager/CameraManager.js";
