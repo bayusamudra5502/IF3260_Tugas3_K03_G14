@@ -125,65 +125,109 @@
       ]
     }
   ],
+  "root_id": "0",
   "vertices": {
     "0": {
       "joint_point": [0, 0, 0],
       "child": ["1", "2", "3", "4", "5"],
-      "rotation_axis": 3,
+      "inverted": [false, false, false, false, false, false],
       "max_degree": 180,
       "min_degree": -180,
       "start_degree": 0,
-      "clockwise": 0
+      "clockwise": 0,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     },
     "1": {
       "joint_point": [0, 0.3, 0],
-      "sibling": 2,
-      "child": null,
-      "rotation_axis": 1,
-      "max_degree": 180,
-      "min_degree": 180,
+      "child": [],
+      "inverted": [false, false, false, false, false, false],
+      "max_degree": 45,
+      "min_degree": -45,
       "start_degree": 0,
-      "clockwise": 0
+      "clockwise": 0,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     },
     "2": {
       "joint_point": [-0.05, -0.3, -0.1],
-      "sibling": 3,
-      "child": null,
-      "rotation_axis": 0,
+      "child": [],
+      "inverted": [false, false, false, false, false, false],
       "max_degree": 45,
-      "min_degree": 45,
-      "start_degree": 23,
-      "clockwise": 0
+      "min_degree": -45,
+      "start_degree": 0,
+      "clockwise": 0,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     },
     "3": {
       "joint_point": [0.05, -0.3, -0.1],
-      "sibling": 4,
-      "child": null,
-      "rotation_axis": 0,
+      "child": [],
+      "inverted": [false, false, false, false, false, false],
       "max_degree": 45,
-      "min_degree": 45,
-      "start_degree": -15,
-      "clockwise": 0
+      "min_degree": -45,
+      "start_degree": 0,
+      "clockwise": 0,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     },
     "4": {
       "joint_point": [0.05, -0.3, 0.1],
-      "sibling": 5,
-      "child": null,
-      "rotation_axis": 0,
+      "child": [],
+      "inverted": [false, false, false, false, false, false],
       "max_degree": 45,
-      "min_degree": 45,
-      "start_degree": 23,
-      "clockwise": 1
+      "min_degree": -45,
+      "start_degree": 0,
+      "clockwise": 1,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     },
     "5": {
       "joint_point": [0.05, -0.3, 0.1],
-      "sibling": null,
-      "child": null,
-      "rotation_axis": 0,
+      "child": [],
+      "inverted": [false, false, false, false, false, false],
       "max_degree": 45,
-      "min_degree": 45,
-      "start_degree": -15,
-      "clockwise": 1
+      "min_degree": -45,
+      "start_degree": 0,
+      "clockwise": 1,
+      "colors": [
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff"
+      ]
     }
   }
 }
