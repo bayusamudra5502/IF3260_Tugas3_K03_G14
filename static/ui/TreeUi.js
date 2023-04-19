@@ -22,16 +22,21 @@ var TreeUi = /** @class */ (function (_super) {
         _this.objectSelector = document.getElementById(options.objectSelectId);
         _this.componentTree = document.getElementById(options.componentTreeId);
         _this.treeIndent = options.treeIndent;
-        var callback = _this.notify.bind(_this);
-        _this.objectSelector.onchange = callback;
+        var callback = _this.notify.bind(_this, "select-root");
+        _this.objectSelector.onchange = function () {
+            callback();
+        };
         return _this;
     }
     TreeUi.prototype.updateNotifier = function () {
-        var callback = this.notify.bind(this);
+        var callback = this.notify.bind(this, "select-object");
         document
             .querySelectorAll("input[name=\"object-id\"]")
             .forEach(function (el) {
-            el.onclick = callback;
+            el.onchange = function () {
+                console.log("Mbee");
+                callback();
+            };
         });
     };
     Object.defineProperty(TreeUi.prototype, "selectedRootIdx", {
@@ -53,7 +58,7 @@ var TreeUi = /** @class */ (function (_super) {
     TreeUi.prototype.updateRootLists = function (objectList) {
         this.objectSelector.innerHTML = "\n    <option disabled selected value=\"-1\">Select Object</option>\n    ";
         for (var i = 0; i < objectList.length; i++) {
-            this.objectSelector.innerHTML += "<option disabled selected value=\"".concat(i, "\">Object #").concat(i, "</option>");
+            this.objectSelector.innerHTML += "<option value=\"".concat(i, "\">Object #").concat(i, "</option>");
         }
     };
     TreeUi.prototype.updateComponent = function (_a) {
@@ -62,7 +67,7 @@ var TreeUi = /** @class */ (function (_super) {
         this.componentTree.innerHTML = "";
         while (queue.length > 0) {
             var _b = queue.shift(), current = _b[0], level = _b[1];
-            this.componentTree.innerHTML += "<label style=\"margin-left: ".concat(this.treeIndent * level, "rem;\"><input type=\"radio\" name=\"object-id\" value=\"").concat(current.id, "\">").concat(current.id, "</label>");
+            this.componentTree.innerHTML += "<div><label style=\"margin-left: ".concat(this.treeIndent * level, "rem;\"><input type=\"radio\" name=\"object-id\" value=\"").concat(current.id, "\">").concat(current.id, "</label></div>");
             for (var _i = 0, _c = current.childs; _i < _c.length; _i++) {
                 var child = _c[_i];
                 queue.push([child, level + 1]);
@@ -70,13 +75,6 @@ var TreeUi = /** @class */ (function (_super) {
         }
         this.updateNotifier();
     };
-    Object.defineProperty(TreeUi.prototype, "currentObject", {
-        get: function () {
-            return null;
-        },
-        enumerable: false,
-        configurable: true
-    });
     return TreeUi;
 }(Listenable));
 export { TreeUi };

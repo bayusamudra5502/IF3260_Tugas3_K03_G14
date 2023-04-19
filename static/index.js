@@ -22,6 +22,7 @@ import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { TextureComponent } from "./components/Texture.js";
 import { AnimationRunner } from "./components/Animator.js";
 import { TextureManager } from "./manager/TextureManager.js";
+import { TreeUi } from "./ui/TreeUi.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -39,6 +40,7 @@ function main() {
     var transformUi = new TransformUi();
     var cameraUi = new CameraUi();
     var textureUi = new TextureUi();
+    var treeUi = new TreeUi();
     /* Setup manager */
     var projManager = new ProjectionManager();
     var cameraManager = new CameraManager();
@@ -90,41 +92,6 @@ function main() {
         textureManager.update(textureUi.mode);
         rerender();
     });
-    // Transform UI harus berubah
-    // transformUi.subscribe(() => {
-    //   const transformManager = new TransformManager();
-    //   const idx = transformUi.transformIndex;
-    //   const obj = objManager.get(idx);
-    //   if (!obj) return;
-    //   const translation = new Translation();
-    //   const rotation = new Rotation();
-    //   const scaling = new Scaling();
-    //   // Rotation
-    //   rotation.configure({
-    //     angleX: transformUi.rotation.rotationAngleX,
-    //     angleY: transformUi.rotation.rotationAngleY,
-    //     angleZ: transformUi.rotation.rotationAngleZ,
-    //     center: obj.center,
-    //   });
-    //   transformManager.add(rotation);
-    //   // Scaling
-    //   scaling.configure({
-    //     sx: transformUi.scale.Sx,
-    //     sy: transformUi.scale.Sy,
-    //     sz: transformUi.scale.Sz,
-    //     center: obj.center,
-    //   });
-    //   transformManager.add(scaling);
-    //   // Translation
-    //   translation.configure({
-    //     x: transformUi.translation.X,
-    //     y: transformUi.translation.Y,
-    //     z: transformUi.translation.Z,
-    //   });
-    //   transformManager.add(translation);
-    //   obj.transform.updateMatrix(transformManager.matrix);
-    //   rerender();
-    // });
     cameraUi.subscribe(function () {
         cameraManager.update({
             radius: cameraUi.radius,
@@ -132,6 +99,13 @@ function main() {
             yAngle: cameraUi.yAngle,
         });
         rerender();
+    });
+    objManager.subscribe(function () {
+        treeUi.updateRootLists(objManager.getList());
+    });
+    treeUi.subscribeType("select-root", function () {
+        console.log("MBEEK");
+        treeUi.updateComponent(objManager.get(treeUi.selectedRootIdx));
     });
     objManager.subscribe(rerender);
     projManager.subscribe(rerender);
@@ -166,24 +140,6 @@ function main() {
         rerenderButton.removeAttribute("disabled");
         // requestAnimationFrame(loop);
     });
-    // const loop = () => {
-    //   if (isRotationX.checked) {
-    //     angleX = (angleX + 0.25) % 360;
-    //     rotationX.value = angleX.toString();
-    //     rotationX.dispatchEvent(new Event("change"));
-    //   }
-    //   if (isRotationY.checked) {
-    //     angleY = (angleY + 0.25) % 360;
-    //     rotationY.value = angleY.toString();
-    //     rotationY.dispatchEvent(new Event("change"));
-    //   }
-    //   if (isRotationZ.checked) {
-    //     angleZ = (angleZ + 0.25) % 360;
-    //     rotationZ.value = angleZ.toString();
-    //     rotationZ.dispatchEvent(new Event("change"));
-    //   }
-    //   requestAnimationFrame(loop);
-    // };
 }
 main();
 //# sourceMappingURL=index.js.map
