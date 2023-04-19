@@ -210,7 +210,7 @@ export class AnimationRunner extends Listenable {
 
   stop() {
     clearInterval(this.intervalId);
-    this.setActivate(this.root, true);
+    this.setActivate(this.root, false);
 
     this.root = null;
   }
