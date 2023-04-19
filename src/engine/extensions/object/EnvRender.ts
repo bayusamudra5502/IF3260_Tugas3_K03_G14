@@ -74,7 +74,6 @@ export class EnvRenderExtension extends RenderExtension {
   }
 
   run(gl: WebGLRenderingContext, buffer: Buffer) {
-    this.applyFaceTexture(gl);
     this.prepareNormal(buffer);
     this.bind(gl, this.shaderLocation.normalLocation, buffer.get("normal"), 4);
 
@@ -92,78 +91,5 @@ export class EnvRenderExtension extends RenderExtension {
       flatNormal = flatNormal.concat(element.getArray());
     });
     buffer.fillFloat("normal", new Float32Array(flatNormal));
-  }
-
-  private applyFaceTexture(gl: WebGLRenderingContext) {
-    this.faceTextures ?? this.loadDefaultFaceTexture(gl);
-    const tex = this.texture;
-    this.faceTextures.forEach((face) => {
-      const { target, url } = face;
-
-      // Upload the canvas to the cubemap face.
-      const level = 0;
-      const internalFormat = gl.RGBA;
-      const width = 512;
-      const height = 512;
-      const format = gl.RGBA;
-      const type = gl.UNSIGNED_BYTE;
-
-      // setup each face so it's immediately renderable
-      gl.texImage2D(
-        target,
-        level,
-        internalFormat,
-        width,
-        height,
-        0,
-        format,
-        type,
-        null
-      );
-
-      // Asynchronously load an image
-      const image = new Image();
-      image.src = url;
-      image.addEventListener("load", function () {
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
-        gl.texImage2D(target, level, internalFormat, format, type, image);
-        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-      });
-    });
-    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    gl.texParameteri(
-      gl.TEXTURE_CUBE_MAP,
-      gl.TEXTURE_MIN_FILTER,
-      gl.LINEAR_MIPMAP_LINEAR
-    );
-  }
-
-  private loadDefaultFaceTexture(gl: WebGLRenderingContext) {
-    this.faceTextures = [
-      {
-        target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-        url: "/assets/pos-x.jpg",
-      },
-      {
-        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-        url: "/assets/neg-x.jpg",
-      },
-      {
-        target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-        url: "/assets/pos-y.jpg",
-      },
-      {
-        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        url: "/assets/neg-y.jpg",
-      },
-      {
-        target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-        url: "/assets/pos-z.jpg",
-      },
-      {
-        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-        url: "/assets/neg-z.jpg",
-      },
-    ];
   }
 }

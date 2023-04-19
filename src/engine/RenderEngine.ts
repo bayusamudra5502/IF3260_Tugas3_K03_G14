@@ -28,6 +28,7 @@ export default class RenderEngine {
     this.shaderLocation = shader.load();
     this.texture = this.loadTexture(); // TODO: move this (?)
     this.envMap = this.loadEnvMap(); // TODO: move this (?)
+    this.applyFaceTexture();
     renderCanvas.bindResolution(this.shaderLocation.options.resolution);
 
     this.typeMap = {
@@ -67,6 +68,80 @@ export default class RenderEngine {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, envMap);
     return envMap;
+  }
+
+  private applyFaceTexture() {
+    const gl = this.webglContext;
+    const faces = this.loadDefaultFaceTexture(gl);
+    const tex = this.envMap;
+    faces.forEach((face) => {
+      const { target, url } = face;
+
+      // Upload the canvas to the cubemap face.
+      const level = 0;
+      const internalFormat = gl.RGBA;
+      const width = 512;
+      const height = 512;
+      const format = gl.RGBA;
+      const type = gl.UNSIGNED_BYTE;
+
+      // setup each face so it's immediately renderable
+      gl.texImage2D(
+        target,
+        level,
+        internalFormat,
+        width,
+        height,
+        0,
+        format,
+        type,
+        null
+      );
+
+      // Asynchronously load an image
+      const image = new Image();
+      image.src = url;
+      image.addEventListener("load", function () {
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
+        gl.texImage2D(target, level, internalFormat, format, type, image);
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+      });
+    });
+    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    gl.texParameteri(
+      gl.TEXTURE_CUBE_MAP,
+      gl.TEXTURE_MIN_FILTER,
+      gl.LINEAR_MIPMAP_LINEAR
+    );
+  }
+
+  private loadDefaultFaceTexture(gl: WebGLRenderingContext) {
+    return [
+      {
+        target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+        url: "/assets/pos-x.jpg",
+      },
+      {
+        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        url: "/assets/neg-x.jpg",
+      },
+      {
+        target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        url: "/assets/pos-y.jpg",
+      },
+      {
+        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        url: "/assets/neg-y.jpg",
+      },
+      {
+        target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        url: "/assets/pos-z.jpg",
+      },
+      {
+        target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+        url: "/assets/neg-z.jpg",
+      },
+    ];
   }
 
   // TODO: refactor this, move it somewhere else
