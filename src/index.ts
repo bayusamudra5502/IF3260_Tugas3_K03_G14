@@ -5,31 +5,23 @@ import { ShaderProgram } from "./engine/Shader";
 import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
-import { TransformManager } from "./manager/TransformManager";
 import { Color } from "./object/Color";
-import { Vertex } from "./object/Vertices";
-import { Rotation } from "./transform/Rotation";
-import { Scaling } from "./transform/Scaling";
-import { Translation } from "./transform/Translation";
 import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
+import { TextureUi } from "./ui/TextureUI";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { LightRenderExtension } from "./engine/extensions/object/LightRender";
-import DrawInfo from "./object/DrawInfo";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
 import { Object3DBuilder } from "./object/Object3DBuilder";
 import { LightComponent } from "./components/Light";
 import { ObjectManager } from "./manager/ObjectManager";
 import { ObjectRenderer } from "./manager/ObjectRenderer";
-import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
-import { Point } from "./object/Point";
 import { TextureComponent } from "./components/Texture";
 import { AnimationRunner } from "./components/Animator";
-import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender";
+import { TextureManager } from "./manager/TextureManager";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -58,11 +50,13 @@ function main() {
   const lightUi = new LightUi();
   const transformUi = new TransformUi();
   const cameraUi = new CameraUi();
+  const textureUi = new TextureUi();
 
   /* Setup manager */
   const projManager = new ProjectionManager();
   const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
+  const textureManager = new TextureManager();
   envManager.update({
     cameraManager: cameraManager,
     projection: projManager,
@@ -75,7 +69,7 @@ function main() {
   const textureComponent = new TextureComponent(
     engine.texture,
     engine.envMap,
-    TEXTURE_MODE.TEXTURE_MAPPING
+    textureManager
   );
 
   const object3DBuilder = new Object3DBuilder([
@@ -117,6 +111,10 @@ function main() {
     });
   });
 
+  textureUi.subscribe(() => {
+    textureManager.update(textureUi.mode);
+    rerender();
+  });
   // Transform UI harus berubah
   // transformUi.subscribe(() => {
   //   const transformManager = new TransformManager();
