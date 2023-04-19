@@ -1,28 +1,29 @@
 import { Buffer } from "./engine/Buffer";
 import { Canvas } from "./engine/Canvas";
+import { ExtensionBuilder } from "./engine/ExtensionBuilder";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
+import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
+import { EnvRenderExtension } from "./engine/extensions/object/EnvRender";
+import { LightRenderExtension } from "./engine/extensions/object/LightRender";
+import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ObjectManagerOld } from "./manager/ObjectManagerOld";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
-import { CameraManager } from "./manager/CameraManager";
 import { Color } from "./object/Color";
+import DrawInfo from "./object/DrawInfo";
+import { Point } from "./object/Point";
+import { Vertex } from "./object/Vertices";
 import { Rotation } from "./transform/Rotation";
 import { Scaling } from "./transform/Scaling";
 import { Translation } from "./transform/Translation";
+import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
-import { CameraUi } from "./ui/CameraUi";
-import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { LightRenderExtension } from "./engine/extensions/object/LightRender";
-import DrawInfo from "./object/DrawInfo";
-import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
-import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
-import { Point } from "./object/Point";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -65,22 +66,31 @@ function main() {
         });
 
         const texture = engine.texture; // TODO: get this from somewhere else
-        const textureCoordinates = []
-        for(let i=0; i<obj.normals.length; i+=4){
-          textureCoordinates.push(new Point(0,0));
-          textureCoordinates.push(new Point(0,1));
-          textureCoordinates.push(new Point(1,1));
-          textureCoordinates.push(new Point(1,0));
+        const textureCoordinates = [];
+        for (let i = 0; i < obj.normals.length; i += 4) {
+          textureCoordinates.push(new Point(0, 0));
+          textureCoordinates.push(new Point(0, 1));
+          textureCoordinates.push(new Point(1, 1));
+          textureCoordinates.push(new Point(1, 0));
         }
 
-        const textureExtension = extensionBuilder.build(TextureRenderExtension, {
-          texture,
-          textureCoordinates
-        })
+        // const textureExtension = extensionBuilder.build(
+        //   TextureRenderExtension,
+        //   {
+        //     texture,
+        //     textureCoordinates,
+        //   }
+        // );
+
+        const envMapExtension = extensionBuilder.build(EnvRenderExtension, {
+          texture: engine.envMap,
+          normals: obj.normals,
+          cameraPosition: new Vertex(0, 0, 2), // TODO: change hardcode
+        });
 
         engine.render({
           ...obj,
-          extensions: [lightExtension, textureExtension],
+          extensions: [lightExtension, envMapExtension],
         } as DrawInfo);
       }
     }, 0);

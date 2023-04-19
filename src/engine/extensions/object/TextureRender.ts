@@ -1,8 +1,7 @@
+import { Point } from "../../../object/Point";
 import { Buffer } from "../../Buffer";
 import { RenderExtension } from "../../RenderExtension";
 import { ShaderProgram } from "../../Shader";
-import { isPowerOf2 } from "../../../util/util";
-import { Point } from "../../../object/Point";
 
 export interface TextureRenderOption{
     texture: WebGLTexture;

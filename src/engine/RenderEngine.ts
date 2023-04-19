@@ -1,11 +1,10 @@
 import { Color } from "../object/Color";
 import DrawInfo, { DrawMode } from "../object/DrawInfo";
-import { drawableToPrimitive } from "../util/util";
+import { drawableToPrimitive, isPowerOf2 } from "../util/util";
 import { Buffer } from "./Buffer";
 import { Canvas } from "./Canvas";
 import { RenderExtension } from "./RenderExtension";
 import { ShaderProgram, ShaderVariableLocation } from "./Shader";
-import { isPowerOf2 } from "../util/util";
 
 type DrawTypeMap = {
   [key in DrawMode]: number;
@@ -16,18 +15,19 @@ export default class RenderEngine {
   private shaderLocation: ShaderVariableLocation;
   private typeMap: DrawTypeMap;
   private initialExtensions: RenderExtension[] = [];
-  public texture: WebGLTexture // TODO: move this (?)
+  public texture: WebGLTexture; // TODO: move this (?)
+  public envMap: WebGLTexture; // TODO: move this (?)
 
   constructor(
     private renderCanvas: Canvas,
     private buffer: Buffer,
     shader: ShaderProgram,
-    private backColor: Color = new Color(0, 0, 0, 0),
-    
+    private backColor: Color = new Color(0, 0, 0, 0)
   ) {
     this.webglContext = renderCanvas.getContext();
     this.shaderLocation = shader.load();
     this.texture = this.loadTexture(); // TODO: move this (?)
+    this.envMap = this.loadEnvMap(); // TODO: move this (?)
     renderCanvas.bindResolution(this.shaderLocation.options.resolution);
 
     this.typeMap = {
@@ -61,12 +61,20 @@ export default class RenderEngine {
     }
   }
 
+  public loadEnvMap() {
+    const gl = this.webglContext;
+    const envMap = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, envMap);
+    return envMap;
+  }
+
   // TODO: refactor this, move it somewhere else
   public loadTexture(path: string = "/assets/logo.png") {
     const gl = this.webglContext;
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-  
+
     const level = 0;
     const internalFormat = gl.RGBA;
     const width = 1;
@@ -86,10 +94,10 @@ export default class RenderEngine {
       srcType,
       pixel
     );
-  
+
     const image = new Image();
     image.onload = () => {
-      console.log("loaded image")
+      console.log("loaded image");
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(
         gl.TEXTURE_2D,
@@ -99,7 +107,7 @@ export default class RenderEngine {
         srcType,
         image
       );
-  
+
       // WebGL1 has different requirements for power of 2 images
       // vs. non power of 2 images so check if the image is a
       // power of 2 in both dimensions.
@@ -107,7 +115,11 @@ export default class RenderEngine {
         // Yes, it's a power of 2. Generate mips.
         gl.generateMipmap(gl.TEXTURE_2D);
         // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(
+          gl.TEXTURE_2D,
+          gl.TEXTURE_MIN_FILTER,
+          gl.LINEAR_MIPMAP_LINEAR
+        );
         // Prevents s-coordinate wrapping (repeating).
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
         // Prevents t-coordinate wrapping (repeating).
@@ -121,7 +133,7 @@ export default class RenderEngine {
       }
     };
     image.src = path;
-  
+
     return texture;
   }
 
@@ -136,10 +148,9 @@ export default class RenderEngine {
     this.webglContext.enableVertexAttribArray(pointer);
   }
 
-
   public prepareBuffer(object: DrawInfo) {
     const primitive = drawableToPrimitive(object);
-    
+
     // Buffer data
     this.buffer.fillFloat("vertices", primitive.vertices);
     this.buffer.fillFloat("colors", primitive.color);
@@ -167,7 +178,7 @@ export default class RenderEngine {
       false,
       primitive.matrix.projection
     );
-    
+
     return primitive;
   }
 
