@@ -9,7 +9,15 @@ export class Listenable {
     this.eventTarget.removeEventListener("update", func);
   }
 
-  protected notify() {
-    this.eventTarget.dispatchEvent(new Event("update"));
+  subscribeType(type: string, func: () => void) {
+    this.eventTarget.addEventListener(type, func);
+  }
+
+  unsubscribeType(type: string, func: () => void) {
+    this.eventTarget.removeEventListener(type, func);
+  }
+
+  protected notify(type: string = "update") {
+    this.eventTarget.dispatchEvent(new Event(type));
   }
 }

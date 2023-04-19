@@ -16,16 +16,21 @@ export class TreeUi extends Listenable {
     this.componentTree = document.getElementById(options.componentTreeId);
     this.treeIndent = options.treeIndent;
 
-    const callback = this.notify.bind(this);
-    this.objectSelector.onchange = callback;
+    const callback = this.notify.bind(this, "select-root");
+    this.objectSelector.onchange = () => {
+      callback();
+    };
   }
 
   private updateNotifier() {
-    const callback = this.notify.bind(this);
+    const callback = this.notify.bind(this, "select-object");
     document
       .querySelectorAll(`input[name="object-id"]`)
       .forEach((el: HTMLInputElement) => {
-        el.onclick = callback;
+        el.onchange = () => {
+          console.log("Mbee");
+          callback();
+        };
       });
   }
 
@@ -46,7 +51,7 @@ export class TreeUi extends Listenable {
     `;
 
     for (let i = 0; i < objectList.length; i++) {
-      this.objectSelector.innerHTML += `<option disabled selected value="${i}">Object #${i}</option>`;
+      this.objectSelector.innerHTML += `<option value="${i}">Object #${i}</option>`;
     }
   }
 
@@ -58,11 +63,11 @@ export class TreeUi extends Listenable {
     while (queue.length > 0) {
       const [current, level] = queue.shift();
 
-      this.componentTree.innerHTML += `<label style="margin-left: ${
+      this.componentTree.innerHTML += `<div><label style="margin-left: ${
         this.treeIndent * level
       }rem;"><input type="radio" name="object-id" value="${current.id}">${
         current.id
-      }</label>`;
+      }</label></div>`;
 
       for (const child of current.childs) {
         queue.push([child, level + 1]);
@@ -70,10 +75,6 @@ export class TreeUi extends Listenable {
     }
 
     this.updateNotifier();
-  }
-
-  get currentObject() {
-    return null;
   }
 }
 
