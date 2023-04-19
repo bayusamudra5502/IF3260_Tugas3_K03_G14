@@ -2,16 +2,16 @@ import { Buffer } from "./engine/Buffer.js";
 import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
+import { CameraManager } from "./manager/CameraManager.js";
 import { EnvironmentManager } from "./manager/EnvironmentManager.js";
 import { ProjectionManager } from "./manager/ProjectionManager.js";
-import { CameraManager } from "./manager/CameraManager.js";
 import { Color } from "./object/Color.js";
+import { CameraUi } from "./ui/CameraUi.js";
 import { LightUi } from "./ui/LightUi.js";
 import { ProjectionUi } from "./ui/ProjectionUi.js";
 import { TransformUi } from "./ui/TransformUi.js";
 import { Importer } from "./util/Importer.js";
 import { reset } from "./util/reset.js";
-import { CameraUi } from "./ui/CameraUi.js";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode.js";
 import { Object3DBuilder } from "./object/Object3DBuilder.js";
@@ -19,6 +19,7 @@ import { LightComponent } from "./components/Light.js";
 import { ObjectManager } from "./manager/ObjectManager.js";
 import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { TextureComponent } from "./components/Texture.js";
+import { EnvironmentComponent } from "./components/Environment.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -48,9 +49,10 @@ function main() {
     var lightComponent = new LightComponent(envManager);
     // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
     var textureComponent = new TextureComponent(engine.texture);
+    var envComponent = new EnvironmentComponent(engine.texture);
     var object3DBuilder = new Object3DBuilder([
         lightComponent,
-        textureComponent,
+        envComponent,
     ]);
     /* Object Manager */
     var objManager = new ObjectManager();

@@ -1,6 +1,5 @@
 import { Color } from "../object/Color.js";
-import { drawableToPrimitive } from "../util/util.js";
-import { isPowerOf2 } from "../util/util.js";
+import { drawableToPrimitive, isPowerOf2 } from "../util/util.js";
 var RenderEngine = /** @class */ (function () {
     function RenderEngine(renderCanvas, buffer, shader, backColor) {
         if (backColor === void 0) { backColor = new Color(0, 0, 0, 0); }
@@ -11,6 +10,8 @@ var RenderEngine = /** @class */ (function () {
         this.webglContext = renderCanvas.getContext();
         this.shaderLocation = shader.load();
         this.texture = this.loadTexture(); // TODO: move this (?)
+        this.envMap = this.loadEnvMap(); // TODO: move this (?)
+        this.applyFaceTexture();
         renderCanvas.bindResolution(this.shaderLocation.options.resolution);
         this.typeMap = {
             line: this.webglContext.LINES,
@@ -37,6 +38,68 @@ var RenderEngine = /** @class */ (function () {
             var extension = _a[_i];
             extension.run(this.webglContext, this.buffer);
         }
+    };
+    RenderEngine.prototype.loadEnvMap = function () {
+        var gl = this.webglContext;
+        var envMap = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, envMap);
+        return envMap;
+    };
+    RenderEngine.prototype.applyFaceTexture = function () {
+        var gl = this.webglContext;
+        var faces = this.loadDefaultFaceTexture(gl);
+        var tex = this.envMap;
+        faces.forEach(function (face) {
+            var target = face.target, url = face.url;
+            // Upload the canvas to the cubemap face.
+            var level = 0;
+            var internalFormat = gl.RGBA;
+            var width = 512;
+            var height = 512;
+            var format = gl.RGBA;
+            var type = gl.UNSIGNED_BYTE;
+            // setup each face so it's immediately renderable
+            gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+            // Asynchronously load an image
+            var image = new Image();
+            image.src = url;
+            image.addEventListener("load", function () {
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
+                gl.texImage2D(target, level, internalFormat, format, type, image);
+                gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+            });
+        });
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    };
+    RenderEngine.prototype.loadDefaultFaceTexture = function (gl) {
+        return [
+            {
+                target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+                url: "/assets/pos-x.jpg",
+            },
+            {
+                target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+                url: "/assets/neg-x.jpg",
+            },
+            {
+                target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+                url: "/assets/pos-y.jpg",
+            },
+            {
+                target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+                url: "/assets/neg-y.jpg",
+            },
+            {
+                target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+                url: "/assets/pos-z.jpg",
+            },
+            {
+                target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+                url: "/assets/neg-z.jpg",
+            },
+        ];
     };
     // TODO: refactor this, move it somewhere else
     RenderEngine.prototype.loadTexture = function (path) {
