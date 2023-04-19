@@ -1,6 +1,7 @@
 import { Vector } from "./Vector.js";
 var Face = /** @class */ (function () {
     function Face(options) {
+        this.normalData = [];
         this.verticesData = options.isInverted
             ? options.vertices.reverse()
             : options.vertices;
@@ -18,7 +19,7 @@ var Face = /** @class */ (function () {
     }
     Object.defineProperty(Face.prototype, "vertices", {
         get: function () {
-            return this.vertices;
+            return this.verticesData;
         },
         enumerable: false,
         configurable: true
@@ -39,14 +40,14 @@ var Face = /** @class */ (function () {
     });
     Object.defineProperty(Face.prototype, "normals", {
         get: function () {
-            return this.normals;
+            return this.normalData;
         },
         enumerable: false,
         configurable: true
     });
     Face.prototype.makeTriangle = function () {
         var newIndicies = [];
-        for (var i = 1; i < this.indiciesData.length - 1; i++) {
+        for (var i = 1; i < this.vertices.length - 1; i++) {
             newIndicies.push(0);
             newIndicies.push(i);
             newIndicies.push(i + 1);

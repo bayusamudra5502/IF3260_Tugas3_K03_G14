@@ -33,6 +33,7 @@ var ObjectRenderer = /** @class */ (function () {
         var extensions = [];
         for (var _i = 0, _a = object.components; _i < _a.length; _i++) {
             var component = _a[_i];
+            component.fit(object);
             var res = component.run();
             if (res != null) {
                 extensions.push(this.extBuild.build(res.class, res.options));

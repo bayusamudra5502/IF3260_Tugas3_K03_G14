@@ -20,7 +20,7 @@ var Object3DBuilder = /** @class */ (function () {
         this.templateComponents = templateComponent;
     }
     Object3DBuilder.prototype.fromJson = function (json) {
-        var _a;
+        var _a, _b;
         var root;
         var jsonObject = JSON.parse(json);
         var points = jsonObject.pts;
@@ -34,29 +34,33 @@ var Object3DBuilder = /** @class */ (function () {
             var faceList = [];
             var config = objectConfigMap[obj.name];
             var topology = obj.topology;
-            var colorFace = Object3DBuilder.makeColorObject(obj !== null && obj !== void 0 ? obj : "#ffffff", obj.num_face);
+            if (config.inverted && config.inverted.length < obj.num_face) {
+                throw new Error("inverted data is not equal");
+            }
+            var colorFace = Object3DBuilder.makeColorObject((_a = config.colors) !== null && _a !== void 0 ? _a : "#ffffff", obj.num_face);
             /* Build faces */
             for (var i = 0; i < obj.num_face; i++) {
                 var vertices = [];
-                for (var _b = 0, _c = topology[i]; _b < _c.length; _b++) {
-                    var vIdx = _c[_b];
+                for (var _c = 0, _d = topology[i]; _c < _d.length; _c++) {
+                    var vIdx = _d[_c];
                     vertices.push(Vertex.load(points[vIdx]));
                 }
-                faceList.push(new Face({
+                var face = new Face({
                     color: colorFace[i],
                     vertices: vertices,
-                    isInverted: !!config.inverted,
-                }));
+                    isInverted: config.inverted ? config.inverted[i] : false,
+                });
+                faceList.push(face);
             }
             var object = new Object3D(faceList, Vertex.load(config["joint_point"]));
             /* Animator Components */
             var animator = RotationAnimator.fromConfig(__assign(__assign({}, config), { transform: object.transform }));
             object.addComponent(animator);
-            for (var _d = 0, _e = this.templateComponents; _d < _e.length; _d++) {
-                var i = _e[_d];
+            for (var _e = 0, _f = this.templateComponents; _e < _f.length; _e++) {
+                var i = _f[_e];
                 object.addComponent(i);
             }
-            map.set((_a = obj.name) !== null && _a !== void 0 ? _a : idx.toString(), object);
+            map.set((_b = obj.name) !== null && _b !== void 0 ? _b : idx.toString(), object);
             if (idx == 0) {
                 root = object;
             }
@@ -67,10 +71,10 @@ var Object3DBuilder = /** @class */ (function () {
             var currentObj = map.get(key);
             if (!currentObj)
                 throw new Error("Object '".concat(key, "' is not found in edges"));
-            var childs = objectConfigMap[key];
+            var childs = objectConfigMap[key].child;
             if (childs) {
-                for (var _f = 0, childs_1 = childs; _f < childs_1.length; _f++) {
-                    var childId = childs_1[_f];
+                for (var _g = 0, childs_1 = childs; _g < childs_1.length; _g++) {
+                    var childId = childs_1[_g];
                     var child = map.get(childId);
                     if (!child)
                         throw new Error("Child object '".concat(childId, "' is not found in edges"));

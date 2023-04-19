@@ -27,12 +27,20 @@ var RotationAnimator = /** @class */ (function (_super) {
     function RotationAnimator(options) {
         var _this = _super.call(this) || this;
         _this.currentFrame = 0;
+        _this.isActive = false;
         _this.frames = options.degreeFrames.map(function (el) { return Geometry.angleDegToRad(el); });
-        _this.transform = options.transform;
         _this.axis = options.axis;
         return _this;
     }
+    RotationAnimator.prototype.fit = function (object) {
+        this.transform = object.transform;
+    };
+    RotationAnimator.prototype.setActive = function (active) {
+        this.isActive = active;
+    };
     RotationAnimator.prototype.run = function () {
+        if (!this.isActive)
+            return;
         var currentRad = this.frames[this.currentFrame];
         var rotation = new Rotation();
         rotation.configure({
@@ -84,7 +92,6 @@ var RotationAnimator = /** @class */ (function (_super) {
         return new RotationAnimator({
             axis: config.start_degree,
             degreeFrames: frames,
-            transform: config.transform,
         });
     };
     return RotationAnimator;

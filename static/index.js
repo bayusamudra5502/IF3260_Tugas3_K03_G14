@@ -1,27 +1,11 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 import { Buffer } from "./engine/Buffer.js";
 import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
 import { EnvironmentManager } from "./manager/EnvironmentManager.js";
-import { ObjectManagerOld } from "./manager/ObjectManagerOld.js";
 import { ProjectionManager } from "./manager/ProjectionManager.js";
-import { TransformManager } from "./manager/TransformManager.js";
 import { CameraManager } from "./manager/CameraManager.js";
 import { Color } from "./object/Color.js";
-import { Rotation } from "./transform/Rotation.js";
-import { Scaling } from "./transform/Scaling.js";
-import { Translation } from "./transform/Translation.js";
 import { LightUi } from "./ui/LightUi.js";
 import { ProjectionUi } from "./ui/ProjectionUi.js";
 import { TransformUi } from "./ui/TransformUi.js";
@@ -29,10 +13,12 @@ import { Importer } from "./util/Importer.js";
 import { reset } from "./util/reset.js";
 import { CameraUi } from "./ui/CameraUi.js";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
-import { LightRenderExtension } from "./engine/extensions/object/LightRender.js";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode.js";
-import { TextureRenderExtension } from "./engine/extensions/object/TextureRender.js";
-import { Point } from "./object/Point.js";
+import { Object3DBuilder } from "./object/Object3DBuilder.js";
+import { LightComponent } from "./components/Light.js";
+import { ObjectManager } from "./manager/ObjectManager.js";
+import { ObjectRenderer } from "./manager/ObjectRenderer.js";
+import { TextureComponent } from "./components/Texture.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -50,33 +36,6 @@ function main() {
     var transformUi = new TransformUi();
     var cameraUi = new CameraUi();
     /* Setup manager */
-    var rerender = function () {
-        setTimeout(function () {
-            var objs = objManager.generateDrawInfo();
-            for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
-                var obj = objs_1[_i];
-                var lightExtension = extensionBuilder.build(LightRenderExtension, {
-                    lightColor: envManager.lightColor,
-                    lightSource: envManager.lightPosition,
-                    normals: obj.normals,
-                    useShading: envManager.useShading,
-                });
-                var texture = engine.texture; // TODO: get this from somewhere else
-                var textureCoordinates = [];
-                for (var i = 0; i < obj.normals.length; i += 4) {
-                    textureCoordinates.push(new Point(0, 0));
-                    textureCoordinates.push(new Point(0, 1));
-                    textureCoordinates.push(new Point(1, 1));
-                    textureCoordinates.push(new Point(1, 0));
-                }
-                var textureExtension = extensionBuilder.build(TextureRenderExtension, {
-                    texture: texture,
-                    textureCoordinates: textureCoordinates
-                });
-                engine.render(__assign(__assign({}, obj), { extensions: [lightExtension, textureExtension] }));
-            }
-        }, 0);
-    };
     var projManager = new ProjectionManager();
     var cameraManager = new CameraManager();
     var envManager = new EnvironmentManager();
@@ -85,9 +44,31 @@ function main() {
         projection: projManager,
         useShading: true,
     });
-    var objManager = new ObjectManagerOld(envManager, "triangle");
+    /* Component */
+    var lightComponent = new LightComponent(envManager);
+    // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
+    var textureComponent = new TextureComponent(engine.texture);
+    var object3DBuilder = new Object3DBuilder([
+        lightComponent,
+        textureComponent,
+    ]);
+    /* Object Manager */
+    var objManager = new ObjectManager();
     /* Setup importer */
-    var importer = new Importer(objManager, "loadfile-input");
+    var importer = new Importer(objManager, object3DBuilder, "loadfile-input");
+    /* Renderer */
+    var objectRenderer = new ObjectRenderer(envManager, extensionBuilder);
+    /* Setup manager */
+    var rerender = function () {
+        setTimeout(function () {
+            var objs = objManager.getList();
+            for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
+                var obj = objs_1[_i];
+                var infos = objectRenderer.generateDrawInfo(obj[0]);
+                infos.forEach(function (info) { return engine.render(info); });
+            }
+        }, 0);
+    };
     /* Bind Configuration */
     projectionUi.subscribe(function () {
         projManager.reset();
@@ -101,41 +82,41 @@ function main() {
             sourceLightColor: lightUi.lightColor,
         });
     });
-    transformUi.subscribe(function () {
-        var transformManager = new TransformManager();
-        var idx = transformUi.transformIndex;
-        var obj = objManager.get(idx);
-        if (!obj)
-            return;
-        var translation = new Translation();
-        var rotation = new Rotation();
-        var scaling = new Scaling();
-        // Rotation
-        rotation.configure({
-            angleX: transformUi.rotation.rotationAngleX,
-            angleY: transformUi.rotation.rotationAngleY,
-            angleZ: transformUi.rotation.rotationAngleZ,
-            center: obj.center,
-        });
-        transformManager.add(rotation);
-        // Scaling
-        scaling.configure({
-            sx: transformUi.scale.Sx,
-            sy: transformUi.scale.Sy,
-            sz: transformUi.scale.Sz,
-            center: obj.center,
-        });
-        transformManager.add(scaling);
-        // Translation
-        translation.configure({
-            x: transformUi.translation.X,
-            y: transformUi.translation.Y,
-            z: transformUi.translation.Z,
-        });
-        transformManager.add(translation);
-        obj.transform.updateMatrix(transformManager.matrix);
-        rerender();
-    });
+    // Transform UI harus berubah
+    // transformUi.subscribe(() => {
+    //   const transformManager = new TransformManager();
+    //   const idx = transformUi.transformIndex;
+    //   const obj = objManager.get(idx);
+    //   if (!obj) return;
+    //   const translation = new Translation();
+    //   const rotation = new Rotation();
+    //   const scaling = new Scaling();
+    //   // Rotation
+    //   rotation.configure({
+    //     angleX: transformUi.rotation.rotationAngleX,
+    //     angleY: transformUi.rotation.rotationAngleY,
+    //     angleZ: transformUi.rotation.rotationAngleZ,
+    //     center: obj.center,
+    //   });
+    //   transformManager.add(rotation);
+    //   // Scaling
+    //   scaling.configure({
+    //     sx: transformUi.scale.Sx,
+    //     sy: transformUi.scale.Sy,
+    //     sz: transformUi.scale.Sz,
+    //     center: obj.center,
+    //   });
+    //   transformManager.add(scaling);
+    //   // Translation
+    //   translation.configure({
+    //     x: transformUi.translation.X,
+    //     y: transformUi.translation.Y,
+    //     z: transformUi.translation.Z,
+    //   });
+    //   transformManager.add(translation);
+    //   obj.transform.updateMatrix(transformManager.matrix);
+    //   rerender();
+    // });
     cameraUi.subscribe(function () {
         cameraManager.update({
             radius: cameraUi.radius,

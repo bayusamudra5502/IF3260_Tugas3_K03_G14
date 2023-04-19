@@ -13,34 +13,37 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { LightRenderExtension, } from "../engine/extensions/object/LightRender.js";
+import { TextureRenderExtension, } from "../engine/extensions/object/TextureRender.js";
 import { Component } from "../object/Component.js";
-var LightComponent = /** @class */ (function (_super) {
-    __extends(LightComponent, _super);
-    function LightComponent(env) {
+import { Point } from "../object/Point.js";
+var TextureComponent = /** @class */ (function (_super) {
+    __extends(TextureComponent, _super);
+    function TextureComponent(texture, coords) {
+        if (coords === void 0) { coords = DEFAULT_COORDS; }
         var _this = _super.call(this) || this;
-        _this.env = env;
-        _this.normals = [];
+        _this.texture = texture;
+        _this.coords = coords;
         return _this;
     }
-    LightComponent.prototype.fit = function (object) {
-        for (var _i = 0, _a = object.faces; _i < _a.length; _i++) {
-            var face = _a[_i];
-            this.normals = this.normals.concat(face.normals);
-        }
-    };
-    LightComponent.prototype.run = function () {
+    TextureComponent.prototype.run = function () {
         return {
-            class: LightRenderExtension,
+            class: TextureRenderExtension,
             options: {
-                lightColor: this.env.lightColor,
-                lightSource: this.env.lightPosition,
-                normals: this.normals,
-                useShading: this.env.useShading,
+                texture: this.texture,
+                textureCoordinates: this.coords,
             },
         };
     };
-    return LightComponent;
+    TextureComponent.prototype.fit = function (object) {
+        // Nothing
+    };
+    return TextureComponent;
 }(Component));
-export { LightComponent };
-//# sourceMappingURL=Light.js.map
+export { TextureComponent };
+export var DEFAULT_COORDS = [
+    new Point(0, 0),
+    new Point(0, 1),
+    new Point(1, 1),
+    new Point(1, 0),
+];
+//# sourceMappingURL=Texture.js.map
