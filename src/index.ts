@@ -22,6 +22,7 @@ import { LightRenderExtension } from "./engine/extensions/object/LightRender";
 import DrawInfo from "./object/DrawInfo";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
 import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
+import { Point } from "./object/Point";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -64,9 +65,17 @@ function main() {
         });
 
         const texture = engine.texture; // TODO: get this from somewhere else
+        const textureCoordinates = []
+        for(let i=0; i<obj.normals.length; i+=4){
+          textureCoordinates.push(new Point(0,0));
+          textureCoordinates.push(new Point(0,1));
+          textureCoordinates.push(new Point(1,1));
+          textureCoordinates.push(new Point(1,0));
+        }
 
         const textureExtension = extensionBuilder.build(TextureRenderExtension, {
-          texture
+          texture,
+          textureCoordinates
         })
 
         engine.render({

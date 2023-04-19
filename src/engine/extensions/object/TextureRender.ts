@@ -2,9 +2,11 @@ import { Buffer } from "../../Buffer";
 import { RenderExtension } from "../../RenderExtension";
 import { ShaderProgram } from "../../Shader";
 import { isPowerOf2 } from "../../../util/util";
+import { Point } from "../../../object/Point";
 
 export interface TextureRenderOption{
     texture: WebGLTexture;
+    textureCoordinates: Point[];
     renderAttribute?: TextureRenderShaderAttribute
 }
 
@@ -28,11 +30,12 @@ export class TextureRenderExtension extends RenderExtension{
 
     private shaderLocation: TextureRenderShaderLocation;
     private texture: WebGLTexture;
+    private textureCoordinates: Point[];
 
     constructor(program: ShaderProgram, options: TextureRenderOption) {
         super(program, options);
         this.texture = options.texture;
-
+        this.textureCoordinates = options.textureCoordinates;
         this.initShaderLocation(
             this.program,
             options.renderAttribute ?? LIGHT_RENDER_EXTENSION_ATTRIBUT_DEFAULT
@@ -40,22 +43,12 @@ export class TextureRenderExtension extends RenderExtension{
     }
 
     public initTextureBuffer(gl: WebGLRenderingContext, buffer: Buffer) {
-      
-        const textureCoordinates = new Float32Array( [
-          // Front
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-          // Back
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-          // Top
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-          // Bottom
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-          // Right
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-          // Left
-          0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-        ]);
-        buffer.fillFloat("texture", textureCoordinates);
+        let coordinates = [];
+        this.textureCoordinates.forEach(element => {
+          coordinates = coordinates.concat(element.getArray())
+        });
+        const texCoordinates = new Float32Array(coordinates);
+        buffer.fillFloat("texture", texCoordinates);
       }
 
     private initShaderLocation(
