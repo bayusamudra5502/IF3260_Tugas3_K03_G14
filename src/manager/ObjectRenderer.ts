@@ -47,7 +47,7 @@ export class ObjectRenderer {
       component.fit(object);
       const res = component.run();
 
-      if (res != null) {
+      if (res) {
         extensions.push(this.extBuild.build(res.class, res.options));
       }
     }

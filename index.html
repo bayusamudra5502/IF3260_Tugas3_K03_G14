@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D Web Based</title>
-    <link rel="stylesheet" href="./index.css" />
-    <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Web Based</title>
+  <link rel="stylesheet" href="./index.css" />
+  <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
         in vec4 position;
         in vec4 normal;
         in vec4 color;
@@ -34,7 +35,7 @@
             gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
         }
     </script>
-    <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+  <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
         precision highp float;
         in vec4 vColor;
         in vec3 vNormal;
@@ -79,328 +80,199 @@
             }
         }
     </script>
-  </head>
+</head>
 
-  <body>
-    <div class="header" style="text-align: center">
-      <h1>Tugas 3 Grafika Komputer</h1>
+<body>
+  <div class="header" style="text-align: center">
+    <h1>Tugas 3 Grafika Komputer</h1>
+  </div>
+  <div class="container">
+    <div class="canvas-container">
+      <canvas id="drawing-canvas" width="800" height="800"></canvas>
     </div>
-    <div class="container">
-      <div class="canvas-container">
-        <canvas id="drawing-canvas" width="800" height="800"></canvas>
+    <div class="controller-list">
+      <div class="controller-container">
+        <h2>Reset / Rerender</h2>
+        <button id="reset-button" type="button" disabled>Reset View</button>
+        <button id="rerender-button" type="button" disabled>Rerender</button>
       </div>
-      <div class="controller-list">
-        <div class="controller-container">
-          <h2>Reset / Rerender</h2>
-          <button id="reset-button" type="button" disabled>Reset View</button>
-          <button id="rerender-button" type="button" disabled>Rerender</button>
+      <div class="controller-container">
+        <h2>Load File</h2>
+        <input type="file" id="loadfile-input" accept="application/json" />
+        <div style="margin-top: 10px"></div>
+        <button id="loadfile-submit" type="button">Load</button>
+      </div>
+      <div class="controller-container">
+        <h2>Texture</h2>
+        <div>
+          <label for="texture-mode">Texture Mode</label>
+          <select id="texture-mode">
+            <option value="0">Texture Mapping</option>
+            <option value="1">Environment Mapping</option>
+            <option value="2">Bump Mapping</option>
+          </select>
         </div>
-        <div class="controller-container">
-          <h2>Load File</h2>
-          <input type="file" id="loadfile-input" accept="application/json" />
-          <div style="margin-top: 10px"></div>
-          <button id="loadfile-submit" type="button">Load</button>
+      </div>
+      <div class="controller-container">
+        <h2>Animation</h2>
+        <div class="option">
+          <label><input type="checkbox" id="check-run-animation" />Run Animation</label>
         </div>
-        <div class="controller-container">
-          <h2>Texture</h2>
-          <div>
-            <label for="texture-mode">Texture Mode</label>
-            <select id="texture-mode">
-              <option value="0">Texture Mapping</option>
-              <option value="1">Environment Mapping</option>
-              <option value="2">Bump Mapping</option>
-            </select>
-          </div>
+      </div>
+      <div class="controller-container">
+        <h2>Camera Configuration</h2>
+        <div class="option">
+          <label>Radius
+            <input type="range" min="-1" max="3" value="0" step="0.1" id="camera-radius" />
+            <span id="camera-radius-value">0</span>
+          </label>
         </div>
-        <div class="controller-container">
-          <h2>Animation</h2>
-          <div class="option">
-            <label
-              ><input type="checkbox" id="check-rotate-x" checked />Rotate
-              X</label
-            >
-          </div>
-          <div class="option">
-            <label><input type="checkbox" id="check-rotate-y" />Rotate Y</label>
-          </div>
-          <div class="option">
-            <label
-              ><input type="checkbox" id="check-rotate-z" checked />Rotate
-              Z</label
-            >
-          </div>
+        <div class="option">
+          <label>X Angle
+            <input type="range" min="0" max="360" value="0" step="1" id="camera-xangle" />
+            <span id="camera-xangle-value">0</span>
+          </label>
         </div>
-        <div class="controller-container">
-          <h2>Camera Configuration</h2>
+        <div class="option">
+          <label>Y Angle
+            <input type="range" min="0" max="360" value="0" step="1" id="camera-yangle" />
+            <span id="camera-yangle-value">0</span>
+          </label>
+        </div>
+      </div>
+      <div class="controller-container">
+        <h2>Projection</h2>
+        <div>
+          <label for="projection-type">Projection Type</label>
+          <select id="projection-type">
+            <option value="oblique">Oblique</option>
+            <option value="orthographic">Orthographic</option>
+            <option value="perspective">Perspective</option>
+          </select>
+        </div>
+        <div id="perspective-option" class="hide">
+          <h3>Options</h3>
           <div class="option">
-            <label
-              >Radius
-              <input
-                type="range"
-                min="-1"
-                max="3"
-                value="0"
-                step="0.1"
-                id="camera-radius"
-              />
-              <span id="camera-radius-value">0</span>
-            </label>
+            <label>Z Near <input type="number" id="perspective-znear" step="0.05" /></label>
           </div>
           <div class="option">
-            <label
-              >X Angle
-              <input
-                type="range"
-                min="0"
-                max="360"
-                value="0"
-                step="1"
-                id="camera-xangle"
-              />
-              <span id="camera-xangle-value">0</span>
-            </label>
+            <label>Z Far <input type="number" id="perspective-zfar" step="0.05" /></label>
           </div>
           <div class="option">
-            <label
-              >Y Angle
-              <input
-                type="range"
-                min="0"
-                max="360"
-                value="0"
-                step="1"
-                id="camera-yangle"
-              />
-              <span id="camera-yangle-value">0</span>
+            <label>Angle Of View
+              <input type="range" min="1" max="179" value="45" id="perspective-aov" />
+              <span id="perspective-aov-value">45</span>
             </label>
           </div>
         </div>
-        <div class="controller-container">
-          <h2>Projection</h2>
-          <div>
-            <label for="projection-type">Projection Type</label>
-            <select id="projection-type">
-              <option value="oblique">Oblique</option>
-              <option value="orthographic">Orthographic</option>
-              <option value="perspective">Perspective</option>
-            </select>
+        <div id="ortho-option" class="hide">
+          <h3>Options</h3>
+          <div class="option">
+            <label>X left <input type="number" id="ortho-xleft" step="0.05" /></label>
           </div>
-          <div id="perspective-option" class="hide">
-            <h3>Options</h3>
-            <div class="option">
-              <label
-                >Z Near <input type="number" id="perspective-znear" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Z Far <input type="number" id="perspective-zfar" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Angle Of View
-                <input
-                  type="range"
-                  min="1"
-                  max="179"
-                  value="45"
-                  id="perspective-aov"
-                />
-                <span id="perspective-aov-value">45</span>
-              </label>
-            </div>
+          <div class="option">
+            <label>X Right <input type="number" id="ortho-xright" step="0.05" /></label>
           </div>
-          <div id="ortho-option" class="hide">
-            <h3>Options</h3>
-            <div class="option">
-              <label
-                >X left <input type="number" id="ortho-xleft" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >X Right <input type="number" id="ortho-xright" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Y top <input type="number" id="ortho-ytop" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Y bottom <input type="number" id="ortho-ybottom" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Z Near <input type="number" id="ortho-znear" step="0.05"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >Z Far <input type="number" id="ortho-zfar" step="0.05"
-              /></label>
-            </div>
+          <div class="option">
+            <label>Y top <input type="number" id="ortho-ytop" step="0.05" /></label>
           </div>
-          <div id="oblique-option">
-            <h3>Options</h3>
-            <div class="option">
-              <label
-                >X Angle
-                <input
-                  type="range"
-                  min="1"
-                  max="179"
-                  value="45"
-                  id="oblique-xangle"
-                />
-                <span id="oblique-xangle-value">45</span>
-              </label>
-            </div>
-            <div class="option">
-              <label
-                >Y Angle
-                <input
-                  type="range"
-                  min="1"
-                  max="179"
-                  value="45"
-                  id="oblique-yangle"
-                />
-                <span id="oblique-yangle-value">45</span>
-              </label>
-            </div>
-            <div class="option">
-              <label
-                >Z Projection
-                <input type="number" id="oblique-zproj" step="0.05"
-              /></label>
-            </div>
+          <div class="option">
+            <label>Y bottom <input type="number" id="ortho-ybottom" step="0.05" /></label>
+          </div>
+          <div class="option">
+            <label>Z Near <input type="number" id="ortho-znear" step="0.05" /></label>
+          </div>
+          <div class="option">
+            <label>Z Far <input type="number" id="ortho-zfar" step="0.05" /></label>
           </div>
         </div>
-        <div class="controller-container">
-          <h2>Light Source</h2>
-          <div>
-            <label
-              ><input type="checkbox" id="use-shading-check" checked /> Use
-              shading</label
-            >
-          </div>
-          <div>
-            <h3>Location</h3>
-            <div class="option">
-              <label
-                >Color <input type="color" id="light-color" value="#FFFFFF"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >x <input type="number" id="light-x" step="0.05" value="0"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >y <input type="number" id="light-y" step="0.05" value="0"
-              /></label>
-            </div>
-            <div class="option">
-              <label
-                >z <input type="number" id="light-z" step="0.05" value="1"
-              /></label>
-            </div>
-          </div>
-        </div>
-        <div class="controller-container">
-          <h2>Transformation</h2>
+        <div id="oblique-option">
+          <h3>Options</h3>
           <div class="option">
-            <label>Index <input type="number" id="transform-index" /></label>
-          </div>
-          <h3>Translation</h3>
-          <div class="option">
-            <label
-              >x
-              <input
-                type="number"
-                id="translation-x"
-                step="0.05"
-                min="-10"
-                max="10"
-            /></label>
+            <label>X Angle
+              <input type="range" min="1" max="179" value="45" id="oblique-xangle" />
+              <span id="oblique-xangle-value">45</span>
+            </label>
           </div>
           <div class="option">
-            <label
-              >y
-              <input
-                type="number"
-                id="translation-y"
-                step="0.05"
-                min="-10"
-                max="10"
-            /></label>
+            <label>Y Angle
+              <input type="range" min="1" max="179" value="45" id="oblique-yangle" />
+              <span id="oblique-yangle-value">45</span>
+            </label>
           </div>
           <div class="option">
-            <label
-              >z
-              <input
-                type="number"
-                id="translation-z"
-                step="0.05"
-                min="-10"
-                max="10"
-            /></label>
-          </div>
-          <h3>Rotation</h3>
-          <div class="option">
-            <label
-              >x-axis
-              <input
-                type="number"
-                id="rotation-x"
-                min="-360"
-                max="360"
-                step="1"
-                value="0"
-            /></label>
-          </div>
-          <div class="option">
-            <label
-              >y-axis
-              <input
-                type="number"
-                id="rotation-y"
-                min="-360"
-                max="360"
-                step="1"
-                value="0"
-            /></label>
-          </div>
-          <div class="option">
-            <label
-              >z-axis
-              <input
-                type="number"
-                id="rotation-z"
-                min="-360"
-                max="360"
-                step="1"
-                value="0"
-            /></label>
-          </div>
-          <h3>Scaling</h3>
-          <div class="option">
-            <label>x <input type="number" id="scale-x" step="0.05" /></label>
-          </div>
-          <div class="option">
-            <label>y <input type="number" id="scale-y" step="0.05" /></label>
-          </div>
-          <div class="option">
-            <label>z <input type="number" id="scale-z" step="0.05" /></label>
+            <label>Z Projection
+              <input type="number" id="oblique-zproj" step="0.05" /></label>
           </div>
         </div>
       </div>
+      <div class="controller-container">
+        <h2>Light Source</h2>
+        <div>
+          <label><input type="checkbox" id="use-shading-check" checked /> Use
+            shading</label>
+        </div>
+        <div>
+          <h3>Location</h3>
+          <div class="option">
+            <label>Color <input type="color" id="light-color" value="#FFFFFF" /></label>
+          </div>
+          <div class="option">
+            <label>x <input type="number" id="light-x" step="0.05" value="0" /></label>
+          </div>
+          <div class="option">
+            <label>y <input type="number" id="light-y" step="0.05" value="0" /></label>
+          </div>
+          <div class="option">
+            <label>z <input type="number" id="light-z" step="0.05" value="1" /></label>
+          </div>
+        </div>
+      </div>
+      <div class="controller-container">
+        <h2>Transformation</h2>
+        <div class="option">
+          <label>Index <input type="number" id="transform-index" /></label>
+        </div>
+        <h3>Translation</h3>
+        <div class="option">
+          <label>x
+            <input type="number" id="translation-x" step="0.05" min="-10" max="10" /></label>
+        </div>
+        <div class="option">
+          <label>y
+            <input type="number" id="translation-y" step="0.05" min="-10" max="10" /></label>
+        </div>
+        <div class="option">
+          <label>z
+            <input type="number" id="translation-z" step="0.05" min="-10" max="10" /></label>
+        </div>
+        <h3>Rotation</h3>
+        <div class="option">
+          <label>x-axis
+            <input type="number" id="rotation-x" min="-360" max="360" step="1" value="0" /></label>
+        </div>
+        <div class="option">
+          <label>y-axis
+            <input type="number" id="rotation-y" min="-360" max="360" step="1" value="0" /></label>
+        </div>
+        <div class="option">
+          <label>z-axis
+            <input type="number" id="rotation-z" min="-360" max="360" step="1" value="0" /></label>
+        </div>
+        <h3>Scaling</h3>
+        <div class="option">
+          <label>x <input type="number" id="scale-x" step="0.05" /></label>
+        </div>
+        <div class="option">
+          <label>y <input type="number" id="scale-y" step="0.05" /></label>
+        </div>
+        <div class="option">
+          <label>z <input type="number" id="scale-z" step="0.05" /></label>
+        </div>
+      </div>
     </div>
-    <script src="static/index.js" type="module"></script>
-  </body>
+  </div>
+  <script src="static/index.js" type="module"></script>
+</body>
+
 </html>
