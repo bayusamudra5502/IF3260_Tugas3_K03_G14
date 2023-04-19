@@ -21,6 +21,7 @@ import { ExtensionBuilder } from "./engine/ExtensionBuilder";
 import { LightRenderExtension } from "./engine/extensions/object/LightRender";
 import DrawInfo from "./object/DrawInfo";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
+import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -55,16 +56,22 @@ function main() {
     setTimeout(() => {
       const objs = objManager.generateDrawInfo();
       for (const obj of objs) {
-        const extension = extensionBuilder.build(LightRenderExtension, {
+        const lightExtension = extensionBuilder.build(LightRenderExtension, {
           lightColor: envManager.lightColor,
           lightSource: envManager.lightPosition,
           normals: obj.normals,
           useShading: envManager.useShading,
         });
 
+        const texture = engine.texture; // TODO: get this from somewhere else
+
+        const textureExtension = extensionBuilder.build(TextureRenderExtension, {
+          texture
+        })
+
         engine.render({
           ...obj,
-          extensions: [extension],
+          extensions: [lightExtension, textureExtension],
         } as DrawInfo);
       }
     }, 0);

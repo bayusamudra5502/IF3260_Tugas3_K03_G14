@@ -5,6 +5,7 @@ import { Buffer } from "./Buffer";
 import { Canvas } from "./Canvas";
 import { RenderExtension } from "./RenderExtension";
 import { ShaderProgram, ShaderVariableLocation } from "./Shader";
+import { isPowerOf2 } from "../util/util";
 
 type DrawTypeMap = {
   [key in DrawMode]: number;
@@ -13,21 +14,20 @@ type DrawTypeMap = {
 export default class RenderEngine {
   private webglContext: WebGLRenderingContext;
   private shaderLocation: ShaderVariableLocation;
-  private textureCoordinateBuffer: WebGLBuffer;
-  private texture: WebGLTexture;
   private typeMap: DrawTypeMap;
   private initialExtensions: RenderExtension[] = [];
+  public texture: WebGLTexture // TODO: move this (?)
 
   constructor(
     private renderCanvas: Canvas,
     private buffer: Buffer,
     shader: ShaderProgram,
-    private backColor: Color = new Color(0, 0, 0, 0)
+    private backColor: Color = new Color(0, 0, 0, 0),
+    
   ) {
     this.webglContext = renderCanvas.getContext();
     this.shaderLocation = shader.load();
-    this.texture = shader.loadTexture();
-    this.textureCoordinateBuffer = shader.initTextureBuffer();
+    this.texture = this.loadTexture(); // TODO: move this (?)
     renderCanvas.bindResolution(this.shaderLocation.options.resolution);
 
     this.typeMap = {
@@ -61,6 +61,70 @@ export default class RenderEngine {
     }
   }
 
+  // TODO: refactor this, move it somewhere else
+  public loadTexture(path: string = "/assets/logo.png") {
+    const gl = this.webglContext;
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+  
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 255, 255, 255]); // opaque blue
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      level,
+      internalFormat,
+      width,
+      height,
+      border,
+      srcFormat,
+      srcType,
+      pixel
+    );
+  
+    const image = new Image();
+    image.onload = () => {
+      console.log("loaded image")
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        level,
+        internalFormat,
+        srcFormat,
+        srcType,
+        image
+      );
+  
+      // WebGL1 has different requirements for power of 2 images
+      // vs. non power of 2 images so check if the image is a
+      // power of 2 in both dimensions.
+      if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+        // Yes, it's a power of 2. Generate mips.
+        gl.generateMipmap(gl.TEXTURE_2D);
+        // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        // Prevents s-coordinate wrapping (repeating).
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        // Prevents t-coordinate wrapping (repeating).
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      } else {
+        // No, it's not a power of 2. Turn off mips and set
+        // wrapping to clamp to edge
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      }
+    };
+    image.src = path;
+  
+    return texture;
+  }
+
   private bind(
     pointer: number,
     buffer: WebGLBuffer,
@@ -72,25 +136,6 @@ export default class RenderEngine {
     this.webglContext.enableVertexAttribArray(pointer);
   }
 
-  // tell webgl how to pull out the texture coordinates from buffer
-  private setTextureAttribute() {
-    const gl = this.webglContext;
-    const num = 2; // every coordinate composed of 2 values
-    const type = gl.FLOAT; // the data in the buffer is 32-bit float
-    const normalize = false; // don't normalize
-    const stride = 0; // how many bytes to get from one set to the next
-    const offset = 0; // how many bytes inside the buffer to start from
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);
-    gl.vertexAttribPointer(
-      this.shaderLocation.texture,
-      num,
-      type,
-      normalize,
-      stride,
-      offset
-    );
-    gl.enableVertexAttribArray(this.shaderLocation.texture);
-  }
 
   public prepareBuffer(object: DrawInfo) {
     const primitive = drawableToPrimitive(object);
@@ -103,7 +148,6 @@ export default class RenderEngine {
     // Data binding
     this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
     this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
-    this.setTextureAttribute();
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(
@@ -124,15 +168,6 @@ export default class RenderEngine {
       primitive.matrix.projection
     );
     
-    // Tell WebGL we want to affect texture unit 0
-    const gl = this.webglContext;
-    gl.activeTexture(gl.TEXTURE0);
-
-    // Bind the texture to texture unit 0
-    gl.bindTexture(gl.TEXTURE_2D, this.texture);
-
-    // Tell the shader we bound the texture to texture unit 0
-    gl.uniform1i(this.shaderLocation.sampler, 0);
     return primitive;
   }
 
