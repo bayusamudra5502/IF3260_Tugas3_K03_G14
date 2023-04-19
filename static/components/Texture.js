@@ -18,11 +18,12 @@ import { Component } from "../object/Component.js";
 import { Point } from "../object/Point.js";
 var TextureComponent = /** @class */ (function (_super) {
     __extends(TextureComponent, _super);
-    function TextureComponent(texture, textureCube, textureManager, cameraManager, coords) {
+    function TextureComponent(texture, textureCube, textureBump, textureManager, cameraManager, coords) {
         if (coords === void 0) { coords = DEFAULT_COORDS; }
         var _this = _super.call(this) || this;
         _this.texture = texture;
         _this.textureCube = textureCube;
+        _this.textureBump = textureBump;
         _this.textureManager = textureManager;
         _this.cameraManager = cameraManager;
         _this.coords = coords;
@@ -37,6 +38,7 @@ var TextureComponent = /** @class */ (function (_super) {
                 textureCoordinates: this.coords,
                 cameraPosition: this.cameraManager.position,
                 textureCube: this.textureCube,
+                textureBump: this.textureBump,
                 mode: this.textureManager.mode,
             },
         };

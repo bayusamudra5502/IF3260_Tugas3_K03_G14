@@ -51,7 +51,7 @@ function main() {
     });
     /* Component */
     var lightComponent = new LightComponent(envManager);
-    var textureComponent = new TextureComponent(engine.texture, engine.envMap, textureManager, cameraManager);
+    var textureComponent = new TextureComponent(engine.texture, engine.envMap, engine.bumpMap, textureManager, cameraManager);
     var object3DBuilder = new Object3DBuilder([
         lightComponent,
         textureComponent,

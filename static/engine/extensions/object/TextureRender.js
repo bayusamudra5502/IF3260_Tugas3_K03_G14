@@ -28,6 +28,7 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         var _a;
         _this = _super.call(this, program, options) || this;
         _this.texture = options.texture;
+        _this.textureBump = options.textureBump;
         _this.cameraPosition = options.cameraPosition;
         _this.textureCoordinates = options.textureCoordinates;
         _this.mode = options.mode;
@@ -41,6 +42,14 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         });
         var texCoordinates = new Float32Array(coordinates);
         buffer.fillFloat("texture", texCoordinates);
+    };
+    TextureRenderExtension.prototype.initTextureBumpBuffer = function (gl, buffer) {
+        var coordinates = [];
+        this.textureCoordinates.forEach(function (element) {
+            coordinates = coordinates.concat(element.getArray());
+        });
+        var texCoordinates = new Float32Array(coordinates);
+        buffer.fillFloat("textureBump", texCoordinates);
     };
     TextureRenderExtension.prototype.initShaderLocation = function (program, renderAttribute) {
         var sampler = program.getUniformLocation(renderAttribute.sampler);
@@ -67,9 +76,13 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         gl.enableVertexAttribArray(this.shaderLocation.texture);
         gl.activeTexture(gl.TEXTURE0);
         // Bind the texture to texture unit 0
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        if (this.mode == TEXTURE_MODE.BUMP_MAPPING)
+            gl.bindTexture(gl.TEXTURE_2D, this.textureBump);
+        else
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
         // Tell the shader we bound the texture to texture unit 0
         gl.uniform1i(this.shaderLocation.sampler, 0);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.uniform3fv(this.shaderLocation.cameraLocation, this.cameraPosition.getArray().slice(0, 3));
         gl.uniform1i(this.shaderLocation.textureCubeLocation, 1);
         gl.uniform1i(this.shaderLocation.textureMode, this.mode);
