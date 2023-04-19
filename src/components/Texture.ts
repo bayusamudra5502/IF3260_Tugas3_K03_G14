@@ -6,13 +6,13 @@ import { Component, ComponentPrototype } from "../object/Component";
 import { Object3D } from "../object/Object3D";
 import { Point } from "../object/Point";
 import { Vertex } from "../object/Vertices";
-import { TEXTURE_MODE } from "../engine/extensions/object/TextureRender";
+import { TextureManager } from "../manager/TextureManager";
 
 export class TextureComponent extends Component {
   constructor(
     private texture: WebGLTexture,
     private textureCube: WebGLTexture,
-    private mode: TEXTURE_MODE,
+    private textureManager: TextureManager,
     private camera: Vertex  = DEFAULT_CAMERA,
     private coords: Point[] = DEFAULT_COORDS,
   ) {
@@ -20,6 +20,7 @@ export class TextureComponent extends Component {
   }
 
   run(): ComponentPrototype<TextureRenderOption, TextureRenderExtension> {
+    console.log(this.textureManager.mode);
     return {
       class: TextureRenderExtension,
       options: {
@@ -27,7 +28,7 @@ export class TextureComponent extends Component {
         textureCoordinates: this.coords,
         cameraPosition: this.camera,
         textureCube: this.textureCube,
-        mode: this.mode,
+        mode: this.textureManager.mode,
       },
     };
   }

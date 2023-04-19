@@ -15,6 +15,7 @@ import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
+import { TextureUi } from "./ui/TextureUI";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
@@ -28,6 +29,7 @@ import { ObjectRenderer } from "./manager/ObjectRenderer";
 import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
 import { Point } from "./object/Point";
 import { TextureComponent } from "./components/Texture";
+import { TextureManager } from "./manager/TextureManager";
 import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender";
 
 function main() {
@@ -57,11 +59,13 @@ function main() {
   const lightUi = new LightUi();
   const transformUi = new TransformUi();
   const cameraUi = new CameraUi();
+  const textureUi = new TextureUi();
 
   /* Setup manager */
   const projManager = new ProjectionManager();
   const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
+  const textureManager = new TextureManager();
   envManager.update({
     cameraManager: cameraManager,
     projection: projManager,
@@ -74,7 +78,7 @@ function main() {
   const textureComponent = new TextureComponent(
     engine.texture, 
     engine.envMap, 
-    TEXTURE_MODE.TEXTURE_MAPPING
+    textureManager
   );
 
   const object3DBuilder = new Object3DBuilder([
@@ -116,6 +120,10 @@ function main() {
     });
   });
 
+  textureUi.subscribe(() => {
+    textureManager.update(textureUi.mode);
+    rerender();
+  })
   // Transform UI harus berubah
   // transformUi.subscribe(() => {
   //   const transformManager = new TransformManager();
