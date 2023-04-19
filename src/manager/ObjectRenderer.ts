@@ -12,7 +12,6 @@ export class ObjectRenderer {
     private extBuild: ExtensionBuilder,
     private drawMode: DrawMode = "triangle"
   ) {}
-
   generateDrawInfo(root: Object3D): DrawInfo[] {
     const objectQueue = [root];
     const matrixQueue = [IDENTITY_MATRIX];
@@ -45,6 +44,7 @@ export class ObjectRenderer {
     const extensions: RenderExtension[] = [];
 
     for (const component of object.components) {
+      component.fit(object);
       const res = component.run();
 
       if (res != null) {

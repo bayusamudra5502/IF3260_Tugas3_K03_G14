@@ -14,7 +14,7 @@ export class Face {
   private colorsData: Color[];
   private indiciesData: number[];
 
-  private normalData: Vector[];
+  private normalData: Vector[] = [];
 
   constructor(options: FaceOptions) {
     this.verticesData = options.isInverted
@@ -36,7 +36,7 @@ export class Face {
   }
 
   get vertices() {
-    return this.vertices;
+    return this.verticesData;
   }
 
   get colors() {
@@ -48,13 +48,13 @@ export class Face {
   }
 
   get normals() {
-    return this.normals;
+    return this.normalData;
   }
 
   private makeTriangle() {
     const newIndicies = [];
 
-    for (let i = 1; i < this.indiciesData.length - 1; i++) {
+    for (let i = 1; i < this.vertices.length - 1; i++) {
       newIndicies.push(0);
       newIndicies.push(i);
       newIndicies.push(i + 1);

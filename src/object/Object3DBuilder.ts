@@ -31,8 +31,12 @@ export class Object3DBuilder {
       const config = objectConfigMap[obj.name];
       const topology = obj.topology;
 
+      if (config.inverted && config.inverted.length < obj.num_face) {
+        throw new Error("inverted data is not equal");
+      }
+
       const colorFace = Object3DBuilder.makeColorObject(
-        obj ?? "#ffffff",
+        config.colors ?? "#ffffff",
         obj.num_face
       );
 
@@ -44,13 +48,13 @@ export class Object3DBuilder {
           vertices.push(Vertex.load(points[vIdx]));
         }
 
-        faceList.push(
-          new Face({
-            color: colorFace[i],
-            vertices: vertices,
-            isInverted: !!config.inverted,
-          })
-        );
+        const face = new Face({
+          color: colorFace[i],
+          vertices: vertices,
+          isInverted: config.inverted ? config.inverted[i] : false,
+        });
+
+        faceList.push(face);
       }
 
       const object = new Object3D(faceList, Vertex.load(config["joint_point"]));
@@ -80,7 +84,7 @@ export class Object3DBuilder {
       const currentObj = map.get(key);
       if (!currentObj) throw new Error(`Object '${key}' is not found in edges`);
 
-      const childs = objectConfigMap[key] as string[];
+      const childs = objectConfigMap[key].child as string[];
 
       if (childs) {
         for (const childId of childs) {

@@ -3,7 +3,6 @@ import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
-import { ObjectManagerOld } from "./manager/ObjectManagerOld";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
 import { CameraManager } from "./manager/CameraManager";
@@ -21,6 +20,10 @@ import { ExtensionBuilder } from "./engine/ExtensionBuilder";
 import { LightRenderExtension } from "./engine/extensions/object/LightRender";
 import DrawInfo from "./object/DrawInfo";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
+import { Object3DBuilder } from "./object/Object3DBuilder";
+import { LightComponent } from "./components/Light";
+import { ObjectManager } from "./manager/ObjectManager";
+import { ObjectRenderer } from "./manager/ObjectRenderer";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -50,26 +53,6 @@ function main() {
   const transformUi = new TransformUi();
   const cameraUi = new CameraUi();
 
-  /* Setup manager */
-  const rerender = () => {
-    setTimeout(() => {
-      const objs = objManager.generateDrawInfo();
-      for (const obj of objs) {
-        const extension = extensionBuilder.build(LightRenderExtension, {
-          lightColor: envManager.lightColor,
-          lightSource: envManager.lightPosition,
-          normals: obj.normals,
-          useShading: envManager.useShading,
-        });
-
-        engine.render({
-          ...obj,
-          extensions: [extension],
-        } as DrawInfo);
-      }
-    }, 0);
-  };
-
   const projManager = new ProjectionManager();
   const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
@@ -79,10 +62,28 @@ function main() {
     useShading: true,
   });
 
-  const objManager = new ObjectManagerOld(envManager, "triangle");
+  /* Component */
+  const lightComponent = new LightComponent(envManager);
+  const object3DBuilder = new Object3DBuilder([lightComponent]);
+
+  const objManager = new ObjectManager();
 
   /* Setup importer */
-  const importer = new Importer(objManager, "loadfile-input");
+  const importer = new Importer(objManager, object3DBuilder, "loadfile-input");
+
+  /* Renderer */
+  const objectRenderer = new ObjectRenderer(envManager, extensionBuilder);
+
+  /* Setup manager */
+  const rerender = () => {
+    setTimeout(() => {
+      const objs = objManager.getList();
+      for (const obj of objs) {
+        const infos = objectRenderer.generateDrawInfo(obj[0]);
+        infos.forEach((info) => engine.render(info));
+      }
+    }, 0);
+  };
 
   /* Bind Configuration */
   projectionUi.subscribe(() => {
@@ -97,47 +98,50 @@ function main() {
       sourceLightColor: lightUi.lightColor,
     });
   });
-  transformUi.subscribe(() => {
-    const transformManager = new TransformManager();
-    const idx = transformUi.transformIndex;
 
-    const obj = objManager.get(idx);
+  // Transform UI harus berubah
+  // transformUi.subscribe(() => {
+  //   const transformManager = new TransformManager();
+  //   const idx = transformUi.transformIndex;
 
-    if (!obj) return;
+  //   const obj = objManager.get(idx);
 
-    const translation = new Translation();
-    const rotation = new Rotation();
-    const scaling = new Scaling();
+  //   if (!obj) return;
 
-    // Rotation
-    rotation.configure({
-      angleX: transformUi.rotation.rotationAngleX,
-      angleY: transformUi.rotation.rotationAngleY,
-      angleZ: transformUi.rotation.rotationAngleZ,
-      center: obj.center,
-    });
-    transformManager.add(rotation);
+  //   const translation = new Translation();
+  //   const rotation = new Rotation();
+  //   const scaling = new Scaling();
 
-    // Scaling
-    scaling.configure({
-      sx: transformUi.scale.Sx,
-      sy: transformUi.scale.Sy,
-      sz: transformUi.scale.Sz,
-      center: obj.center,
-    });
-    transformManager.add(scaling);
+  //   // Rotation
+  //   rotation.configure({
+  //     angleX: transformUi.rotation.rotationAngleX,
+  //     angleY: transformUi.rotation.rotationAngleY,
+  //     angleZ: transformUi.rotation.rotationAngleZ,
+  //     center: obj.center,
+  //   });
+  //   transformManager.add(rotation);
 
-    // Translation
-    translation.configure({
-      x: transformUi.translation.X,
-      y: transformUi.translation.Y,
-      z: transformUi.translation.Z,
-    });
-    transformManager.add(translation);
+  //   // Scaling
+  //   scaling.configure({
+  //     sx: transformUi.scale.Sx,
+  //     sy: transformUi.scale.Sy,
+  //     sz: transformUi.scale.Sz,
+  //     center: obj.center,
+  //   });
+  //   transformManager.add(scaling);
 
-    obj.transform.updateMatrix(transformManager.matrix);
-    rerender();
-  });
+  //   // Translation
+  //   translation.configure({
+  //     x: transformUi.translation.X,
+  //     y: transformUi.translation.Y,
+  //     z: transformUi.translation.Z,
+  //   });
+  //   transformManager.add(translation);
+
+  //   obj.transform.updateMatrix(transformManager.matrix);
+  //   rerender();
+  // });
+
   cameraUi.subscribe(() => {
     cameraManager.update({
       radius: cameraUi.radius,
