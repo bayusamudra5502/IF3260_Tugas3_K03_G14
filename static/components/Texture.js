@@ -19,18 +19,19 @@ import { Point } from "../object/Point.js";
 import { Vertex } from "../object/Vertices.js";
 var TextureComponent = /** @class */ (function (_super) {
     __extends(TextureComponent, _super);
-    function TextureComponent(texture, textureCube, mode, camera, coords) {
+    function TextureComponent(texture, textureCube, textureManager, camera, coords) {
         if (camera === void 0) { camera = DEFAULT_CAMERA; }
         if (coords === void 0) { coords = DEFAULT_COORDS; }
         var _this = _super.call(this) || this;
         _this.texture = texture;
         _this.textureCube = textureCube;
-        _this.mode = mode;
+        _this.textureManager = textureManager;
         _this.camera = camera;
         _this.coords = coords;
         return _this;
     }
     TextureComponent.prototype.run = function () {
+        console.log(this.textureManager.mode);
         return {
             class: TextureRenderExtension,
             options: {
@@ -38,7 +39,7 @@ var TextureComponent = /** @class */ (function (_super) {
                 textureCoordinates: this.coords,
                 cameraPosition: this.camera,
                 textureCube: this.textureCube,
-                mode: this.mode,
+                mode: this.textureManager.mode,
             },
         };
     };

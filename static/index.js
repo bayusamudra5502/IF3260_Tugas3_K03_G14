@@ -10,6 +10,7 @@ import { CameraUi } from "./ui/CameraUi.js";
 import { LightUi } from "./ui/LightUi.js";
 import { ProjectionUi } from "./ui/ProjectionUi.js";
 import { TransformUi } from "./ui/TransformUi.js";
+import { TextureUi } from "./ui/TextureUI.js";
 import { Importer } from "./util/Importer.js";
 import { reset } from "./util/reset.js";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
@@ -19,7 +20,7 @@ import { LightComponent } from "./components/Light.js";
 import { ObjectManager } from "./manager/ObjectManager.js";
 import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { TextureComponent } from "./components/Texture.js";
-import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender.js";
+import { TextureManager } from "./manager/TextureManager.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -36,10 +37,12 @@ function main() {
     var lightUi = new LightUi();
     var transformUi = new TransformUi();
     var cameraUi = new CameraUi();
+    var textureUi = new TextureUi();
     /* Setup manager */
     var projManager = new ProjectionManager();
     var cameraManager = new CameraManager();
     var envManager = new EnvironmentManager();
+    var textureManager = new TextureManager();
     envManager.update({
         cameraManager: cameraManager,
         projection: projManager,
@@ -48,7 +51,7 @@ function main() {
     /* Component */
     var lightComponent = new LightComponent(envManager);
     // TODO: Pass koordinat camera + pilih texture mode
-    var textureComponent = new TextureComponent(engine.texture, engine.envMap, TEXTURE_MODE.TEXTURE_MAPPING);
+    var textureComponent = new TextureComponent(engine.texture, engine.envMap, textureManager);
     var object3DBuilder = new Object3DBuilder([
         lightComponent,
         textureComponent,
@@ -82,6 +85,10 @@ function main() {
             useShading: lightUi.useShading,
             sourceLightColor: lightUi.lightColor,
         });
+    });
+    textureUi.subscribe(function () {
+        textureManager.update(textureUi.mode);
+        rerender();
     });
     // Transform UI harus berubah
     // transformUi.subscribe(() => {
