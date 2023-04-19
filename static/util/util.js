@@ -1,4 +1,7 @@
 import { Matrix } from "../matrix/Matrix.js";
+export function isPowerOf2(num) {
+    return (num & (num - 1)) === 0;
+}
 export function padding(str, length, pad) {
     if (length === void 0) { length = 2; }
     if (pad === void 0) { pad = "0"; }

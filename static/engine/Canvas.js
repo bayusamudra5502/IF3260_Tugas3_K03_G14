@@ -10,7 +10,7 @@ var Canvas = /** @class */ (function () {
     Canvas.prototype.fillContext = function (canvasId, _a) {
         var maxX = _a.maxX, maxY = _a.maxY, maxZ = _a.maxZ;
         var canvas = document.querySelector("#".concat(canvasId));
-        this.webglContext = canvas.getContext("webgl");
+        this.webglContext = canvas.getContext("webgl2");
         this.canvas = canvas;
         if (!this.webglContext) {
             throw new Error("browser doesn't support webgl");

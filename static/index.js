@@ -31,6 +31,8 @@ import { CameraUi } from "./ui/CameraUi.js";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
 import { LightRenderExtension } from "./engine/extensions/object/LightRender.js";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode.js";
+import { TextureRenderExtension } from "./engine/extensions/object/TextureRender.js";
+import { Point } from "./object/Point.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -53,13 +55,25 @@ function main() {
             var objs = objManager.generateDrawInfo();
             for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
                 var obj = objs_1[_i];
-                var extension = extensionBuilder.build(LightRenderExtension, {
+                var lightExtension = extensionBuilder.build(LightRenderExtension, {
                     lightColor: envManager.lightColor,
                     lightSource: envManager.lightPosition,
                     normals: obj.normals,
                     useShading: envManager.useShading,
                 });
-                engine.render(__assign(__assign({}, obj), { extensions: [extension] }));
+                var texture = engine.texture; // TODO: get this from somewhere else
+                var textureCoordinates = [];
+                for (var i = 0; i < obj.normals.length; i += 4) {
+                    textureCoordinates.push(new Point(0, 0));
+                    textureCoordinates.push(new Point(0, 1));
+                    textureCoordinates.push(new Point(1, 1));
+                    textureCoordinates.push(new Point(1, 0));
+                }
+                var textureExtension = extensionBuilder.build(TextureRenderExtension, {
+                    texture: texture,
+                    textureCoordinates: textureCoordinates
+                });
+                engine.render(__assign(__assign({}, obj), { extensions: [lightExtension, textureExtension] }));
             }
         }, 0);
     };

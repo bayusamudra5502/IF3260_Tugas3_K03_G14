@@ -41,6 +41,8 @@ var ShaderProgram = /** @class */ (function () {
         var shader = this.gl.createShader(type);
         this.gl.shaderSource(shader, code);
         this.gl.compileShader(shader);
+        var compilationLog = this.gl.getShaderInfoLog(shader);
+        console.log('Shader compiler log: ' + compilationLog);
         return shader;
     };
     /* Compile all vertex */
