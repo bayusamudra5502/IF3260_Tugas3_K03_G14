@@ -13,14 +13,15 @@ export class CameraManager extends Transform {
   }
 
   calcPosition(transformValue: CameraManagerOptions){
-    const radius = transformValue.radius;
-    const yAxis = transformValue.yAngle;
-    const xAxis = transformValue.xAngle;
+    const radius = isNaN(transformValue.radius) ? 2 : transformValue.radius;
+    const yAxis = isNaN(transformValue.yAngle) ? 0 : transformValue.yAngle;
+    const xAxis = isNaN(transformValue.xAngle) ? 0 : transformValue.xAngle;
     this.position = new Vertex(
       radius * Math.sin(yAxis / 180 * Math.PI),
       radius * Math.sin(xAxis / 180 * Math.PI),
       radius * Math.cos(yAxis / 180 * Math.PI)
     )
+    console.log(this.position);
   }
 
   update(transformValue: CameraManagerOptions) {

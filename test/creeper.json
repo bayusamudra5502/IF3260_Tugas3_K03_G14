@@ -159,14 +159,43 @@
         "#ffffff",
         "#ffffff",
         "#ffffff"
+      ],
+      "animations":[
+        {
+          "frame_number": 15,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": -45
+            }
+          }
+        },
+        {
+          "frame_number": 24,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 15
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 0
+            }
+          }
+        }
       ]
     },
     "2": {
       "joint_point": [-0.05, -0.3, -0.1],
       "child": [],
       "inverted": [false, false, false, false, false, false],
-      "max_degree": 45,
-      "min_degree": -45,
+      "max_degree": 90,
+      "min_degree": -90,
       "start_degree": 0,
       "clockwise": 0,
       "colors": [
@@ -176,6 +205,35 @@
         "#ffffff",
         "#ffffff",
         "#ffffff"
+      ],
+      "animations":[
+        {
+          "frame_number": 15,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 45
+            }
+          }
+        },
+        {
+          "frame_number": 25,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -10
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "3": {
@@ -193,6 +251,35 @@
         "#ffffff",
         "#ffffff",
         "#ffffff"
+      ],
+      "animations":[
+        {
+          "frame_number": 20,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 45
+            }
+          }
+        },
+        {
+          "frame_number": 28,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -10
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "4": {
@@ -210,6 +297,35 @@
         "#ffffff",
         "#ffffff",
         "#ffffff"
+      ],
+      "animations":[
+        {
+          "frame_number": 10,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -45
+            }
+          }
+        },
+        {
+          "frame_number": 25,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 10
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 0
+            }
+          }
+        }
       ]
     },
     "5": {
@@ -227,6 +343,35 @@
         "#ffffff",
         "#ffffff",
         "#ffffff"
+      ],
+      "animations":[
+        {
+          "frame_number": 18,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -45
+            }
+          }
+        },
+        {
+          "frame_number": 23,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 10
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_y": 0
+            }
+          }
+        }
       ]
     }
   }
