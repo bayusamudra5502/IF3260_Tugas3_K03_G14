@@ -91,6 +91,47 @@ var Matrix = /** @class */ (function (_super) {
         }
         return result;
     };
+    Matrix.scalarMultiply = function (m, scalar) {
+        return [
+            [m[0][0] * scalar, m[0][1] * scalar, m[0][2] * scalar, m[0][3] * scalar],
+            [m[1][0] * scalar, m[1][1] * scalar, m[1][2] * scalar, m[1][3] * scalar],
+            [m[2][0] * scalar, m[2][1] * scalar, m[2][2] * scalar, m[2][3] * scalar],
+            [m[3][0] * scalar, m[3][1] * scalar, m[3][2] * scalar, m[3][3] * scalar],
+        ];
+    };
+    Matrix.add = function (m1, m2) {
+        return [
+            [
+                m1[0][0] + m2[0][0],
+                m1[0][1] + m2[0][1],
+                m1[0][2] + m2[0][2],
+                m1[0][3] + m2[0][3],
+            ],
+            [
+                m1[1][0] + m2[1][0],
+                m1[1][1] + m2[1][1],
+                m1[1][2] + m2[1][2],
+                m1[1][3] + m2[1][3],
+            ],
+            [
+                m1[2][0] + m2[2][0],
+                m1[2][1] + m2[2][1],
+                m1[2][2] + m2[2][2],
+                m1[2][3] + m2[2][3],
+            ],
+            [
+                m1[3][0] + m2[3][0],
+                m1[3][1] + m2[3][1],
+                m1[3][2] + m2[3][2],
+                m1[3][3] + m2[3][3],
+            ],
+        ];
+    };
+    Matrix.interpolate = function (m1, m2, p) {
+        var pm1 = Matrix.scalarMultiply(m1, 1 - p);
+        var pm2 = Matrix.scalarMultiply(m2, p);
+        return Matrix.add(pm1, pm2);
+    };
     return Matrix;
 }(Array));
 export { Matrix };

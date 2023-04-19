@@ -1,15 +1,4 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-import { RotationAnimator } from "../components/Animator.js";
+import { Animator } from "../components/Animator.js";
 import { Color } from "./Color.js";
 import { Face } from "./Face.js";
 import { Object3D } from "./Object3D.js";
@@ -20,7 +9,7 @@ var Object3DBuilder = /** @class */ (function () {
         this.templateComponents = templateComponent;
     }
     Object3DBuilder.prototype.fromJson = function (json) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         var root;
         var jsonObject = JSON.parse(json);
         var points = jsonObject.pts;
@@ -41,8 +30,8 @@ var Object3DBuilder = /** @class */ (function () {
             /* Build faces */
             for (var i = 0; i < obj.num_face; i++) {
                 var vertices = [];
-                for (var _c = 0, _d = topology[i]; _c < _d.length; _c++) {
-                    var vIdx = _d[_c];
+                for (var _e = 0, _f = topology[i]; _e < _f.length; _e++) {
+                    var vIdx = _f[_e];
                     vertices.push(Vertex.load(points[vIdx]));
                 }
                 var face = new Face({
@@ -52,15 +41,20 @@ var Object3DBuilder = /** @class */ (function () {
                 });
                 faceList.push(face);
             }
-            var object = new Object3D(faceList, Vertex.load(config["joint_point"]));
+            var name_1 = (_b = obj.name) !== null && _b !== void 0 ? _b : idx.toString();
+            var object = new Object3D(name_1, faceList, Vertex.load(config["joint_point"]));
             /* Animator Components */
-            var animator = RotationAnimator.fromConfig(__assign(__assign({}, config), { transform: object.transform }));
+            var animator = Animator.fromConfig({
+                animations: (_c = config.animations) !== null && _c !== void 0 ? _c : [],
+                centerMass: Vertex.load(config.joint_point),
+                cache: (_d = jsonObject.cache) !== null && _d !== void 0 ? _d : true,
+            });
             object.addComponent(animator);
-            for (var _e = 0, _f = this.templateComponents; _e < _f.length; _e++) {
-                var i = _f[_e];
+            for (var _g = 0, _h = this.templateComponents; _g < _h.length; _g++) {
+                var i = _h[_g];
                 object.addComponent(i);
             }
-            map.set((_b = obj.name) !== null && _b !== void 0 ? _b : idx.toString(), object);
+            map.set(name_1, object);
             if (idx == 0) {
                 root = object;
             }
@@ -73,8 +67,8 @@ var Object3DBuilder = /** @class */ (function () {
                 throw new Error("Object '".concat(key, "' is not found in edges"));
             var childs = objectConfigMap[key].child;
             if (childs) {
-                for (var _g = 0, childs_1 = childs; _g < childs_1.length; _g++) {
-                    var childId = childs_1[_g];
+                for (var _j = 0, childs_1 = childs; _j < childs_1.length; _j++) {
+                    var childId = childs_1[_j];
                     var child = map.get(childId);
                     if (!child)
                         throw new Error("Child object '".concat(childId, "' is not found in edges"));

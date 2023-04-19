@@ -20,6 +20,7 @@ import { LightComponent } from "./components/Light.js";
 import { ObjectManager } from "./manager/ObjectManager.js";
 import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { TextureComponent } from "./components/Texture.js";
+import { AnimationRunner } from "./components/Animator.js";
 import { TextureManager } from "./manager/TextureManager.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
@@ -137,6 +138,19 @@ function main() {
     cameraManager.subscribe(rerender);
     envManager.subscribe(rerender);
     lightUi.subscribe(rerender);
+    /* Animation */
+    var animationRunner = new AnimationRunner(20);
+    animationRunner.subscribe(rerender);
+    var check = document.querySelector("#check-run-animation");
+    check.onchange = function () {
+        if (check.checked) {
+            var _a = objManager.get(0), obj = _a[0], _ = _a[1];
+            animationRunner.run(obj);
+        }
+        else {
+            animationRunner.stop();
+        }
+    };
     /* Event listeners */
     var resetButton = document.querySelector("#reset-button");
     var rerenderButton = document.querySelector("#rerender-button");
@@ -150,35 +164,26 @@ function main() {
         importer.import();
         resetButton.removeAttribute("disabled");
         rerenderButton.removeAttribute("disabled");
-        requestAnimationFrame(loop);
+        // requestAnimationFrame(loop);
     });
-    var angleX = 0;
-    var angleY = 0;
-    var angleZ = 0;
-    var rotationX = document.querySelector("#rotation-x");
-    var rotationY = document.querySelector("#rotation-y");
-    var rotationZ = document.querySelector("#rotation-z");
-    var isRotationX = document.querySelector("#check-rotate-x");
-    var isRotationY = document.querySelector("#check-rotate-y");
-    var isRotationZ = document.querySelector("#check-rotate-z");
-    var loop = function () {
-        if (isRotationX.checked) {
-            angleX = (angleX + 0.25) % 360;
-            rotationX.value = angleX.toString();
-            rotationX.dispatchEvent(new Event("change"));
-        }
-        if (isRotationY.checked) {
-            angleY = (angleY + 0.25) % 360;
-            rotationY.value = angleY.toString();
-            rotationY.dispatchEvent(new Event("change"));
-        }
-        if (isRotationZ.checked) {
-            angleZ = (angleZ + 0.25) % 360;
-            rotationZ.value = angleZ.toString();
-            rotationZ.dispatchEvent(new Event("change"));
-        }
-        requestAnimationFrame(loop);
-    };
+    // const loop = () => {
+    //   if (isRotationX.checked) {
+    //     angleX = (angleX + 0.25) % 360;
+    //     rotationX.value = angleX.toString();
+    //     rotationX.dispatchEvent(new Event("change"));
+    //   }
+    //   if (isRotationY.checked) {
+    //     angleY = (angleY + 0.25) % 360;
+    //     rotationY.value = angleY.toString();
+    //     rotationY.dispatchEvent(new Event("change"));
+    //   }
+    //   if (isRotationZ.checked) {
+    //     angleZ = (angleZ + 0.25) % 360;
+    //     rotationZ.value = angleZ.toString();
+    //     rotationZ.dispatchEvent(new Event("change"));
+    //   }
+    //   requestAnimationFrame(loop);
+    // };
 }
 main();
 //# sourceMappingURL=index.js.map
