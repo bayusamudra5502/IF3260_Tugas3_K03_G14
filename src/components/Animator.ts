@@ -1,36 +1,53 @@
+import { Frame } from "../animation/Frame";
+import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix";
 import { Transform } from "../matrix/Transform";
 import { StateComponent } from "../object/Component";
 import { Geometry } from "../object/Geometry";
 import { Object3D } from "../object/Object3D";
+import { Vertex } from "../object/Vertices";
 import { Rotation } from "../transform/Rotation";
+import { Scaling } from "../transform/Scaling";
+import { Translation } from "../transform/Translation";
+import { Listenable } from "../util/Listenable";
 
-export enum RotationAxis {
-  x,
-  y,
-  z,
-}
-
-export interface RotationAnimatorOption {
-  axis: RotationAxis;
-  degreeFrames: number[];
-}
-
-export class RotationAnimator extends StateComponent {
-  private frames: number[];
+export class Animator extends StateComponent {
   private transform: Transform;
-  private axis: RotationAxis;
+  private matrixCache: Matrix[] = [];
+
+  private maxFrame: number;
   private currentFrame: number = 0;
   private isActive = false;
 
-  fit(object: Object3D) {
-    this.transform = object.transform;
-  }
+  private currentFrameStatus: Map<string, Frame> = new Map();
+  private nextFrameIdx: number = 0;
+  private lastFramePointNumber: number = 0;
 
-  constructor(options: RotationAnimatorOption) {
+  constructor(
+    private framePoints: Frame[],
+    private jointPoint: Vertex,
+    private cacheFrame = true
+  ) {
     super();
 
-    this.frames = options.degreeFrames.map((el) => Geometry.angleDegToRad(el));
-    this.axis = options.axis;
+    /* Frame validation */
+    if (framePoints.length == 0) {
+      return;
+    }
+
+    for (let i = 1; i < framePoints.length; i++) {
+      const first = framePoints[i - 1];
+      const second = framePoints[i];
+
+      if (first.frame_number >= second.frame_number) {
+        throw new Error("frame must be increasing");
+      }
+    }
+
+    this.maxFrame = framePoints[framePoints.length - 1].frame_number;
+  }
+
+  fit(object: Object3D) {
+    this.transform = object.transform;
   }
 
   setActive(active: boolean) {
@@ -38,82 +55,169 @@ export class RotationAnimator extends StateComponent {
   }
 
   run(): null {
-    if (!this.isActive) return;
+    if (!this.isActive || this.framePoints.length == 0) return;
 
-    const currentRad = this.frames[this.currentFrame];
-    const rotation = new Rotation();
+    const nextFrame = this.framePoints[this.nextFrameIdx];
 
-    rotation.configure({
-      angleX: this.axis == RotationAxis.x ? currentRad : 0,
-      angleY: this.axis == RotationAxis.y ? currentRad : 0,
-      angleZ: this.axis == RotationAxis.z ? currentRad : 0,
-    });
+    let matrix: Matrix;
+    if (this.matrixCache[this.currentFrame]) {
+      matrix = this.matrixCache[this.currentFrame];
+    } else {
+      const progress =
+        (this.currentFrame - this.lastFramePointNumber) /
+        (nextFrame.frame_number - this.lastFramePointNumber);
 
-    this.currentFrame += 1;
-    this.currentFrame %= this.frames.length;
+      matrix = this.doTransform(nextFrame, progress);
 
-    this.transform.updateMatrix(rotation.matrix);
+      if (this.cacheFrame) {
+        this.matrixCache.push(matrix);
+      }
+    }
+
+    this.transform.updateMatrix(matrix);
+
+    if (nextFrame.frame_number == this.currentFrame) {
+      this.currentFrameStatus.set(nextFrame.transform.type, nextFrame);
+      this.lastFramePointNumber = this.currentFrame;
+      this.nextFrameIdx = (this.nextFrameIdx + 1) % this.framePoints.length;
+    }
+
+    this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
+
+    if (this.currentFrame == 0) {
+      this.currentFrameStatus.clear();
+    }
 
     return null;
   }
 
-  static fromConfig(config: AnimatorConfig) {
-    if (config.max_degree < config.min_degree) {
-      throw new Error("max degree must be greater or equal to min degree");
+  private doTransform(nextFrame: Frame, progress: number) {
+    const status = this.currentFrameStatus.get(nextFrame.transform.type);
+
+    let matrix: Matrix;
+    switch (nextFrame.transform.type) {
+      case "rotation": {
+        const rot = new Rotation();
+        const lastX = status?.transform.options?.angle_x ?? 0;
+        const lastY = status?.transform.options?.angle_y ?? 0;
+        const lastZ = status?.transform.options?.angle_z ?? 0;
+
+        const nextX = nextFrame.transform.options?.angle_x ?? 0;
+        const nextY = nextFrame.transform.options?.angle_y ?? 0;
+        const nextZ = nextFrame.transform.options?.angle_z ?? 0;
+
+        rot.configure({
+          center: this.jointPoint,
+          angleX: lastX * (1 - progress) + nextX * progress,
+          angleY: lastY * (1 - progress) + nextY * progress,
+          angleZ: lastZ * (1 - progress) + nextZ * progress,
+        });
+
+        matrix = rot.matrix;
+        break;
+      }
+      case "scaling": {
+        const scl = new Scaling();
+
+        const lastX = status?.transform.options?.scale_x ?? 0;
+        const lastY = status?.transform.options?.scale_y ?? 0;
+        const lastZ = status?.transform.options?.scale_z ?? 0;
+
+        const nextX = nextFrame.transform.options?.scale_x ?? 0;
+        const nextY = nextFrame.transform.options?.scale_y ?? 0;
+        const nextZ = nextFrame.transform.options?.scale_z ?? 0;
+
+        scl.configure({
+          center: this.jointPoint,
+          sx: lastX * (1 - progress) + nextX * progress,
+          sy: lastY * (1 - progress) + nextY * progress,
+          sz: lastZ * (1 - progress) + nextZ * progress,
+        });
+
+        matrix = scl.matrix;
+        break;
+      }
+      case "translation": {
+        const tr = new Translation();
+
+        const lastX = status?.transform.options?.x ?? 0;
+        const lastY = status?.transform.options?.y ?? 0;
+        const lastZ = status?.transform.options?.z ?? 0;
+
+        const nextX = nextFrame.transform.options?.x ?? 0;
+        const nextY = nextFrame.transform.options?.y ?? 0;
+        const nextZ = nextFrame.transform.options?.z ?? 0;
+
+        tr.configure({
+          x: lastX * (1 - progress) + nextX * progress,
+          y: lastY * (1 - progress) + nextY * progress,
+          z: lastZ * (1 - progress) + nextZ * progress,
+        });
+
+        matrix = tr.matrix;
+        break;
+      }
     }
-    if (config.start_degree > config.max_degree) {
-      throw new Error("max degree must be greater or equal to start degree");
-    }
-    if (config.min_degree > config.start_degree) {
-      throw new Error("star degree must be greater or equal to min degree");
-    }
 
-    const framesDegree: number[] = [config.start_degree];
-    const loopSize =
-      Math.abs(config.max_degree - config.min_degree) +
-      Math.abs(config.start_degree - config.max_degree) +
-      Math.abs(config.max_degree - config.start_degree);
+    return matrix;
+  }
 
-    const deltaSize = loopSize / config.frame_count;
-    let currentDegree = config.start_degree;
+  static fromConfig(config: AnimatorConfig): Animator {
+    const frameList: Frame[] = [];
 
-    // From start to max
-    while (currentDegree < config.max_degree) {
-      currentDegree += deltaSize;
-      framesDegree.push(currentDegree);
+    for (const frameConfig of config.animations) {
+      frameList.push(frameConfig);
     }
 
-    // From max to min
-    currentDegree = 2 * config.max_degree - currentDegree;
-    framesDegree.push(currentDegree);
-
-    while (currentDegree > config.min_degree) {
-      currentDegree -= deltaSize;
-      framesDegree.push(currentDegree);
-    }
-
-    // From min to start
-    currentDegree = 2 * config.min_degree + currentDegree;
-    framesDegree.push(currentDegree);
-
-    while (currentDegree < config.start_degree) {
-      currentDegree += deltaSize;
-      framesDegree.push(currentDegree);
-    }
-
-    const frames = config.clockwise ? framesDegree : framesDegree.reverse();
-    return new RotationAnimator({
-      axis: config.start_degree,
-      degreeFrames: frames,
-    });
+    return new Animator(frameList, config.centerMass, config.cache ?? true);
   }
 }
 
 export interface AnimatorConfig {
-  rotation_axis: RotationAxis;
-  max_degree: number;
-  min_degree: number;
-  start_degree: number;
-  clockwise: number;
-  frame_count: number;
+  animations: Frame[];
+  centerMass: Vertex;
+  cache?: boolean;
+}
+
+export class AnimationRunner extends Listenable {
+  private root: Object3D;
+  private intervalId: number;
+
+  constructor(private fps: number) {
+    super();
+  }
+
+  private setActivate(root: Object3D, activate: boolean) {
+    const queue = [root];
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      const animator = current.findComponent(Animator);
+      animator.setActive(activate);
+
+      for (const child of current.childs) {
+        queue.push(child);
+      }
+    }
+  }
+
+  run(object: Object3D) {
+    this.root = object;
+
+    this.setActivate(object, true);
+    this.rerenderFrame();
+  }
+
+  stop() {
+    clearInterval(this.intervalId);
+    this.setActivate(this.root, true);
+
+    this.root = null;
+  }
+
+  private rerenderFrame() {
+    this.intervalId = setInterval(() => {
+      this.notify();
+    }, (1 / this.fps) * 1000);
+  }
 }
