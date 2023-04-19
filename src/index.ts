@@ -24,6 +24,9 @@ import { Object3DBuilder } from "./object/Object3DBuilder";
 import { LightComponent } from "./components/Light";
 import { ObjectManager } from "./manager/ObjectManager";
 import { ObjectRenderer } from "./manager/ObjectRenderer";
+import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
+import { Point } from "./object/Point";
+import { TextureComponent } from "./components/Texture";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -53,6 +56,7 @@ function main() {
   const transformUi = new TransformUi();
   const cameraUi = new CameraUi();
 
+  /* Setup manager */
   const projManager = new ProjectionManager();
   const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
@@ -64,8 +68,15 @@ function main() {
 
   /* Component */
   const lightComponent = new LightComponent(envManager);
-  const object3DBuilder = new Object3DBuilder([lightComponent]);
+  // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
+  const textureComponent = new TextureComponent(engine.texture);
 
+  const object3DBuilder = new Object3DBuilder([
+    lightComponent,
+    textureComponent,
+  ]);
+
+  /* Object Manager */
   const objManager = new ObjectManager();
 
   /* Setup importer */

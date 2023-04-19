@@ -13,6 +13,10 @@ interface EnginePrimitive {
   size: number;
 }
 
+export function isPowerOf2(num: number){
+  return (num & (num-1)) === 0;
+}
+
 export function padding(str: string, length: number = 2, pad: string = "0") {
   return pad.repeat(length - str.length) + str;
 }
