@@ -74,11 +74,12 @@ function main() {
 
   /* Component */
   const lightComponent = new LightComponent(envManager);
-  // TODO: Pass koordinat camera + pilih texture mode
+
   const textureComponent = new TextureComponent(
     engine.texture, 
     engine.envMap, 
-    textureManager
+    textureManager,
+    cameraManager
   );
 
   const object3DBuilder = new Object3DBuilder([
@@ -173,6 +174,7 @@ function main() {
       xAngle: cameraUi.xAngle,
       yAngle: cameraUi.yAngle,
     });
+    rerender();
   });
 
   objManager.subscribe(rerender);
