@@ -27,10 +27,11 @@ var CameraManager = /** @class */ (function (_super) {
         return _this;
     }
     CameraManager.prototype.calcPosition = function (transformValue) {
-        var radius = transformValue.radius;
-        var yAxis = transformValue.yAngle;
-        var xAxis = transformValue.xAngle;
+        var radius = isNaN(transformValue.radius) ? 2 : transformValue.radius;
+        var yAxis = isNaN(transformValue.yAngle) ? 0 : transformValue.yAngle;
+        var xAxis = isNaN(transformValue.xAngle) ? 0 : transformValue.xAngle;
         this.position = new Vertex(radius * Math.sin(yAxis / 180 * Math.PI), radius * Math.sin(xAxis / 180 * Math.PI), radius * Math.cos(yAxis / 180 * Math.PI));
+        console.log(this.position);
     };
     CameraManager.prototype.update = function (transformValue) {
         this.calcPosition(transformValue);
