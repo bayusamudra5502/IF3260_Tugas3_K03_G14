@@ -47,21 +47,21 @@ export class Perspective extends Projector {
   }
 
   transform(matrix: Matrix): Matrix {
-    const near = this.zNear - 1;
-    const far = this.zFar - 1;
+    const near = this.zNear + 1;
+    const far = this.zFar + 1;
 
     const rangeInverse = 1 / (near - far);
 
     const perspectiveMatrix = [
       [this.f / this.aspectRatio, 0, 0, 0],
       [0, this.f, 0, 0],
-      [0, 0, (near + far) * rangeInverse, 2 * (near * far) * rangeInverse],
-      [0, 0, -1, 0],
+      [0, 0, -(near + far) * rangeInverse, 2 * (near * far) * rangeInverse],
+      [0, 0, 1, 0],
     ];
 
     const moveCamera = new Translation();
     moveCamera.configure({
-      z: -2,
+      z: 1,
     });
 
     return Matrix.multiply(
