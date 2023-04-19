@@ -52,3 +52,16 @@ input {
 .hide {
   display: none;
 }
+
+.component-tree-item {
+  margin: 5px 0;
+}
+
+.component-tree-item input {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.component-tree-item label {
+  display: inline-block;
+}

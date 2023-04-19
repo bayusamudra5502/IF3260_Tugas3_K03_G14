@@ -176,7 +176,7 @@ var AnimationRunner = /** @class */ (function (_super) {
     };
     AnimationRunner.prototype.stop = function () {
         clearInterval(this.intervalId);
-        this.setActivate(this.root, true);
+        this.setActivate(this.root, false);
         this.root = null;
     };
     AnimationRunner.prototype.rerenderFrame = function () {
