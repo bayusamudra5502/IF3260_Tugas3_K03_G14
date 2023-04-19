@@ -1,11 +1,15 @@
-import { ObjectManagerOld } from "../manager/ObjectManagerOld";
-import { ObjectOld3D } from "../object/ObjectOld3D";
+import { ObjectManager } from "../manager/ObjectManager";
+import { Object3DBuilder } from "../object/Object3DBuilder";
 
 export class Importer {
   private fileObject: HTMLInputElement;
   private prevFile: string;
 
-  constructor(private objectManager: ObjectManagerOld, fileId: string) {
+  constructor(
+    private objectManager: ObjectManager,
+    private objectLoader: Object3DBuilder,
+    fileId: string
+  ) {
     const obj = document.getElementById(fileId);
     if (obj instanceof HTMLInputElement) {
       this.fileObject = obj;
@@ -26,7 +30,7 @@ export class Importer {
     }
     this.prevFile = fileData;
 
-    const object = ObjectOld3D.load(fileData);
+    const object = this.objectLoader.fromJson(fileData);
     this.objectManager.add(object);
   }
 }

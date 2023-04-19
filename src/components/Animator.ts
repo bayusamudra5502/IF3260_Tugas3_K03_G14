@@ -1,6 +1,7 @@
 import { Transform } from "../matrix/Transform";
 import { StateComponent } from "../object/Component";
 import { Geometry } from "../object/Geometry";
+import { Object3D } from "../object/Object3D";
 import { Rotation } from "../transform/Rotation";
 
 export enum RotationAxis {
@@ -12,7 +13,6 @@ export enum RotationAxis {
 export interface RotationAnimatorOption {
   axis: RotationAxis;
   degreeFrames: number[];
-  transform: Transform;
 }
 
 export class RotationAnimator extends StateComponent {
@@ -20,16 +20,26 @@ export class RotationAnimator extends StateComponent {
   private transform: Transform;
   private axis: RotationAxis;
   private currentFrame: number = 0;
+  private isActive = false;
+
+  fit(object: Object3D) {
+    this.transform = object.transform;
+  }
 
   constructor(options: RotationAnimatorOption) {
     super();
 
     this.frames = options.degreeFrames.map((el) => Geometry.angleDegToRad(el));
-    this.transform = options.transform;
     this.axis = options.axis;
   }
 
+  setActive(active: boolean) {
+    this.isActive = active;
+  }
+
   run(): null {
+    if (!this.isActive) return;
+
     const currentRad = this.frames[this.currentFrame];
     const rotation = new Rotation();
 
@@ -95,7 +105,6 @@ export class RotationAnimator extends StateComponent {
     return new RotationAnimator({
       axis: config.start_degree,
       degreeFrames: frames,
-      transform: config.transform,
     });
   }
 }
@@ -107,5 +116,4 @@ export interface AnimatorConfig {
   start_degree: number;
   clockwise: number;
   frame_count: number;
-  transform: Transform;
 }
