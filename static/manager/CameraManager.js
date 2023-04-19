@@ -18,12 +18,22 @@ import { Rotation } from "../transform/Rotation.js";
 import { Translation } from "../transform/Translation.js";
 import { Matrix } from "../matrix/Matrix.js";
 import { Transform } from "../matrix/Transform.js";
+import { Vertex } from "../object/Vertices.js";
 var CameraManager = /** @class */ (function (_super) {
     __extends(CameraManager, _super);
     function CameraManager() {
-        return _super.call(this) || this;
+        var _this = _super.call(this) || this;
+        _this.position = new Vertex(0, 0, 2);
+        return _this;
     }
+    CameraManager.prototype.calcPosition = function (transformValue) {
+        var radius = transformValue.radius;
+        var yAxis = transformValue.yAngle;
+        var xAxis = transformValue.xAngle;
+        this.position = new Vertex(radius * Math.sin(yAxis / 180 * Math.PI), radius * Math.sin(xAxis / 180 * Math.PI), radius * Math.cos(yAxis / 180 * Math.PI));
+    };
     CameraManager.prototype.update = function (transformValue) {
+        this.calcPosition(transformValue);
         var transformCalc = new TransformManager();
         var rotation = new Rotation();
         var translation = new Translation();

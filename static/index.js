@@ -51,8 +51,7 @@ function main() {
     });
     /* Component */
     var lightComponent = new LightComponent(envManager);
-    // TODO: Pass koordinat camera + pilih texture mode
-    var textureComponent = new TextureComponent(engine.texture, engine.envMap, textureManager);
+    var textureComponent = new TextureComponent(engine.texture, engine.envMap, textureManager, cameraManager);
     var object3DBuilder = new Object3DBuilder([
         lightComponent,
         textureComponent,
@@ -132,6 +131,7 @@ function main() {
             xAngle: cameraUi.xAngle,
             yAngle: cameraUi.yAngle,
         });
+        rerender();
     });
     objManager.subscribe(rerender);
     projManager.subscribe(rerender);

@@ -16,17 +16,15 @@ var __extends = (this && this.__extends) || (function () {
 import { TextureRenderExtension, } from "../engine/extensions/object/TextureRender.js";
 import { Component } from "../object/Component.js";
 import { Point } from "../object/Point.js";
-import { Vertex } from "../object/Vertices.js";
 var TextureComponent = /** @class */ (function (_super) {
     __extends(TextureComponent, _super);
-    function TextureComponent(texture, textureCube, textureManager, camera, coords) {
-        if (camera === void 0) { camera = DEFAULT_CAMERA; }
+    function TextureComponent(texture, textureCube, textureManager, cameraManager, coords) {
         if (coords === void 0) { coords = DEFAULT_COORDS; }
         var _this = _super.call(this) || this;
         _this.texture = texture;
         _this.textureCube = textureCube;
         _this.textureManager = textureManager;
-        _this.camera = camera;
+        _this.cameraManager = cameraManager;
         _this.coords = coords;
         return _this;
     }
@@ -37,7 +35,7 @@ var TextureComponent = /** @class */ (function (_super) {
             options: {
                 texture: this.texture,
                 textureCoordinates: this.coords,
-                cameraPosition: this.camera,
+                cameraPosition: this.cameraManager.position,
                 textureCube: this.textureCube,
                 mode: this.textureManager.mode,
             },
@@ -55,6 +53,4 @@ export var DEFAULT_COORDS = [
     new Point(1, 1),
     new Point(1, 0),
 ];
-// TODO: delete this
-export var DEFAULT_CAMERA = new Vertex(0, 0, 2);
 //# sourceMappingURL=Texture.js.map
