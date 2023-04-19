@@ -2,20 +2,22 @@ import { Buffer } from "./engine/Buffer";
 import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
+import { EnvRenderExtension } from "./engine/extensions/object/EnvRender";
+import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
 import { TransformManager } from "./manager/TransformManager";
-import { CameraManager } from "./manager/CameraManager";
 import { Color } from "./object/Color";
+import { Vertex } from "./object/Vertices";
 import { Rotation } from "./transform/Rotation";
 import { Scaling } from "./transform/Scaling";
 import { Translation } from "./transform/Translation";
+import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
 import { TransformUi } from "./ui/TransformUi";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
-import { CameraUi } from "./ui/CameraUi";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
 import { LightRenderExtension } from "./engine/extensions/object/LightRender";
 import DrawInfo from "./object/DrawInfo";
@@ -27,6 +29,7 @@ import { ObjectRenderer } from "./manager/ObjectRenderer";
 import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
 import { Point } from "./object/Point";
 import { TextureComponent } from "./components/Texture";
+import { EnvironmentComponent } from "./components/Environment";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -70,10 +73,11 @@ function main() {
   const lightComponent = new LightComponent(envManager);
   // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
   const textureComponent = new TextureComponent(engine.texture);
+  const envComponent = new EnvironmentComponent(engine.texture);
 
   const object3DBuilder = new Object3DBuilder([
     lightComponent,
-    textureComponent,
+    envComponent,
   ]);
 
   /* Object Manager */
