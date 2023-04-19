@@ -8,6 +8,7 @@ export interface TextureRenderOption{
     texture: WebGLTexture;
     textureCoordinates: Point[];
     textureCube: WebGLTexture;
+    textureBump: WebGLTexture;
     cameraPosition: Vertex;
     mode: TEXTURE_MODE;
     renderAttribute?: TextureRenderShaderAttribute
@@ -42,6 +43,7 @@ export class TextureRenderExtension extends RenderExtension{
 
     private shaderLocation: TextureRenderShaderLocation;
     private texture: WebGLTexture;
+    private textureBump: WebGLTexture;
     private textureCoordinates: Point[];
     private mode: TEXTURE_MODE;
     private cameraPosition: Vertex;
@@ -49,6 +51,7 @@ export class TextureRenderExtension extends RenderExtension{
     constructor(program: ShaderProgram, options: TextureRenderOption) {
         super(program, options);
         this.texture = options.texture;
+        this.textureBump = options.textureBump;
         this.cameraPosition = options.cameraPosition;
         this.textureCoordinates = options.textureCoordinates;
         this.mode = options.mode;
@@ -65,6 +68,15 @@ export class TextureRenderExtension extends RenderExtension{
         });
         const texCoordinates = new Float32Array(coordinates);
         buffer.fillFloat("texture", texCoordinates);
+      }
+
+    public initTextureBumpBuffer(gl: WebGLRenderingContext, buffer: Buffer) {
+        let coordinates = [];
+        this.textureCoordinates.forEach(element => {
+          coordinates = coordinates.concat(element.getArray())
+        });
+        const texCoordinates = new Float32Array(coordinates);
+        buffer.fillFloat("textureBump", texCoordinates);
       }
 
     private initShaderLocation(
@@ -88,6 +100,7 @@ export class TextureRenderExtension extends RenderExtension{
     run(gl: WebGLRenderingContext, buffer: Buffer) {
         this.initTextureBuffer(gl, buffer);
         const textureCoordinateBuffer = buffer.get("texture");
+        
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
         const num = 2; // every coordinate composed of 2 values
@@ -109,10 +122,16 @@ export class TextureRenderExtension extends RenderExtension{
         gl.activeTexture(gl.TEXTURE0);
 
         // Bind the texture to texture unit 0
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        if (this.mode == TEXTURE_MODE.BUMP_MAPPING)
+          gl.bindTexture(gl.TEXTURE_2D, this.textureBump);
+        else
+          gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
         // Tell the shader we bound the texture to texture unit 0
         gl.uniform1i(this.shaderLocation.sampler, 0);
+
+        
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
         gl.uniform3fv(
           this.shaderLocation.cameraLocation,

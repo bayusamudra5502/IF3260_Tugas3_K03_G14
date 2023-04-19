@@ -63,6 +63,8 @@
                 vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
                 vec3 reflection = reflect(eyeToSurface, normal);
                 texColor = texture(texCube, reflection);
+            } else if (textureMode == 2) {
+              texColor = texture(uSampler, vTextureCoord);
             }
 
             if (useShading != 0) {

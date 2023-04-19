@@ -69,6 +69,7 @@ function main() {
   const textureComponent = new TextureComponent(
     engine.texture, 
     engine.envMap, 
+    engine.bumpMap,
     textureManager,
     cameraManager
   );
