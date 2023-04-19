@@ -42,8 +42,8 @@
 
     [0.225, -0.5, -0.4],
     [0.225, -0.5, -0.5],
-    [0.225, 0, -0.4],
     [0.225, 0, -0.5],
+    [0.225, 0, -0.4],
 
     [0.125, -0.5, -0.4],
     [0.125, -0.5, -0.5],
@@ -102,8 +102,8 @@
 
     [-0.225, -0.5, -0.4],
     [-0.225, -0.5, -0.5],
-    [-0.225, 0, -0.4],
     [-0.225, 0, -0.5],
+    [-0.225, 0, -0.4],
 
     [-0.125, -0.5, -0.4],
     [-0.125, -0.5, -0.5],
@@ -251,7 +251,7 @@
     },
     "kaki3": {
       "joint_point": [-0.175, 0, 0.4],
-      "inverted": [true, false, true, false, true, false],
+      "inverted": [false, true, false, true, false, true],
       "child": [],
       "max_degree": 45,
       "min_degree": -45,
@@ -268,7 +268,7 @@
     },
     "kaki4": {
       "joint_point": [-0.175, 0, -0.45],
-      "inverted": [true, false, true, false, true, false],
+      "inverted": [false, true, false, true, false, true],
       "child": [],
       "max_degree": 45,
       "min_degree": -45,
@@ -287,9 +287,9 @@
       "joint_point": [0, 0.025, -0.025],
       "inverted": [false, true, true, false, true, false],
       "child": ["kaki1", "kaki2", "kaki3", "kaki4"],
-      "max_degree": 45,
-      "min_degree": -45,
-      "start_degree": 0,
+      "max_degree": 180,
+      "min_degree": 180,
+      "start_degree": 180,
       "clockwise": 1,
       "colors": [
         "#ffffff",
