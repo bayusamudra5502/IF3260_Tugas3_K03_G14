@@ -15,8 +15,8 @@ export interface PerspectiveOption {
 }
 
 export class Perspective extends Projector {
-  private zNear: number = 1.05;
-  private zFar: number = -1;
+  private zNear: number = -1;
+  private zFar: number = 1;
   private f: number = 1;
   private aspectRatio: number = 1;
   private fieldOfViewAngle: number = 90;
@@ -47,8 +47,8 @@ export class Perspective extends Projector {
   }
 
   transform(matrix: Matrix): Matrix {
-    const near = this.zNear + 1;
-    const far = this.zFar + 1;
+    const near = this.zNear + 2;
+    const far = this.zFar + 2;
 
     const rangeInverse = 1 / (near - far);
 
@@ -61,7 +61,7 @@ export class Perspective extends Projector {
 
     const moveCamera = new Translation();
     moveCamera.configure({
-      z: 1,
+      z: 2,
     });
 
     return Matrix.multiply(
