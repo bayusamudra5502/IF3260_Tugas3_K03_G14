@@ -84,6 +84,8 @@ export class ShaderProgram {
     const shader = this.gl.createShader(type);
     this.gl.shaderSource(shader, code);
     this.gl.compileShader(shader);
+    var compilationLog = this.gl.getShaderInfoLog(shader);
+    console.log('Shader compiler log: ' + compilationLog);
 
     return shader;
   }
@@ -113,6 +115,7 @@ export class ShaderProgram {
     return this;
   }
 
+
   public load(): ShaderVariableLocation {
     this.gl.useProgram(this.webglProgram);
 
@@ -128,6 +131,7 @@ export class ShaderProgram {
     const position = this.getAttributeLocation(this.shaderAttribute.position);
     const color = this.getAttributeLocation(this.shaderAttribute.color);
     const resolution = this.getUniformLocation(this.shaderAttribute.resolution);
+    
 
     return {
       matrix: {
@@ -139,7 +143,7 @@ export class ShaderProgram {
         resolution,
       },
       vertices: position,
-      color,
+      color: color,
     };
   }
 }
