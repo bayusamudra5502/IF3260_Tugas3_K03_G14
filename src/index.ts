@@ -2,7 +2,6 @@ import { Buffer } from "./engine/Buffer";
 import { Canvas } from "./engine/Canvas";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
-import { EnvRenderExtension } from "./engine/extensions/object/EnvRender";
 import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
@@ -29,7 +28,7 @@ import { ObjectRenderer } from "./manager/ObjectRenderer";
 import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
 import { Point } from "./object/Point";
 import { TextureComponent } from "./components/Texture";
-import { EnvironmentComponent } from "./components/Environment";
+import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -71,13 +70,16 @@ function main() {
 
   /* Component */
   const lightComponent = new LightComponent(envManager);
-  // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
-  const textureComponent = new TextureComponent(engine.texture);
-  const envComponent = new EnvironmentComponent(engine.texture);
+  // TODO: Pass koordinat camera + pilih texture mode
+  const textureComponent = new TextureComponent(
+    engine.texture, 
+    engine.envMap, 
+    TEXTURE_MODE.TEXTURE_MAPPING
+  );
 
   const object3DBuilder = new Object3DBuilder([
     lightComponent,
-    envComponent,
+    textureComponent,
   ]);
 
   /* Object Manager */

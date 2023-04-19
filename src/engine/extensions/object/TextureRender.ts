@@ -2,27 +2,40 @@ import { Point } from "../../../object/Point";
 import { Buffer } from "../../Buffer";
 import { RenderExtension } from "../../RenderExtension";
 import { ShaderProgram } from "../../Shader";
+import { Vertex } from "../../../object/Vertices";
 
 export interface TextureRenderOption{
     texture: WebGLTexture;
     textureCoordinates: Point[];
+    textureCube: WebGLTexture;
+    cameraPosition: Vertex;
+    mode: TEXTURE_MODE;
     renderAttribute?: TextureRenderShaderAttribute
 }
 
 export interface TextureRenderShaderLocation {
     texture: number;
     sampler: WebGLUniformLocation;
+    textureCubeLocation: WebGLUniformLocation;
+    cameraLocation: WebGLUniformLocation;
+    textureMode: WebGLUniformLocation;
 }
   
 export interface TextureRenderShaderAttribute {
     texture: string;
     sampler: string;
+    texCube: string;
+    textureMode: string;
+    cameraPosition: string;
 }
 
-export const LIGHT_RENDER_EXTENSION_ATTRIBUT_DEFAULT: TextureRenderShaderAttribute =
+export const TEXTURE_RENDER_EXTENSION_ATTRIBUT_DEFAULT: TextureRenderShaderAttribute =
 {
     texture: "aTextureCoord",
-    sampler: "uSampler"
+    sampler: "uSampler",
+    texCube: "texCube",
+    cameraPosition: "cameraPosition",
+    textureMode: "textureMode",
 };
 
 export class TextureRenderExtension extends RenderExtension{
@@ -30,14 +43,18 @@ export class TextureRenderExtension extends RenderExtension{
     private shaderLocation: TextureRenderShaderLocation;
     private texture: WebGLTexture;
     private textureCoordinates: Point[];
+    private mode: TEXTURE_MODE;
+    private cameraPosition: Vertex;
 
     constructor(program: ShaderProgram, options: TextureRenderOption) {
         super(program, options);
         this.texture = options.texture;
+        this.cameraPosition = options.cameraPosition;
         this.textureCoordinates = options.textureCoordinates;
+        this.mode = options.mode;
         this.initShaderLocation(
             this.program,
-            options.renderAttribute ?? LIGHT_RENDER_EXTENSION_ATTRIBUT_DEFAULT
+            options.renderAttribute ?? TEXTURE_RENDER_EXTENSION_ATTRIBUT_DEFAULT
         );
     }
 
@@ -59,7 +76,12 @@ export class TextureRenderExtension extends RenderExtension{
     
         this.shaderLocation = {
             texture: texture,
-            sampler: sampler
+            sampler: sampler,
+            textureCubeLocation: program.getUniformLocation(renderAttribute.texCube),
+            cameraLocation: program.getUniformLocation(
+              renderAttribute.cameraPosition
+            ),
+            textureMode: program.getUniformLocation(renderAttribute.textureMode),
         };
       }
 
@@ -91,6 +113,18 @@ export class TextureRenderExtension extends RenderExtension{
 
         // Tell the shader we bound the texture to texture unit 0
         gl.uniform1i(this.shaderLocation.sampler, 0);
+
+        gl.uniform3fv(
+          this.shaderLocation.cameraLocation,
+          this.cameraPosition.getArray().slice(0, 3)
+        );
+        gl.uniform1i(this.shaderLocation.textureCubeLocation, 1);
+        gl.uniform1i(this.shaderLocation.textureMode, this.mode);
       }
 }
 
+export enum TEXTURE_MODE {
+  TEXTURE_MAPPING = 0,
+  ENVIRONMENT_MAPPING = 1,
+  BUMP_MAPPING = 2
+}
