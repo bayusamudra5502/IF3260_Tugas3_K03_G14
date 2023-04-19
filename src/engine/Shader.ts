@@ -8,6 +8,7 @@ export interface ShaderAttribute {
   };
   position: string;
   color: string;
+  tangent: string;
   resolution: string;
 }
 
@@ -19,6 +20,7 @@ export const SHADER_ATTR_DEFAULT: ShaderAttribute = {
     projection: "Pmatrix",
   },
   position: "position",
+  tangent: "tangent",
   resolution: "resolution",
 };
 
@@ -32,6 +34,7 @@ export interface ShaderVariableLocation {
     resolution: WebGLUniformLocation;
   };
   vertices: number;
+  tangents: number;
   color: number;
 }
 
@@ -131,6 +134,7 @@ export class ShaderProgram {
     const position = this.getAttributeLocation(this.shaderAttribute.position);
     const color = this.getAttributeLocation(this.shaderAttribute.color);
     const resolution = this.getUniformLocation(this.shaderAttribute.resolution);
+    const tangent = this.getAttributeLocation(this.shaderAttribute.tangent);
     
 
     return {
@@ -142,6 +146,7 @@ export class ShaderProgram {
       options: {
         resolution,
       },
+      tangents: tangent,
       vertices: position,
       color: color,
     };

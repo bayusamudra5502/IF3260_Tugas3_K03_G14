@@ -10,6 +10,7 @@ interface EnginePrimitive {
     view: number[];
     projection: number[];
   };
+  tangents: Float32Array;
   size: number;
 }
 
@@ -52,6 +53,7 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
   const vertices = draw.vertices;
   const colors = draw.colors;
   const indices = draw.indices ? draw.indices : increaseArray(vertices.length);
+  const tangents = draw.tangents;
 
   if (vertices.length != colors.length) {
     throw new Error("color and vertices count is not equal");
@@ -73,6 +75,15 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
     }
   }
 
+  const flatTangent = [];
+  tangents.forEach(e => {
+    e.getArray().forEach(
+      el => {
+        flatTangent.push(el);
+      }
+    )
+  })
+
   const tMatrix = Matrix.transpose(draw.matrix.transform);
   const pMatrix = Matrix.transpose(draw.matrix.projection);
   //   const vMatrix = Matrix.transpose(draw.matrix.view);
@@ -87,6 +98,7 @@ export function drawableToPrimitive(draw: DrawInfo): EnginePrimitive {
       projection: flatten(pMatrix),
       view: flatten(vMatrix),
     },
+    tangents: new Float32Array(flatTangent),
     size: indices.length,
   };
 }

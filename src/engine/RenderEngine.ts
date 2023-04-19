@@ -232,10 +232,12 @@ export default class RenderEngine {
     this.buffer.fillFloat("vertices", primitive.vertices);
     this.buffer.fillFloat("colors", primitive.color);
     this.buffer.fillUint("indices", primitive.indices);
+    this.buffer.fillFloat("tangents", primitive.tangents);
 
     // Data binding
     this.bind(this.shaderLocation.vertices, this.buffer.get("vertices"), 4);
     this.bind(this.shaderLocation.color, this.buffer.get("colors"), 4);
+    this.bind(this.shaderLocation.tangents, this.buffer.get("tangents"), 4);
 
     // Transformation Matrix
     this.webglContext.uniformMatrix4fv(

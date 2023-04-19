@@ -21,7 +21,6 @@ export class TextureComponent extends Component {
   }
 
   run(): ComponentPrototype<TextureRenderOption, TextureRenderExtension> {
-    console.log(this.textureManager.mode);
     return {
       class: TextureRenderExtension,
       options: {

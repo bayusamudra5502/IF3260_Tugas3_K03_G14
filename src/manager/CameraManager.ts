@@ -21,7 +21,6 @@ export class CameraManager extends Transform {
       radius * Math.sin(xAxis / 180 * Math.PI),
       radius * Math.cos(yAxis / 180 * Math.PI)
     )
-    console.log(this.position);
   }
 
   update(transformValue: CameraManagerOptions) {

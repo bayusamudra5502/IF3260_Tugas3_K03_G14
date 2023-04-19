@@ -15,6 +15,7 @@ export class Face {
   private indiciesData: number[];
 
   private normalData: Vector[] = [];
+  private tangentData: Vector[] = [];
 
   constructor(options: FaceOptions) {
     this.verticesData = options.isInverted
@@ -33,6 +34,7 @@ export class Face {
 
     this.makeTriangle();
     this.calculateNormal();
+    this.calculateTangent();
   }
 
   get vertices() {
@@ -49,6 +51,10 @@ export class Face {
 
   get normals() {
     return this.normalData;
+  }
+  
+  get tangents(){
+    return this.tangentData;
   }
 
   private makeTriangle() {
@@ -76,6 +82,17 @@ export class Face {
 
     for (let i = 0; i < this.indiciesData.length; i++) {
       this.normalData.push(normal);
+    }
+  }
+
+  private calculateTangent(){
+    if (this.indiciesData.length < 2) {
+      throw new Error("vertices length at least 2");
+    }
+
+    const v1 = Vector.fromVertex(this.verticesData[0], this.verticesData[1]);
+    for (let i = 0; i < this.indiciesData.length; i++) {
+      this.tangentData.push(v1);
     }
   }
 }

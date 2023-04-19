@@ -61,6 +61,8 @@ export class ObjectRenderer {
           transform: IDENTITY_MATRIX,
           view: this.env.viewMatrix,
         },
+        normals: face.normals,
+        tangents: face.tangents,
         extensions: extensions,
         vertices: face.vertices,
         mode: this.drawMode,

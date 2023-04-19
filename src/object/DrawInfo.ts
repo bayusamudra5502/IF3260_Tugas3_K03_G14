@@ -22,6 +22,7 @@ export default interface DrawInfo {
   };
   indices: number[];
   mode: DrawMode;
-  normals?: Vector[];
+  normals: Vector[];
+  tangents: Vector[];
   extensions: RenderExtension[];
 }

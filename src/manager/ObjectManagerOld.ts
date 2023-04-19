@@ -45,6 +45,7 @@ export class ObjectManagerOld extends Listenable {
           transform: obj.transform.matrix,
           view: this.env.viewMatrix,
         },
+        tangents: [],
         vertices: obj.vertices,
         normals: obj.normal,
         extensions: [],
