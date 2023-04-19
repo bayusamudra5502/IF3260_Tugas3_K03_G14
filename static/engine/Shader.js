@@ -6,6 +6,7 @@ export var SHADER_ATTR_DEFAULT = {
         projection: "Pmatrix",
     },
     position: "position",
+    tangent: "tangent",
     resolution: "resolution",
 };
 var ShaderProgram = /** @class */ (function () {
@@ -67,6 +68,7 @@ var ShaderProgram = /** @class */ (function () {
         var position = this.getAttributeLocation(this.shaderAttribute.position);
         var color = this.getAttributeLocation(this.shaderAttribute.color);
         var resolution = this.getUniformLocation(this.shaderAttribute.resolution);
+        var tangent = this.getAttributeLocation(this.shaderAttribute.tangent);
         return {
             matrix: {
                 transform: transformMatrix,
@@ -76,6 +78,7 @@ var ShaderProgram = /** @class */ (function () {
             options: {
                 resolution: resolution,
             },
+            tangents: tangent,
             vertices: position,
             color: color,
         };

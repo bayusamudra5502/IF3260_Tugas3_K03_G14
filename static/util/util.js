@@ -36,6 +36,7 @@ export function drawableToPrimitive(draw) {
     var vertices = draw.vertices;
     var colors = draw.colors;
     var indices = draw.indices ? draw.indices : increaseArray(vertices.length);
+    var tangents = draw.tangents;
     if (vertices.length != colors.length) {
         throw new Error("color and vertices count is not equal");
     }
@@ -57,6 +58,12 @@ export function drawableToPrimitive(draw) {
             flatColor.push(j);
         }
     }
+    var flatTangent = [];
+    tangents.forEach(function (e) {
+        e.getArray().forEach(function (el) {
+            flatTangent.push(el);
+        });
+    });
     var tMatrix = Matrix.transpose(draw.matrix.transform);
     var pMatrix = Matrix.transpose(draw.matrix.projection);
     //   const vMatrix = Matrix.transpose(draw.matrix.view);
@@ -70,6 +77,7 @@ export function drawableToPrimitive(draw) {
             projection: flatten(pMatrix),
             view: flatten(vMatrix),
         },
+        tangents: new Float32Array(flatTangent),
         size: indices.length,
     };
 }

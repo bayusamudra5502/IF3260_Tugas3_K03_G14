@@ -30,7 +30,6 @@ var TextureComponent = /** @class */ (function (_super) {
         return _this;
     }
     TextureComponent.prototype.run = function () {
-        console.log(this.textureManager.mode);
         return {
             class: TextureRenderExtension,
             options: {

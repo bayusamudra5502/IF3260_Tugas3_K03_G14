@@ -31,7 +31,6 @@ var CameraManager = /** @class */ (function (_super) {
         var yAxis = isNaN(transformValue.yAngle) ? 0 : transformValue.yAngle;
         var xAxis = isNaN(transformValue.xAngle) ? 0 : transformValue.xAngle;
         this.position = new Vertex(radius * Math.sin(yAxis / 180 * Math.PI), radius * Math.sin(xAxis / 180 * Math.PI), radius * Math.cos(yAxis / 180 * Math.PI));
-        console.log(this.position);
     };
     CameraManager.prototype.update = function (transformValue) {
         this.calcPosition(transformValue);

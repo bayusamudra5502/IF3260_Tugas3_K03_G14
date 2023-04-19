@@ -2,6 +2,7 @@ import { Vector } from "./Vector.js";
 var Face = /** @class */ (function () {
     function Face(options) {
         this.normalData = [];
+        this.tangentData = [];
         this.verticesData = options.isInverted
             ? options.vertices.reverse()
             : options.vertices;
@@ -16,6 +17,7 @@ var Face = /** @class */ (function () {
         }
         this.makeTriangle();
         this.calculateNormal();
+        this.calculateTangent();
     }
     Object.defineProperty(Face.prototype, "vertices", {
         get: function () {
@@ -45,6 +47,13 @@ var Face = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(Face.prototype, "tangents", {
+        get: function () {
+            return this.tangentData;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Face.prototype.makeTriangle = function () {
         var newIndicies = [];
         for (var i = 1; i < this.vertices.length - 1; i++) {
@@ -64,6 +73,15 @@ var Face = /** @class */ (function () {
         var normal = Vector.normal(v1, v2);
         for (var i = 0; i < this.indiciesData.length; i++) {
             this.normalData.push(normal);
+        }
+    };
+    Face.prototype.calculateTangent = function () {
+        if (this.indiciesData.length < 2) {
+            throw new Error("vertices length at least 2");
+        }
+        var v1 = Vector.fromVertex(this.verticesData[0], this.verticesData[1]);
+        for (var i = 0; i < this.indiciesData.length; i++) {
+            this.tangentData.push(v1);
         }
     };
     return Face;
