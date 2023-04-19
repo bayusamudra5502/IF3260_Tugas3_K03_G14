@@ -14,9 +14,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { RenderExtension } from "../../RenderExtension.js";
-export var LIGHT_RENDER_EXTENSION_ATTRIBUT_DEFAULT = {
+export var TEXTURE_RENDER_EXTENSION_ATTRIBUT_DEFAULT = {
     texture: "aTextureCoord",
-    sampler: "uSampler"
+    sampler: "uSampler",
+    texCube: "texCube",
+    cameraPosition: "cameraPosition",
+    textureMode: "textureMode",
 };
 var TextureRenderExtension = /** @class */ (function (_super) {
     __extends(TextureRenderExtension, _super);
@@ -25,8 +28,10 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         var _a;
         _this = _super.call(this, program, options) || this;
         _this.texture = options.texture;
+        _this.cameraPosition = options.cameraPosition;
         _this.textureCoordinates = options.textureCoordinates;
-        _this.initShaderLocation(_this.program, (_a = options.renderAttribute) !== null && _a !== void 0 ? _a : LIGHT_RENDER_EXTENSION_ATTRIBUT_DEFAULT);
+        _this.mode = options.mode;
+        _this.initShaderLocation(_this.program, (_a = options.renderAttribute) !== null && _a !== void 0 ? _a : TEXTURE_RENDER_EXTENSION_ATTRIBUT_DEFAULT);
         return _this;
     }
     TextureRenderExtension.prototype.initTextureBuffer = function (gl, buffer) {
@@ -42,7 +47,10 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         var texture = program.getAttributeLocation(renderAttribute.texture);
         this.shaderLocation = {
             texture: texture,
-            sampler: sampler
+            sampler: sampler,
+            textureCubeLocation: program.getUniformLocation(renderAttribute.texCube),
+            cameraLocation: program.getUniformLocation(renderAttribute.cameraPosition),
+            textureMode: program.getUniformLocation(renderAttribute.textureMode),
         };
     };
     TextureRenderExtension.prototype.run = function (gl, buffer) {
@@ -62,8 +70,17 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
         // Tell the shader we bound the texture to texture unit 0
         gl.uniform1i(this.shaderLocation.sampler, 0);
+        gl.uniform3fv(this.shaderLocation.cameraLocation, this.cameraPosition.getArray().slice(0, 3));
+        gl.uniform1i(this.shaderLocation.textureCubeLocation, 1);
+        gl.uniform1i(this.shaderLocation.textureMode, this.mode);
     };
     return TextureRenderExtension;
 }(RenderExtension));
 export { TextureRenderExtension };
+export var TEXTURE_MODE;
+(function (TEXTURE_MODE) {
+    TEXTURE_MODE[TEXTURE_MODE["TEXTURE_MAPPING"] = 0] = "TEXTURE_MAPPING";
+    TEXTURE_MODE[TEXTURE_MODE["ENVIRONMENT_MAPPING"] = 1] = "ENVIRONMENT_MAPPING";
+    TEXTURE_MODE[TEXTURE_MODE["BUMP_MAPPING"] = 2] = "BUMP_MAPPING";
+})(TEXTURE_MODE || (TEXTURE_MODE = {}));
 //# sourceMappingURL=TextureRender.js.map

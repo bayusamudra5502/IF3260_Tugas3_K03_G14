@@ -19,7 +19,7 @@ import { LightComponent } from "./components/Light.js";
 import { ObjectManager } from "./manager/ObjectManager.js";
 import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { TextureComponent } from "./components/Texture.js";
-import { EnvironmentComponent } from "./components/Environment.js";
+import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -47,12 +47,11 @@ function main() {
     });
     /* Component */
     var lightComponent = new LightComponent(envManager);
-    // TODO: Nanti disesuaikan lagi teksturnya mau gimana"nya
-    var textureComponent = new TextureComponent(engine.texture);
-    var envComponent = new EnvironmentComponent(engine.texture);
+    // TODO: Pass koordinat camera + pilih texture mode
+    var textureComponent = new TextureComponent(engine.texture, engine.envMap, TEXTURE_MODE.TEXTURE_MAPPING);
     var object3DBuilder = new Object3DBuilder([
         lightComponent,
-        envComponent,
+        textureComponent,
     ]);
     /* Object Manager */
     var objManager = new ObjectManager();
