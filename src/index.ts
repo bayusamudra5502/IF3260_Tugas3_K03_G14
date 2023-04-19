@@ -5,12 +5,7 @@ import { ShaderProgram } from "./engine/Shader";
 import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
 import { ProjectionManager } from "./manager/ProjectionManager";
-import { TransformManager } from "./manager/TransformManager";
 import { Color } from "./object/Color";
-import { Vertex } from "./object/Vertices";
-import { Rotation } from "./transform/Rotation";
-import { Scaling } from "./transform/Scaling";
-import { Translation } from "./transform/Translation";
 import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
@@ -19,18 +14,14 @@ import { TextureUi } from "./ui/TextureUI";
 import { Importer } from "./util/Importer";
 import { reset } from "./util/reset";
 import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { LightRenderExtension } from "./engine/extensions/object/LightRender";
-import DrawInfo from "./object/DrawInfo";
 import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
 import { Object3DBuilder } from "./object/Object3DBuilder";
 import { LightComponent } from "./components/Light";
 import { ObjectManager } from "./manager/ObjectManager";
 import { ObjectRenderer } from "./manager/ObjectRenderer";
-import { TextureRenderExtension } from "./engine/extensions/object/TextureRender";
-import { Point } from "./object/Point";
 import { TextureComponent } from "./components/Texture";
+import { AnimationRunner } from "./components/Animator";
 import { TextureManager } from "./manager/TextureManager";
-import { TEXTURE_MODE } from "./engine/extensions/object/TextureRender";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -124,7 +115,7 @@ function main() {
   textureUi.subscribe(() => {
     textureManager.update(textureUi.mode);
     rerender();
-  })
+  });
   // Transform UI harus berubah
   // transformUi.subscribe(() => {
   //   const transformManager = new TransformManager();
@@ -183,6 +174,22 @@ function main() {
   envManager.subscribe(rerender);
   lightUi.subscribe(rerender);
 
+  /* Animation */
+  const animationRunner = new AnimationRunner(20);
+  animationRunner.subscribe(rerender);
+
+  const check = document.querySelector(
+    "#check-run-animation"
+  ) as HTMLInputElement;
+  check.onchange = () => {
+    if (check.checked) {
+      const [obj, _] = objManager.get(0);
+      animationRunner.run(obj);
+    } else {
+      animationRunner.stop();
+    }
+  };
+
   /* Event listeners */
   const resetButton = document.querySelector("#reset-button");
   const rerenderButton = document.querySelector("#rerender-button");
@@ -199,47 +206,30 @@ function main() {
     importer.import();
     resetButton.removeAttribute("disabled");
     rerenderButton.removeAttribute("disabled");
-    requestAnimationFrame(loop);
+    // requestAnimationFrame(loop);
   });
 
-  let angleX = 0;
-  let angleY = 0;
-  let angleZ = 0;
-  const rotationX = document.querySelector("#rotation-x") as HTMLInputElement;
-  const rotationY = document.querySelector("#rotation-y") as HTMLInputElement;
-  const rotationZ = document.querySelector("#rotation-z") as HTMLInputElement;
+  // const loop = () => {
+  //   if (isRotationX.checked) {
+  //     angleX = (angleX + 0.25) % 360;
+  //     rotationX.value = angleX.toString();
+  //     rotationX.dispatchEvent(new Event("change"));
+  //   }
 
-  const isRotationX = document.querySelector(
-    "#check-rotate-x"
-  ) as HTMLInputElement;
-  const isRotationY = document.querySelector(
-    "#check-rotate-y"
-  ) as HTMLInputElement;
-  const isRotationZ = document.querySelector(
-    "#check-rotate-z"
-  ) as HTMLInputElement;
+  //   if (isRotationY.checked) {
+  //     angleY = (angleY + 0.25) % 360;
+  //     rotationY.value = angleY.toString();
+  //     rotationY.dispatchEvent(new Event("change"));
+  //   }
 
-  const loop = () => {
-    if (isRotationX.checked) {
-      angleX = (angleX + 0.25) % 360;
-      rotationX.value = angleX.toString();
-      rotationX.dispatchEvent(new Event("change"));
-    }
+  //   if (isRotationZ.checked) {
+  //     angleZ = (angleZ + 0.25) % 360;
+  //     rotationZ.value = angleZ.toString();
+  //     rotationZ.dispatchEvent(new Event("change"));
+  //   }
 
-    if (isRotationY.checked) {
-      angleY = (angleY + 0.25) % 360;
-      rotationY.value = angleY.toString();
-      rotationY.dispatchEvent(new Event("change"));
-    }
-
-    if (isRotationZ.checked) {
-      angleZ = (angleZ + 0.25) % 360;
-      rotationZ.value = angleZ.toString();
-      rotationZ.dispatchEvent(new Event("change"));
-    }
-
-    requestAnimationFrame(loop);
-  };
+  //   requestAnimationFrame(loop);
+  // };
 }
 
 main();

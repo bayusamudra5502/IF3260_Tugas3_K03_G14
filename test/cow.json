@@ -256,15 +256,12 @@
     }
   ],
   "root_id": "badan",
+  "cache": true,
   "vertices": {
     "kaki1": {
       "joint_point": [0.175, 0, 0.4],
       "inverted": [true, false, true, false, true, false],
       "child": [],
-      "max_degree": 45,
-      "min_degree": -45,
-      "start_degree": 0,
-      "clockwise": 0,
       "colors": [
         "#ffffff",
         "#aa0000",
@@ -272,16 +269,32 @@
         "#0000cc",
         "#ff00ff",
         "#000000"
+      ],
+      "animations": [
+        {
+          "frame_number": 20,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -30
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "kaki2": {
       "joint_point": [0.175, 0, -0.45],
       "inverted": [true, false, true, false, true, false],
       "child": [],
-      "max_degree": 45,
-      "min_degree": -45,
-      "start_degree": 0,
-      "clockwise": 1,
       "colors": [
         "#ffffff",
         "#aa0000",
@@ -289,16 +302,32 @@
         "#0000cc",
         "#ff00ff",
         "#000000"
+      ],
+      "animations": [
+        {
+          "frame_number": 10,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 30
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "kaki3": {
       "joint_point": [-0.175, 0, 0.4],
       "inverted": [false, true, false, true, false, true],
       "child": [],
-      "max_degree": 45,
-      "min_degree": -45,
-      "start_degree": 0,
-      "clockwise": 0,
       "colors": [
         "#ffffff",
         "#aa0000",
@@ -306,16 +335,32 @@
         "#0000cc",
         "#ff00ff",
         "#000000"
+      ],
+      "animations": [
+        {
+          "frame_number": 20,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -30
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "kaki4": {
       "joint_point": [-0.175, 0, -0.45],
       "inverted": [false, true, false, true, false, true],
       "child": [],
-      "max_degree": 45,
-      "min_degree": -45,
-      "start_degree": 0,
-      "clockwise": 1,
       "colors": [
         "#ffffff",
         "#aa0000",
@@ -323,16 +368,32 @@
         "#0000cc",
         "#ff00ff",
         "#000000"
+      ],
+      "animations": [
+        {
+          "frame_number": 10,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 30
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
       ]
     },
     "badan": {
       "joint_point": [0, 0.025, -0.025],
       "inverted": [false, true, true, false, true, false],
       "child": ["kaki1", "kaki2", "kaki3", "kaki4", "kepala"],
-      "max_degree": 180,
-      "min_degree": 180,
-      "start_degree": 180,
-      "clockwise": 1,
       "colors": [
         "#ffffff",
         "#aa0000",
@@ -340,17 +401,80 @@
         "#0000cc",
         "#ff00ff",
         "#000000"
+      ],
+      "animations": [
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "translation",
+            "options": {
+              "z": 0.3
+            }
+          }
+        },
+        {
+          "frame_number": 90,
+          "transform": {
+            "type": "translation",
+            "options": {
+              "z": -0.3
+            }
+          }
+        },
+        {
+          "frame_number": 120,
+          "transform": {
+            "type": "translation",
+            "options": {
+              "z": 0
+            }
+          }
+        }
       ]
     },
     "kepala": {
-      "joint_point": [0, 0.45, 0.45],
+      "joint_point": [0, 0.45, -0.45],
       "inverted": [true, false, true, false, false, true],
       "child": [],
-      "max_degree": 180,
-      "min_degree": 180,
-      "start_degree": 180,
-      "clockwise": 1,
-      "colors": "#ffffff"
+      "colors": "#ffffff",
+      "animations": [
+        {
+          "frame_number": 5,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 30
+            }
+          }
+        },
+        {
+          "frame_number": 15,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": -30
+            }
+          }
+        },
+        {
+          "frame_number": 30,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        },
+        {
+          "frame_number": 50,
+          "transform": {
+            "type": "rotation",
+            "options": {
+              "angle_x": 0
+            }
+          }
+        }
+      ]
     }
   }
 }

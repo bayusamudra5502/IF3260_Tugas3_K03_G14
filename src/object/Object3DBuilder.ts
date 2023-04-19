@@ -1,4 +1,4 @@
-import { RotationAnimator } from "../components/Animator";
+import { Animator } from "../components/Animator";
 import { Color } from "./Color";
 import { Component } from "./Component";
 import { Face } from "./Face";
@@ -57,12 +57,18 @@ export class Object3DBuilder {
         faceList.push(face);
       }
 
-      const object = new Object3D(faceList, Vertex.load(config["joint_point"]));
+      const name = obj.name ?? idx.toString();
+      const object = new Object3D(
+        name,
+        faceList,
+        Vertex.load(config["joint_point"])
+      );
 
       /* Animator Components */
-      const animator = RotationAnimator.fromConfig({
-        ...config,
-        transform: object.transform,
+      const animator = Animator.fromConfig({
+        animations: config.animations ?? [],
+        centerMass: Vertex.load(config.joint_point),
+        cache: jsonObject.cache ?? true,
       });
 
       object.addComponent(animator);
@@ -70,7 +76,7 @@ export class Object3DBuilder {
         object.addComponent(i);
       }
 
-      map.set(obj.name ?? idx.toString(), object);
+      map.set(name, object);
 
       if (idx == 0) {
         root = object;
