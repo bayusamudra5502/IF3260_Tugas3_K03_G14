@@ -1,104 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Web Based</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
+                    in vec4 position;
+                    in vec4 normal;
+                    in vec4 tangent;
+                    in vec4 color;
+                    in vec2 aTextureCoord;
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Web Based</title>
-  <link rel="stylesheet" href="./index.css" />
-  <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
-        in vec4 position;
-        in vec4 normal;
-        in vec4 tangent;
-        in vec4 color;
-        in vec2 aTextureCoord;
+                    uniform mat4 Mmatrix;
+                    uniform mat4 Vmatrix;
+                    uniform mat4 Pmatrix;
+                    uniform vec3 resolution;
 
-        uniform mat4 Mmatrix;
-        uniform mat4 Vmatrix;
-        uniform mat4 Pmatrix;
-        uniform vec3 resolution;
+                    out vec4 vColor;
+                    out vec3 vNormal;
+                    out vec4 vPosition;
+                    out vec3 vTangent;
 
-        out vec4 vColor;
-        out vec3 vNormal;
-        out vec4 vPosition;
-        out vec3 vTangent;
+                    out highp vec2 vTextureCoord;
 
-        out highp vec2 vTextureCoord;
+                    void main(void) {
+                        vec4 fixedPos = position;
 
-        void main(void) {
-            vec4 fixedPos = position;
+                        vColor = color;
+                        vNormal = mat3(transpose(inverse(Mmatrix)))* normal.xyz;
+                        vTangent = mat3(transpose(inverse(Mmatrix)))* tangent.xyz;
+                        vPosition = Mmatrix * position;
+                        vTextureCoord = aTextureCoord;
 
-            vColor = color;
-            vNormal = mat3(transpose(inverse(Mmatrix)))* normal.xyz;
-            vTangent = mat3(transpose(inverse(Mmatrix)))* tangent.xyz;
-            vPosition = Mmatrix * position;
-            vTextureCoord = aTextureCoord;
-
-            gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
-        }
+                        gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
+                    }
     </script>
-  <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
-        precision highp float;
-        in vec4 vColor;
-        in vec3 vNormal;
-        in vec4 vPosition;
-        in vec3 vTangent;
-        in highp vec2 vTextureCoord;
+    <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+                    precision highp float;
+                    in vec4 vColor;
+                    in vec3 vNormal;
+                    in vec4 vPosition;
+                    in vec3 vTangent;
+                    in highp vec2 vTextureCoord;
 
-        uniform int textureMode;
-        uniform samplerCube texCube;
-        uniform vec3 cameraPosition;
-        uniform sampler2D uSampler;
+                    uniform int textureMode;
+                    uniform samplerCube texCube;
+                    uniform vec3 cameraPosition;
+                    uniform sampler2D uSampler;
 
-        uniform vec4 lightSource;
-        uniform vec4 lightColor;
-        uniform int useShading;
+                    uniform vec4 lightSource;
+                    uniform vec4 lightColor;
+                    uniform int useShading;
 
-        out vec4 FragColor;
+                    out vec4 FragColor;
 
-        void main(void) {
-            vec3 normal = normalize(vNormal);
-            vec3 light = vec3(lightSource);
-            vec4 texColor = vColor;
-            if (textureMode == 0) {
-              texColor = texture(uSampler, vTextureCoord);
-            } else if (textureMode == 1) {
-                vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
-                vec3 reflection = reflect(eyeToSurface, normal);
-                texColor = texture(texCube, reflection);
-            }
+                    void main(void) {
+                        vec3 normal = normalize(vNormal);
+                        vec3 light = vec3(lightSource);
+                        vec4 texColor = vColor;
+                        if (textureMode == 0) {
+                          texColor = texture(uSampler, vTextureCoord);
+                        } else if (textureMode == 1) {
+                            vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
+                            vec3 reflection = reflect(eyeToSurface, normal);
+                            texColor = texture(texCube, reflection);
+                        }
 
-            vec3 lightVector = normalize(light - vec3(vPosition));
-            float radius = dot(lightVector, lightVector) / 20.0;
+                        vec3 lightVector = normalize(light - vec3(vPosition));
+                        float radius = dot(lightVector, lightVector) / 20.0;
 
-            float ambientIlluminance = 0.25;
-            float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
-            
-            if (textureMode == 2){
-              vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
-              vec3 biTangent = cross(normalize(vTangent), normal);
+                        float ambientIlluminance = 0.25;
+                        float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
 
-              mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
-              lightVector = normalize(bump * lightVector);
+                        if (textureMode == 2){
+                          vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
+                          vec3 biTangent = cross(normalize(vTangent), normal);
 
-              texColor = texture(uSampler, vTextureCoord);
-              vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
-              float Kd = max(dot(N, lightVector), 0.0);
+                          mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
+                          lightVector = normalize(bump * lightVector);
 
-              texColor = vec4(Kd * texColor.xyz , 1.0);
-            }
-            if (useShading != 0) {
-                float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
+                          texColor = texture(uSampler, vTextureCoord);
+                          vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
+                          float Kd = max(dot(N, lightVector), 0.0);
 
-                FragColor = vec4(lightIlluminance * lightColor.xyz * texColor.xyz, 1.0);
-            } else {
-                FragColor = texColor;
-            }
-        }
+                          texColor = vec4(Kd * texColor.xyz , 1.0);
+                        }
+                        if (useShading != 0) {
+                            float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
+
+                            FragColor = vec4(lightIlluminance * lightColor.xyz * texColor.xyz, 1.0);
+                        } else {
+                            FragColor = texColor;
+                        }
+                    }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header" style="text-align: center">
       <h1>Tugas 3 Grafika Komputer</h1>
     </div>
@@ -154,9 +153,9 @@
               <input
                 type="range"
                 id="translation-x"
-                step="0.05"
-                min="-10"
-                max="10"
+                step="0.01"
+                min="-1.5"
+                max="1.5"
                 value="0"
               />
               <span id="translation-x-value">0</span>
@@ -168,9 +167,9 @@
               <input
                 type="range"
                 id="translation-y"
-                step="0.05"
-                min="-10"
-                max="10"
+                step="0.01"
+                min="-1.5"
+                max="1.5"
                 value="0"
               />
               <span id="translation-y-value">0</span>
@@ -182,9 +181,9 @@
               <input
                 type="range"
                 id="translation-z"
-                step="0.05"
-                min="-10"
-                max="10"
+                step="0.01"
+                min="-1.5"
+                max="1.5"
                 value="0"
               />
               <span id="translation-z-value">0</span>
@@ -241,11 +240,11 @@
                 type="range"
                 id="scale-x"
                 step="0.05"
-                min="-10"
-                max="10"
-                value="0"
+                min="0"
+                max="3"
+                value="1"
               />
-              <span id="scale-x-value">0</span>
+              <span id="scale-x-value">1</span>
             </label>
           </div>
           <div class="option">
@@ -255,11 +254,11 @@
                 type="range"
                 id="scale-y"
                 step="0.05"
-                min="-10"
-                max="10"
-                value="0"
+                min="0"
+                max="3"
+                value="1"
               />
-              <span id="scale-y-value">0</span>
+              <span id="scale-y-value">1</span>
             </label>
           </div>
           <div class="option">
@@ -269,11 +268,11 @@
                 type="range"
                 id="scale-z"
                 step="0.05"
-                min="-10"
-                max="10"
-                value="0"
+                min="0"
+                max="3"
+                value="1"
               />
-              <span id="scale-z-value">0</span>
+              <span id="scale-z-value">1</span>
             </label>
           </div>
         </div>

@@ -39,6 +39,18 @@ export class TransformUi extends Listenable {
     return this.currentScale;
   }
 
+  set translation(trans) {
+    this.currentTranslation = trans;
+  }
+
+  set rotation(rot) {
+    this.currentRotation = rot;
+  }
+
+  set scale(size) {
+    this.currentScale = size;
+  }
+
   private update() {
     this.setValue();
     this.notify();

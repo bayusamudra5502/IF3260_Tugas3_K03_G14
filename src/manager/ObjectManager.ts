@@ -18,6 +18,10 @@ export class ObjectManager extends Listenable {
     return this.objectsList[idx];
   }
 
+  getObject3D(idx: number) {
+    return this.objectsList[idx][0];
+  }
+
   getList() {
     return this.objectsList;
   }

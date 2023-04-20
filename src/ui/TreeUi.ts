@@ -1,4 +1,4 @@
-import { Object3DTuple, ObjectManager } from "../manager/ObjectManager";
+import { Object3DTuple } from "../manager/ObjectManager";
 import { Object3D } from "../object/Object3D";
 import { Listenable } from "../util/Listenable";
 
@@ -28,7 +28,6 @@ export class TreeUi extends Listenable {
       .querySelectorAll(`input[name="object-id"]`)
       .forEach((el: HTMLInputElement) => {
         el.onchange = () => {
-          console.log("Mbee");
           callback();
         };
       });
