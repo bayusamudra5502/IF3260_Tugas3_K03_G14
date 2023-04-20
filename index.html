@@ -73,18 +73,6 @@
                 vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
                 vec3 reflection = reflect(eyeToSurface, normal);
                 texColor = texture(texCube, reflection);
-            } else if (textureMode == 2){
-              vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
-              vec3 biTangent = cross(normalize(vTangent), normal);
-
-              mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
-              lightVector = normalize(bump * lightVector);
-
-              texColor = texture(uSampler, vTextureCoord);
-              vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
-              float Kd = max(dot(N, lightVector), 0.0);
-
-              texColor = vec4(Kd * texColor.xyz , 1.0);
             } else if (textureMode == 3){
               vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
               vec3 reflection = normalize(reflect(eyeToSurface, normal));
@@ -95,8 +83,20 @@
               float b = x < y ? (x < z ? x : z) : (y < z ? y : z);
               texColor = texture(uSampler, vec2(a, b));
             } 
+            
+            if (textureMode == 2){
+              vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
+              vec3 biTangent = cross(normalize(vTangent), normal);
 
-            if (useShading != 0) {
+              mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
+              lightVector = normalize(bump * lightVector);
+
+              texColor = texture(uSampler, vTextureCoord);
+              vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
+              float Kd = max(dot(N, lightVector), 0.0);
+              if (useShading == 0) FragColor = texture(uSampler, vec2(texColor.x, texColor.y));
+              else FragColor = vec4(Kd * texColor.xyz , 1.0);
+            } else if (useShading != 0) {
                 float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
 
                 FragColor = vec4(lightIlluminance * lightColor.xyz * texColor.xyz, 1.0);
