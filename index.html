@@ -7,94 +7,102 @@
     <title>3D Web Based</title>
     <link rel="stylesheet" href="./index.css" />
     <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
-                    in vec4 position;
-                    in vec4 normal;
-                    in vec4 tangent;
-                    in vec4 color;
-                    in vec2 aTextureCoord;
+        in vec4 position;
+        in vec4 normal;
+        in vec4 tangent;
+        in vec4 color;
+        in vec2 aTextureCoord;
 
-                    uniform mat4 Mmatrix;
-                    uniform mat4 Vmatrix;
-                    uniform mat4 Pmatrix;
-                    uniform vec3 resolution;
+        uniform mat4 Mmatrix;
+        uniform mat4 Vmatrix;
+        uniform mat4 Pmatrix;
+        uniform vec3 resolution;
 
-                    out vec4 vColor;
-                    out vec3 vNormal;
-                    out vec4 vPosition;
-                    out vec3 vTangent;
+        out vec4 vColor;
+        out vec3 vNormal;
+        out vec4 vPosition;
+        out vec3 vTangent;
 
-                    out highp vec2 vTextureCoord;
+        out highp vec2 vTextureCoord;
 
-                    void main(void) {
-                        vec4 fixedPos = position;
+        void main(void) {
+            vec4 fixedPos = position;
 
-                        vColor = color;
-                        vNormal = mat3(transpose(inverse(Mmatrix)))* normal.xyz;
-                        vTangent = mat3(transpose(inverse(Mmatrix)))* tangent.xyz;
-                        vPosition = Mmatrix * position;
-                        vTextureCoord = aTextureCoord;
+            vColor = color;
+            vNormal = mat3(transpose(inverse(Mmatrix)))* normal.xyz;
+            vTangent = mat3(transpose(inverse(Mmatrix)))* tangent.xyz;
+            vPosition = Mmatrix * position;
+            vTextureCoord = aTextureCoord;
 
-                        gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
-                    }
+            gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
+        }
     </script>
     <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
-                    precision highp float;
-                    in vec4 vColor;
-                    in vec3 vNormal;
-                    in vec4 vPosition;
-                    in vec3 vTangent;
-                    in highp vec2 vTextureCoord;
+        precision highp float;
+        in vec4 vColor;
+        in vec3 vNormal;
+        in vec4 vPosition;
+        in vec3 vTangent;
+        in highp vec2 vTextureCoord;
 
-                    uniform int textureMode;
-                    uniform samplerCube texCube;
-                    uniform vec3 cameraPosition;
-                    uniform sampler2D uSampler;
+        uniform int textureMode;
+        uniform samplerCube texCube;
+        uniform vec3 cameraPosition;
+        uniform sampler2D uSampler;
 
-                    uniform vec4 lightSource;
-                    uniform vec4 lightColor;
-                    uniform int useShading;
+        uniform vec4 lightSource;
+        uniform vec4 lightColor;
+        uniform int useShading;
 
-                    out vec4 FragColor;
+        out vec4 FragColor;
 
-                    void main(void) {
-                        vec3 normal = normalize(vNormal);
-                        vec3 light = vec3(lightSource);
-                        vec4 texColor = vColor;
-                        if (textureMode == 0) {
-                          texColor = texture(uSampler, vTextureCoord);
-                        } else if (textureMode == 1) {
-                            vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
-                            vec3 reflection = reflect(eyeToSurface, normal);
-                            texColor = texture(texCube, reflection);
-                        }
+        void main(void) {
+            vec3 normal = normalize(vNormal);
+            vec3 light = vec3(lightSource);
+            vec4 texColor = vColor;
+            vec3 lightVector = normalize(light - vec3(vPosition));
+            float radius = dot(lightVector, lightVector) / 20.0;
 
-                        vec3 lightVector = normalize(light - vec3(vPosition));
-                        float radius = dot(lightVector, lightVector) / 20.0;
+            float ambientIlluminance = 0.25;
+            float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
 
-                        float ambientIlluminance = 0.25;
-                        float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
+            if (textureMode == 0) {
+              texColor = texture(uSampler, vTextureCoord);
+            } else if (textureMode == 1) {
+                vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
+                vec3 reflection = reflect(eyeToSurface, normal);
+                texColor = texture(texCube, reflection);
+            } else if (textureMode == 2){
+              vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
+              vec3 biTangent = cross(normalize(vTangent), normal);
 
-                        if (textureMode == 2){
-                          vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
-                          vec3 biTangent = cross(normalize(vTangent), normal);
+              mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
+              lightVector = normalize(bump * lightVector);
 
-                          mat3 bump = transpose(mat3(normalize(vTangent), biTangent, normal));
-                          lightVector = normalize(bump * lightVector);
+              texColor = texture(uSampler, vTextureCoord);
+              vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
+              float Kd = max(dot(N, lightVector), 0.0);
 
-                          texColor = texture(uSampler, vTextureCoord);
-                          vec3 N = normalize(2.0* (texColor.xyz) - 1.0);
-                          float Kd = max(dot(N, lightVector), 0.0);
+              texColor = vec4(Kd * texColor.xyz , 1.0);
+            } else if (textureMode == 3){
+              vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
+              vec3 reflection = normalize(reflect(eyeToSurface, normal));
+              float x = reflection.x;
+              float y = reflection.y;
+              float z = reflection.z;
+              float a = x > y ? (x > z ? x : z) : (y > z ? y : z);
+              float b = x < y ? (x < z ? x : z) : (y < z ? y : z);
+              texColor = texture(uSampler, vec2(a, b));
+            } 
 
-                          texColor = vec4(Kd * texColor.xyz , 1.0);
-                        }
-                        if (useShading != 0) {
-                            float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
+            if (useShading != 0) {
+                float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
 
-                            FragColor = vec4(lightIlluminance * lightColor.xyz * texColor.xyz, 1.0);
-                        } else {
-                            FragColor = texColor;
-                        }
-                    }
+                FragColor = vec4(lightIlluminance * lightColor.xyz * texColor.xyz, 1.0);
+            } else {
+                FragColor = texColor;
+            }
+        }
     </script>
 </head>
 
@@ -226,9 +234,10 @@
         <div>
           <label for="texture-mode">Texture Mode</label>
           <select id="texture-mode">
-            <option value="0">Texture Mapping</option>
+            <option value="0">Image Mapping</option>
             <option value="1">Environment Mapping</option>
             <option value="2">Bump Mapping</option>
+            <option value="3">Custom Mapping</option>
           </select>
         </div>
       </div>

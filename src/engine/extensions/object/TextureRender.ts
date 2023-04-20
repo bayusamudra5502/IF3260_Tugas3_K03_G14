@@ -9,6 +9,7 @@ export interface TextureRenderOption{
     textureCoordinates: Point[];
     textureCube: WebGLTexture;
     textureBump: WebGLTexture;
+    textureCustom: WebGLTexture;
     cameraPosition: Vertex;
     mode: TEXTURE_MODE;
     renderAttribute?: TextureRenderShaderAttribute
@@ -44,6 +45,7 @@ export class TextureRenderExtension extends RenderExtension{
     private shaderLocation: TextureRenderShaderLocation;
     private texture: WebGLTexture;
     private textureBump: WebGLTexture;
+    private textureCustom: WebGLTexture;
     private textureCoordinates: Point[];
     private mode: TEXTURE_MODE;
     private cameraPosition: Vertex;
@@ -52,6 +54,7 @@ export class TextureRenderExtension extends RenderExtension{
         super(program, options);
         this.texture = options.texture;
         this.textureBump = options.textureBump;
+        this.textureCustom = options.textureCustom;
         this.cameraPosition = options.cameraPosition;
         this.textureCoordinates = options.textureCoordinates;
         this.mode = options.mode;
@@ -120,10 +123,12 @@ export class TextureRenderExtension extends RenderExtension{
         gl.enableVertexAttribArray(this.shaderLocation.texture);
 
         gl.activeTexture(gl.TEXTURE0);
-
+        
         // Bind the texture to texture unit 0
         if (this.mode == TEXTURE_MODE.BUMP_MAPPING)
           gl.bindTexture(gl.TEXTURE_2D, this.textureBump);
+        else if (this.mode == TEXTURE_MODE.CUSTOM_MAPPING)
+          gl.bindTexture(gl.TEXTURE_2D, this.textureCustom);
         else
           gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
@@ -145,5 +150,6 @@ export class TextureRenderExtension extends RenderExtension{
 export enum TEXTURE_MODE {
   TEXTURE_MAPPING = 0,
   ENVIRONMENT_MAPPING = 1,
-  BUMP_MAPPING = 2
+  BUMP_MAPPING = 2,
+  CUSTOM_MAPPING = 3
 }

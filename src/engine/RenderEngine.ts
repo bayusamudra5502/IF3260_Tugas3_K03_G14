@@ -18,6 +18,7 @@ export default class RenderEngine {
   public texture: WebGLTexture; // TODO: move this (?)
   public envMap: WebGLTexture; // TODO: move this (?)
   public bumpMap: WebGLTexture;
+  public customMap: WebGLTexture;
 
   constructor(
     private renderCanvas: Canvas,
@@ -30,6 +31,7 @@ export default class RenderEngine {
     this.texture = this.loadTexture(); // TODO: move this (?)
     this.envMap = this.loadEnvMap(); // TODO: move this (?)
     this.bumpMap = this.loadTexture("/assets/bump.jpg");
+    this.customMap = this.loadTexture("/assets/yuru.jpg");
     this.applyFaceTexture();
     renderCanvas.bindResolution(this.shaderLocation.options.resolution);
 
