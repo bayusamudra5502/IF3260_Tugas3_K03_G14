@@ -61,21 +61,19 @@
             vec3 normal = normalize(vNormal);
             vec3 light = vec3(lightSource);
             vec4 texColor = vColor;
+            vec3 lightVector = normalize(light - vec3(vPosition));
+            float radius = dot(lightVector, lightVector) / 20.0;
+
+            float ambientIlluminance = 0.25;
+            float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
+
             if (textureMode == 0) {
               texColor = texture(uSampler, vTextureCoord);
             } else if (textureMode == 1) {
                 vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
                 vec3 reflection = reflect(eyeToSurface, normal);
                 texColor = texture(texCube, reflection);
-            }
-
-            vec3 lightVector = normalize(light - vec3(vPosition));
-            float radius = dot(lightVector, lightVector) / 20.0;
-
-            float ambientIlluminance = 0.25;
-            float diffuse = clamp(dot(normal, lightVector), 0.0, 1.0);
-            
-            if (textureMode == 2){
+            } else if (textureMode == 2){
               vec3 viewVector = normalize(cameraPosition - vec3(vPosition));
               vec3 biTangent = cross(normalize(vTangent), normal);
 
@@ -87,7 +85,17 @@
               float Kd = max(dot(N, lightVector), 0.0);
 
               texColor = vec4(Kd * texColor.xyz , 1.0);
-            }
+            } else if (textureMode == 3){
+              vec3 eyeToSurface = normalize(vPosition.xyz - cameraPosition);
+              vec3 reflection = normalize(reflect(eyeToSurface, normal));
+              float x = reflection.x;
+              float y = reflection.y;
+              float z = reflection.z;
+              float a = x > y ? (x > z ? x : z) : (y > z ? y : z);
+              float b = x < y ? (x < z ? x : z) : (y < z ? y : z);
+              texColor = texture(uSampler, vec2(a, b));
+            } 
+
             if (useShading != 0) {
                 float lightIlluminance = diffuse * (1.0 - ambientIlluminance) + ambientIlluminance;
 
@@ -227,9 +235,10 @@
         <div>
           <label for="texture-mode">Texture Mode</label>
           <select id="texture-mode">
-            <option value="0">Texture Mapping</option>
+            <option value="0">Image Mapping</option>
             <option value="1">Environment Mapping</option>
             <option value="2">Bump Mapping</option>
+            <option value="3">Custom Mapping</option>
           </select>
         </div>
       </div>

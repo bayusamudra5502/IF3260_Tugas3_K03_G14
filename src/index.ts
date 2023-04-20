@@ -78,6 +78,7 @@ function main() {
     engine.texture,
     engine.envMap,
     engine.bumpMap,
+    engine.customMap,
     textureManager,
     cameraManager
   );

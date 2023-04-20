@@ -13,6 +13,7 @@ export class TextureComponent extends Component {
     private texture: WebGLTexture,
     private textureCube: WebGLTexture,
     private textureBump: WebGLTexture,
+    private textureCustom: WebGLTexture,
     private textureManager: TextureManager,
     private cameraManager: CameraManager,
     private coords: Point[] = DEFAULT_COORDS,
@@ -29,6 +30,7 @@ export class TextureComponent extends Component {
         cameraPosition: this.cameraManager.position,
         textureCube: this.textureCube,
         textureBump: this.textureBump,
+        textureCustom: this.textureCustom,
         mode: this.textureManager.mode,
       },
     };
