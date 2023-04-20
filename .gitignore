@@ -4,3 +4,4 @@ package.json
 yarn*
 package-lock.json
 static/
+debug/

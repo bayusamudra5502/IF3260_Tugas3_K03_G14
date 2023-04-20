@@ -104,10 +104,24 @@
     <h1>Tugas 3 Grafika Komputer</h1>
   </div>
   <div class="container">
-    <div class="canvas-container">
-      <canvas id="drawing-canvas" width="800" height="800"></canvas>
+    <div class="left-container">
+      <div class="left-up">
+        <canvas id="drawing-canvas" width="800" height="800"></canvas>
+      </div>
+      <div class="left-bottom">
+        <div class="controller-container">
+          <h2>Component Tree</h2>
+          <label>Object
+            <select id="object-select">
+              <option disabled selected value="-1">Select Object</option>
+            </select>
+          </label>
+          <h3>Component</h3>
+          <div id="component-tree"></div>
+        </div>
+      </div>
     </div>
-    <div class="controller-list">
+    <div class="controller-list col1">
       <div class="controller-container">
         <h2>Reset / Rerender</h2>
         <button id="reset-button" type="button" disabled>Reset View</button>
@@ -118,17 +132,6 @@
         <input type="file" id="loadfile-input" accept="application/json" />
         <div style="margin-top: 10px"></div>
         <button id="loadfile-submit" type="button">Load</button>
-      </div>
-      <div class="controller-container">
-        <h2>Texture</h2>
-        <div>
-          <label for="texture-mode">Texture Mode</label>
-          <select id="texture-mode">
-            <option value="0">Texture Mapping</option>
-            <option value="1">Environment Mapping</option>
-            <option value="2">Bump Mapping</option>
-          </select>
-        </div>
       </div>
       <div class="controller-container">
         <h2>Animation</h2>
@@ -152,6 +155,82 @@
             <input type="range" min="1" max="40" value="20" step="1" id="frame-fps" />
             <span id="frame-fps-value">20</span>
           </label>
+        </div>
+      </div>
+      <div class="controller-container">
+        <h2>Transformation</h2>
+        <div class="option">
+          <label>Index <input type="number" id="transform-index" /></label>
+        </div>
+        <h3>Translation</h3>
+        <div class="option">
+          <label>x
+            <input type="range" id="translation-x" step="0.05" min="-10" max="10" value="0" />
+            <span id="translation-x-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>y
+            <input type="range" id="translation-y" step="0.05" min="-10" max="10" value="0" />
+            <span id="translation-y-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>z
+            <input type="range" id="translation-z" step="0.05" min="-10" max="10" value="0" />
+            <span id="translation-z-value">0</span>
+          </label>
+        </div>
+        <h3>Rotation</h3>
+        <div class="option">
+          <label>x-axis
+            <input type="range" id="rotation-x" min="-360" max="360" step="1" value="0" />
+            <span id="rotation-x-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>y-axis
+            <input type="range" id="rotation-y" min="-360" max="360" step="1" value="0" />
+            <span id="rotation-y-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>z-axis
+            <input type="range" id="rotation-z" min="-360" max="360" step="1" value="0" />
+            <span id="rotation-z-value">0</span>
+          </label>
+        </div>
+        <h3>Scaling</h3>
+        <div class="option">
+          <label>x
+            <input type="range" id="scale-x" step="0.05" min="-10" max="10" value="0" />
+            <span id="scale-x-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>y
+            <input type="range" id="scale-y" step="0.05" min="-10" max="10" value="0" />
+            <span id="scale-y-value">0</span>
+          </label>
+        </div>
+        <div class="option">
+          <label>z
+            <input type="range" id="scale-z" step="0.05" min="-10" max="10" value="0" />
+            <span id="scale-z-value">0</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="controller-list col2">
+      <div class="controller-container">
+        <h2>Texture</h2>
+        <div>
+          <label for="texture-mode">Texture Mode</label>
+          <select id="texture-mode">
+            <option value="0">Texture Mapping</option>
+            <option value="1">Environment Mapping</option>
+            <option value="2">Bump Mapping</option>
+          </select>
         </div>
       </div>
       <div class="controller-container">
@@ -261,58 +340,6 @@
           <div class="option">
             <label>z <input type="number" id="light-z" step="0.05" value="1" /></label>
           </div>
-        </div>
-      </div>
-      <div class="controller-container">
-        <h2>Component Tree</h2>
-        <label>Object
-          <select id="object-select">
-            <option disabled selected value="-1">Select Object</option>
-          </select>
-        </label>
-        <h3>Component</h3>
-        <div id="component-tree"></div>
-      </div>
-      <div class="controller-container">
-        <h2>Transformation</h2>
-        <div class="option">
-          <label>Index <input type="number" id="transform-index" /></label>
-        </div>
-        <h3>Translation</h3>
-        <div class="option">
-          <label>x
-            <input type="number" id="translation-x" step="0.05" min="-10" max="10" /></label>
-        </div>
-        <div class="option">
-          <label>y
-            <input type="number" id="translation-y" step="0.05" min="-10" max="10" /></label>
-        </div>
-        <div class="option">
-          <label>z
-            <input type="number" id="translation-z" step="0.05" min="-10" max="10" /></label>
-        </div>
-        <h3>Rotation</h3>
-        <div class="option">
-          <label>x-axis
-            <input type="number" id="rotation-x" min="-360" max="360" step="1" value="0" /></label>
-        </div>
-        <div class="option">
-          <label>y-axis
-            <input type="number" id="rotation-y" min="-360" max="360" step="1" value="0" /></label>
-        </div>
-        <div class="option">
-          <label>z-axis
-            <input type="number" id="rotation-z" min="-360" max="360" step="1" value="0" /></label>
-        </div>
-        <h3>Scaling</h3>
-        <div class="option">
-          <label>x <input type="number" id="scale-x" step="0.05" /></label>
-        </div>
-        <div class="option">
-          <label>y <input type="number" id="scale-y" step="0.05" /></label>
-        </div>
-        <div class="option">
-          <label>z <input type="number" id="scale-z" step="0.05" /></label>
         </div>
       </div>
     </div>
