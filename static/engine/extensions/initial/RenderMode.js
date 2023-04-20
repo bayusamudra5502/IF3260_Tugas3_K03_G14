@@ -20,7 +20,7 @@ var RenderModeExtension = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     RenderModeExtension.prototype.run = function (webgl, buffer) {
-        webgl.enable(webgl.CULL_FACE);
+        // webgl.enable(webgl.CULL_FACE);
         webgl.enable(webgl.DEPTH_TEST);
         webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
     };

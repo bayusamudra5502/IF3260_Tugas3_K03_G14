@@ -25,8 +25,11 @@ export function reset(rerender) {
     resetElementValue("scale-x", "input", "1");
     resetElementValue("scale-y", "input", "1");
     resetElementValue("scale-z", "input", "1");
-    // TODO:
     // Reset animation and texture
+    resetCheckedValue("check-run-animation", "input", false);
+    resetCheckedValue("check-inverted-animation", "input", false);
+    resetElementValue("frame-fps", "input", "20");
+    resetElementValue("texture-mode", "input", "0");
     setTimeout(function () {
         rerender();
     }, 0);
