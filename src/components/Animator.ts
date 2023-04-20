@@ -10,8 +10,10 @@ import { Scaling } from "../transform/Scaling";
 import { Translation } from "../transform/Translation";
 import { Listenable } from "../util/Listenable";
 
+const ANIMATOR_TRANSFORM = 10;
+
 export class Animator extends StateComponent {
-  private transform: Transform;
+  private object: Object3D;
   private matrixCache: Matrix[] = [];
 
   private maxFrame: number;
@@ -21,6 +23,8 @@ export class Animator extends StateComponent {
   private currentFrameStatus: Map<string, Frame> = new Map();
   private nextFrameIdx: number = 0;
   private lastFramePointNumber: number = 0;
+
+  private isInverted = false;
 
   constructor(
     private framePoints: Frame[],
@@ -44,10 +48,15 @@ export class Animator extends StateComponent {
     }
 
     this.maxFrame = framePoints[framePoints.length - 1].frame_number;
+    this.matrixCache = Array<Matrix>(this.maxFrame).fill(null);
+  }
+
+  setInverted(inverted: boolean) {
+    this.isInverted = inverted;
   }
 
   fit(object: Object3D) {
-    this.transform = object.transform;
+    this.object = object;
   }
 
   setActive(active: boolean) {
@@ -58,6 +67,7 @@ export class Animator extends StateComponent {
     if (!this.isActive || this.framePoints.length == 0) return;
 
     const nextFrame = this.framePoints[this.nextFrameIdx];
+    console.log(`FRAME #${this.currentFrame}`);
 
     let matrix: Matrix;
     if (this.matrixCache[this.currentFrame]) {
@@ -70,25 +80,49 @@ export class Animator extends StateComponent {
       matrix = this.doTransform(nextFrame, progress);
 
       if (this.cacheFrame) {
-        this.matrixCache.push(matrix);
+        this.matrixCache[this.currentFrame] = matrix;
       }
     }
 
-    this.transform.updateMatrix(matrix);
+    this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+    this.updateFrame();
 
-    if (nextFrame.frame_number == this.currentFrame) {
-      this.currentFrameStatus.set(nextFrame.transform.type, nextFrame);
-      this.lastFramePointNumber = this.currentFrame;
-      this.nextFrameIdx = (this.nextFrameIdx + 1) % this.framePoints.length;
+    return null;
+  }
+
+  private updateFrame() {
+    if (this.isInverted) {
+      let lastFrameIdx = this.nextFrameIdx - 1;
+      lastFrameIdx =
+        lastFrameIdx < 0
+          ? lastFrameIdx + this.framePoints.length
+          : lastFrameIdx;
+
+      const lastFrame = this.framePoints[lastFrameIdx];
+
+      if (lastFrame.frame_number == this.currentFrame) {
+        this.currentFrameStatus.set(lastFrame.transform.type, lastFrame);
+        this.lastFramePointNumber = lastFrameIdx;
+        this.nextFrameIdx = this.currentFrame;
+      }
+
+      this.currentFrame =
+        (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
+    } else {
+      const nextFrame = this.framePoints[this.nextFrameIdx];
+
+      if (nextFrame.frame_number == this.currentFrame) {
+        this.currentFrameStatus.set(nextFrame.transform.type, nextFrame);
+        this.lastFramePointNumber = this.currentFrame;
+        this.nextFrameIdx = (this.nextFrameIdx + 1) % this.framePoints.length;
+      }
+
+      this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
     }
-
-    this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
 
     if (this.currentFrame == 0) {
       this.currentFrameStatus.clear();
     }
-
-    return null;
   }
 
   private doTransform(nextFrame: Frame, progress: number) {
@@ -180,8 +214,8 @@ export interface AnimatorConfig {
 }
 
 export class AnimationRunner extends Listenable {
-  private root: Object3D;
   private intervalId: number;
+  private objectList: Object3D[] = [];
 
   constructor(private fps: number) {
     super();
@@ -201,18 +235,43 @@ export class AnimationRunner extends Listenable {
     }
   }
 
-  run(object: Object3D) {
-    this.root = object;
+  updateFps(fps: number) {
+    let objList = null;
 
-    this.setActivate(object, true);
+    if (this.objectList) {
+      objList = this.objectList;
+      this.stop();
+    }
+
+    this.fps = fps;
+
+    if (objList) {
+      this.run(objList);
+    }
+  }
+
+  run(...objects: Object3D[]) {
+    if (this.objectList) {
+      this.stop();
+    }
+
+    this.objectList = objects;
+
+    for (const object of objects) {
+      this.setActivate(object, true);
+    }
+
     this.rerenderFrame();
   }
 
   stop() {
     clearInterval(this.intervalId);
-    this.setActivate(this.root, false);
 
-    this.root = null;
+    for (const object of this.objectList) {
+      this.setActivate(object, false);
+    }
+
+    this.objectList = null;
   }
 
   private rerenderFrame() {

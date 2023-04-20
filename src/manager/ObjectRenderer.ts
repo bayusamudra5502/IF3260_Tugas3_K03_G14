@@ -22,7 +22,7 @@ export class ObjectRenderer {
       const currentObject = objectQueue.shift();
       const matrix = matrixQueue.shift();
       const objectInfo = this.buildObjectInfo(currentObject);
-      const newMatrix = Matrix.multiply(matrix, currentObject.transform.matrix);
+      const newMatrix = Matrix.multiply(matrix, currentObject.matrix);
 
       for (const info of objectInfo) {
         info.matrix.transform = newMatrix;
