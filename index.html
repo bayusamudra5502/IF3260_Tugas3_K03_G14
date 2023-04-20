@@ -135,6 +135,24 @@
         <div class="option">
           <label><input type="checkbox" id="check-run-animation" />Run Animation</label>
         </div>
+
+        <h3>Frame Option</h3>
+        <div class="option">
+          <label><input type="checkbox" id="check-inverted-animation" />Inverted</label>
+        </div>
+        <div class="option">
+          <button id="animation-prev">Prev Frame</button>
+          <button id="animation-next">Next Frame</button>
+        </div>
+
+        <div class="option">
+          <h3>FPS</h3>
+          <label>
+            FPS
+            <input type="range" min="1" max="40" value="20" step="1" id="frame-fps" />
+            <span id="frame-fps-value">20</span>
+          </label>
+        </div>
       </div>
       <div class="controller-container">
         <h2>Camera Configuration</h2>

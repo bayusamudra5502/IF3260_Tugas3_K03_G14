@@ -20,9 +20,10 @@ import { LightComponent } from "./components/Light";
 import { ObjectManager } from "./manager/ObjectManager";
 import { ObjectRenderer } from "./manager/ObjectRenderer";
 import { TextureComponent } from "./components/Texture";
-import { AnimationRunner } from "./components/Animator";
+import { AnimationRunner, Animator } from "./components/Animator";
 import { TextureManager } from "./manager/TextureManager";
 import { TreeUi } from "./ui/TreeUi";
+import { AnimationUi } from "./ui/AnimationUi";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -53,12 +54,17 @@ function main() {
   const cameraUi = new CameraUi();
   const textureUi = new TextureUi();
   const treeUi = new TreeUi();
+  const animationUi = new AnimationUi();
 
   /* Setup manager */
   const projManager = new ProjectionManager();
   const cameraManager = new CameraManager();
   const envManager = new EnvironmentManager();
   const textureManager = new TextureManager();
+
+  /* Animation */
+  const animationRunner = new AnimationRunner(20);
+
   envManager.update({
     cameraManager: cameraManager,
     projection: projManager,
@@ -134,7 +140,6 @@ function main() {
   });
 
   treeUi.subscribeType("select-root", () => {
-    console.log("MBEEK");
     treeUi.updateComponent(objManager.get(treeUi.selectedRootIdx));
   });
 
@@ -144,21 +149,70 @@ function main() {
   envManager.subscribe(rerender);
   lightUi.subscribe(rerender);
 
-  /* Animation */
-  const animationRunner = new AnimationRunner(20);
   animationRunner.subscribe(rerender);
 
-  const check = document.querySelector(
-    "#check-run-animation"
-  ) as HTMLInputElement;
-  check.onchange = () => {
-    if (check.checked) {
-      const [obj, _] = objManager.get(0);
-      animationRunner.run(obj);
+  const startAnimation = () => {
+    const list = objManager.getList();
+    const objList = list.map(([el, _]) => el);
+    animationRunner.run(...objList);
+  };
+
+  const stopAnimation = () => {
+    animationRunner.stop();
+  };
+
+  animationUi.subscribeType("run-animation", () => {
+    if (animationUi.started) {
+      startAnimation();
     } else {
+      stopAnimation();
+    }
+  });
+
+  animationUi.subscribeType("fps-rate", () => {
+    animationRunner.updateFps(animationUi.fps);
+  });
+
+  animationUi.subscribeType("inverted", () => {
+    const isRun = animationRunner.isRun;
+    let objects;
+
+    if (isRun) {
+      objects = animationRunner.animatedObjects;
       animationRunner.stop();
     }
-  };
+
+    const data = objManager.getList();
+
+    for (const [_, map] of data) {
+      for (const key of map.keys()) {
+        const anim = map.get(key).findComponent(Animator);
+        anim.setInverted(animationUi.inverted);
+      }
+    }
+
+    if (isRun) {
+      animationRunner.run(...objects);
+    }
+  });
+
+  animationUi.subscribeType("next-frame", () => {
+    const list = objManager.getList();
+    const objList = list.reduce(
+      (prev, [_, data]) => [...prev, ...data.values()],
+      []
+    );
+    animationRunner.nextFrame(...objList);
+  });
+
+  animationUi.subscribeType("prev-frame", () => {
+    const list = objManager.getList();
+    const objList = list.reduce(
+      (prev, [_, data]) => [...prev, ...data.values()],
+      []
+    );
+    animationRunner.previousFrame(...objList);
+  });
 
   /* Event listeners */
   const resetButton = document.querySelector("#reset-button");
@@ -176,7 +230,6 @@ function main() {
     importer.import();
     resetButton.removeAttribute("disabled");
     rerenderButton.removeAttribute("disabled");
-    // requestAnimationFrame(loop);
   });
 }
 
