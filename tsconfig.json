@@ -5,6 +5,7 @@
     "sourceMap": true,
     "outDir": "static",
     "rootDir": "src",
-    "lib": ["es2015", "DOM"]
+    "lib": ["es2015", "DOM"],
+    "downlevelIteration": true
   }
 }
