@@ -147,14 +147,14 @@ function main() {
   });
 
   treeUi.subscribeType("select-object", () => {
-    transformUi.translation = new Translation();
-    transformUi.rotation = new Rotation();
-    transformUi.scale = new Scaling();
-    resetTransformation();
+    transformUi.reset();
   });
 
   transformUi.subscribe(() => {
     const idx = treeUi.selectedRootIdx;
+
+    if (idx == -1) return;
+
     const [_, map] = objManager.get(idx);
 
     const obj = map.get(treeUi.selectedObjectIdx);
