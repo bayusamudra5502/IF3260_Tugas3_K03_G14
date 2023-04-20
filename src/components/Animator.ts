@@ -20,10 +20,6 @@ export class Animator extends StateComponent {
   private currentFrame: number = 0;
   private isActive = false;
 
-  private currentFrameStatus: Map<string, Frame> = new Map();
-  private nextFrameIdx: number = 0;
-  private lastFramePointNumber: number = 0;
-
   private isInverted = false;
 
   constructor(
@@ -49,6 +45,8 @@ export class Animator extends StateComponent {
 
     this.maxFrame = framePoints[framePoints.length - 1].frame_number;
     this.matrixCache = Array<Matrix>(this.maxFrame).fill(null);
+
+    this.frameRenderer();
   }
 
   setInverted(inverted: boolean) {
@@ -63,70 +61,74 @@ export class Animator extends StateComponent {
     this.isActive = active;
   }
 
+  increaseFrame() {
+    this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
+
+    const matrix = this.matrixCache[this.currentFrame];
+    this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+  }
+
+  decreaseFrame() {
+    this.currentFrame = (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
+
+    const matrix = this.matrixCache[this.currentFrame];
+    this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+  }
+
   run(): null {
     if (!this.isActive || this.framePoints.length == 0) return;
 
-    const nextFrame = this.framePoints[this.nextFrameIdx];
-    console.log(`FRAME #${this.currentFrame}`);
-
-    let matrix: Matrix;
-    if (this.matrixCache[this.currentFrame]) {
-      matrix = this.matrixCache[this.currentFrame];
-    } else {
-      const progress =
-        (this.currentFrame - this.lastFramePointNumber) /
-        (nextFrame.frame_number - this.lastFramePointNumber);
-
-      matrix = this.doTransform(nextFrame, progress);
-
-      if (this.cacheFrame) {
-        this.matrixCache[this.currentFrame] = matrix;
-      }
-    }
-
+    const matrix = this.matrixCache[this.currentFrame];
     this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+
     this.updateFrame();
 
     return null;
   }
 
-  private updateFrame() {
-    if (this.isInverted) {
-      let lastFrameIdx = this.nextFrameIdx - 1;
-      lastFrameIdx =
-        lastFrameIdx < 0
-          ? lastFrameIdx + this.framePoints.length
-          : lastFrameIdx;
+  private frameRenderer() {
+    const currentFrameStatus: Map<string, Frame> = new Map();
 
-      const lastFrame = this.framePoints[lastFrameIdx];
+    let nextFrameIdx: number = 0;
+    let lastFramePointNumber: number = 0;
 
-      if (lastFrame.frame_number == this.currentFrame) {
-        this.currentFrameStatus.set(lastFrame.transform.type, lastFrame);
-        this.lastFramePointNumber = lastFrameIdx;
-        this.nextFrameIdx = this.currentFrame;
-      }
+    for (let i = 0; i < this.maxFrame; i++) {
+      const nextFrame = this.framePoints[nextFrameIdx];
 
-      this.currentFrame =
-        (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
-    } else {
-      const nextFrame = this.framePoints[this.nextFrameIdx];
+      let matrix: Matrix;
+
+      const progress =
+        (this.currentFrame - lastFramePointNumber) /
+        (nextFrame.frame_number - lastFramePointNumber);
+
+      matrix = this.doTransform(nextFrame, progress, currentFrameStatus);
+      this.matrixCache[this.currentFrame] = matrix;
 
       if (nextFrame.frame_number == this.currentFrame) {
-        this.currentFrameStatus.set(nextFrame.transform.type, nextFrame);
-        this.lastFramePointNumber = this.currentFrame;
-        this.nextFrameIdx = (this.nextFrameIdx + 1) % this.framePoints.length;
+        currentFrameStatus.set(nextFrame.transform.type, nextFrame);
+        lastFramePointNumber = this.currentFrame;
+        nextFrameIdx = (nextFrameIdx + 1) % this.framePoints.length;
       }
 
       this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
     }
+  }
 
-    if (this.currentFrame == 0) {
-      this.currentFrameStatus.clear();
+  private updateFrame() {
+    if (this.isInverted) {
+      this.currentFrame =
+        (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
+    } else {
+      this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
     }
   }
 
-  private doTransform(nextFrame: Frame, progress: number) {
-    const status = this.currentFrameStatus.get(nextFrame.transform.type);
+  private doTransform(
+    nextFrame: Frame,
+    progress: number,
+    frameStatus: Map<string, Frame>
+  ) {
+    const status = frameStatus.get(nextFrame.transform.type);
 
     let matrix: Matrix;
     switch (nextFrame.transform.type) {
@@ -215,10 +217,18 @@ export interface AnimatorConfig {
 
 export class AnimationRunner extends Listenable {
   private intervalId: number;
-  private objectList: Object3D[] = [];
+  private objectList: Object3D[] = null;
 
   constructor(private fps: number) {
     super();
+  }
+
+  get isRun() {
+    return !!this.objectList;
+  }
+
+  get animatedObjects() {
+    return this.objectList;
   }
 
   private setActivate(root: Object3D, activate: boolean) {
@@ -235,6 +245,24 @@ export class AnimationRunner extends Listenable {
     }
   }
 
+  nextFrame(...objects: Object3D[]) {
+    for (const obj of objects) {
+      const animator = obj.findComponent(Animator);
+      animator.increaseFrame();
+    }
+
+    this.notify();
+  }
+
+  previousFrame(...objects: Object3D[]) {
+    for (const obj of objects) {
+      const animator = obj.findComponent(Animator);
+      animator.decreaseFrame();
+    }
+
+    this.notify();
+  }
+
   updateFps(fps: number) {
     let objList = null;
 
@@ -246,7 +274,7 @@ export class AnimationRunner extends Listenable {
     this.fps = fps;
 
     if (objList) {
-      this.run(objList);
+      this.run(...objList);
     }
   }
 

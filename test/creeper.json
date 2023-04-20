@@ -283,9 +283,9 @@
       ]
     },
     "4": {
-      "joint_point": [0.05, -0.3, 0.1],
+      "joint_point": [-0.05, -0.3, 0.1],
       "child": [],
-      "inverted": [false, false, false, false, false, false],
+      "inverted": [true, true, true, true, true, true],
       "max_degree": 45,
       "min_degree": -45,
       "start_degree": 0,
@@ -331,7 +331,7 @@
     "5": {
       "joint_point": [0.05, -0.3, 0.1],
       "child": [],
-      "inverted": [false, false, false, false, false, false],
+      "inverted": [true, true, true, true, true, true],
       "max_degree": 45,
       "min_degree": -45,
       "start_degree": 0,
