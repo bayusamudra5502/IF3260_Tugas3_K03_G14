@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Web Based</title>
-  <link rel="stylesheet" href="./index.css" />
-  <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Web Based</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
         in vec4 position;
         in vec4 normal;
         in vec4 tangent;
@@ -38,7 +37,7 @@
             gl_Position = Pmatrix * Vmatrix * Mmatrix * fixedPos;
         }
     </script>
-  <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+    <script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
         precision highp float;
         in vec4 vColor;
         in vec3 vNormal;
@@ -173,19 +172,19 @@
         <h3>Translation</h3>
         <div class="option">
           <label>x
-            <input type="range" id="translation-x" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="translation-x" step="0.05" min="-1.5" max="1.5" value="0" />
             <span id="translation-x-value">0</span>
           </label>
         </div>
         <div class="option">
           <label>y
-            <input type="range" id="translation-y" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="translation-y" step="0.05" min="-1.5" max="1.5" value="0" />
             <span id="translation-y-value">0</span>
           </label>
         </div>
         <div class="option">
           <label>z
-            <input type="range" id="translation-z" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="translation-z" step="0.05" min="-1.5" max="1.5" value="0" />
             <span id="translation-z-value">0</span>
           </label>
         </div>
@@ -211,19 +210,19 @@
         <h3>Scaling</h3>
         <div class="option">
           <label>x
-            <input type="range" id="scale-x" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="scale-x" step="0.05" min="0" max="3" value="1" />
             <span id="scale-x-value">0</span>
           </label>
         </div>
         <div class="option">
           <label>y
-            <input type="range" id="scale-y" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="scale-y" step="0.05" min="0" max="3" value="1" />
             <span id="scale-y-value">0</span>
           </label>
         </div>
         <div class="option">
           <label>z
-            <input type="range" id="scale-z" step="0.05" min="-10" max="10" value="0" />
+            <input type="range" id="scale-z" step="0.05" min="0" max="3" value="1" />
             <span id="scale-z-value">0</span>
           </label>
         </div>

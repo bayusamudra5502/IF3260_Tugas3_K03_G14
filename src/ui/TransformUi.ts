@@ -39,16 +39,34 @@ export class TransformUi extends Listenable {
     return this.currentScale;
   }
 
+  set translation(trans) {
+    this.currentTranslation = trans;
+    this.setValue();
+  }
+
+  set rotation(rot) {
+    this.currentRotation = rot;
+    this.setValue();
+  }
+
+  set scale(size) {
+    this.currentScale = size;
+    this.setValue();
+  }
+
+  reset() {
+    this.currentTranslation = new Translation();
+    this.currentScale = new Scaling();
+    this.currentRotation = new Rotation();
+    this.setValue();
+  }
+
   private update() {
     this.setValue();
     this.notify();
   }
 
   private setValue() {
-    const transformIndex = document.getElementById(
-      this.options.idTransformIndex
-    ) as HTMLSelectElement;
-
     const translationX = document.getElementById(
       this.options.idTranslationX
     ) as HTMLInputElement;
@@ -79,7 +97,35 @@ export class TransformUi extends Listenable {
       this.options.idScaleZ
     ) as HTMLInputElement;
 
-    transformIndex.value = `${this.currentTransformIndex}`;
+    const translationXValue = document.getElementById(
+      this.options.idTranslationXValue
+    ) as HTMLInputElement;
+    const translationYValue = document.getElementById(
+      this.options.idTranslationYValue
+    ) as HTMLInputElement;
+    const translationZValue = document.getElementById(
+      this.options.idTranslationZValue
+    ) as HTMLInputElement;
+
+    const anglexVal = document.getElementById(
+      this.options.idRotationValueXValue
+    ) as HTMLInputElement;
+    const angleyVal = document.getElementById(
+      this.options.idRotationValueYValue
+    ) as HTMLInputElement;
+    const anglezVal = document.getElementById(
+      this.options.idRotationValueZValue
+    ) as HTMLInputElement;
+
+    const scaleXVal = document.getElementById(
+      this.options.idScaleXValue
+    ) as HTMLInputElement;
+    const scaleYVal = document.getElementById(
+      this.options.idScaleYValue
+    ) as HTMLInputElement;
+    const scaleZVal = document.getElementById(
+      this.options.idScaleZValue
+    ) as HTMLInputElement;
 
     translationX.value = `${this.currentTranslation.X}`;
     translationY.value = `${this.currentTranslation.Y}`;
@@ -92,13 +138,21 @@ export class TransformUi extends Listenable {
     scaleX.value = `${this.currentScale.Sx}`;
     scaleY.value = `${this.currentScale.Sy}`;
     scaleZ.value = `${this.currentScale.Sz}`;
+
+    translationXValue.innerText = `${this.currentTranslation.X}`;
+    translationYValue.innerText = `${this.currentTranslation.Y}`;
+    translationZValue.innerText = `${this.currentTranslation.Z}`;
+
+    anglexVal.innerText = `${this.currentRotation.rotationAngleX}`;
+    angleyVal.innerText = `${this.currentRotation.rotationAngleY}`;
+    anglezVal.innerText = `${this.currentRotation.rotationAngleZ}`;
+
+    scaleXVal.innerText = `${this.currentScale.Sx}`;
+    scaleYVal.innerText = `${this.currentScale.Sy}`;
+    scaleZVal.innerText = `${this.currentScale.Sz}`;
   }
 
   private bind() {
-    const transformIndex = document.getElementById(
-      this.options.idTransformIndex
-    ) as HTMLSelectElement;
-
     const translationX = document.getElementById(
       this.options.idTranslationX
     ) as HTMLInputElement;
@@ -128,12 +182,6 @@ export class TransformUi extends Listenable {
     const scaleZ = document.getElementById(
       this.options.idScaleZ
     ) as HTMLInputElement;
-
-    transformIndex.oninput = () => {
-      const value = parseInt(transformIndex.value);
-      !Number.isNaN(value) && (this.currentTransformIndex = value);
-      this.update();
-    };
 
     translationX.oninput = () => {
       const value = parseFloat(translationX.value);
@@ -249,8 +297,6 @@ export class TransformUi extends Listenable {
 }
 
 export interface TransformUiOptions {
-  idTransformIndex: string;
-
   idTranslationX: string;
   idTranslationY: string;
   idTranslationZ: string;
@@ -262,11 +308,21 @@ export interface TransformUiOptions {
   idScaleX: string;
   idScaleY: string;
   idScaleZ: string;
+
+  idTranslationXValue: string;
+  idTranslationYValue: string;
+  idTranslationZValue: string;
+
+  idRotationValueXValue: string;
+  idRotationValueYValue: string;
+  idRotationValueZValue: string;
+
+  idScaleXValue: string;
+  idScaleYValue: string;
+  idScaleZValue: string;
 }
 
 export const TRANSFORM_UI_DEFAULT_OPTIONS: TransformUiOptions = {
-  idTransformIndex: "transform-index",
-
   idTranslationX: "translation-x",
   idTranslationY: "translation-y",
   idTranslationZ: "translation-z",
@@ -278,6 +334,18 @@ export const TRANSFORM_UI_DEFAULT_OPTIONS: TransformUiOptions = {
   idScaleX: "scale-x",
   idScaleY: "scale-y",
   idScaleZ: "scale-z",
+
+  idTranslationXValue: "translation-x-value",
+  idTranslationYValue: "translation-y-value",
+  idTranslationZValue: "translation-z-value",
+
+  idRotationValueXValue: "rotation-x-value",
+  idRotationValueYValue: "rotation-y-value",
+  idRotationValueZValue: "rotation-z-value",
+
+  idScaleXValue: "scale-x-value",
+  idScaleYValue: "scale-y-value",
+  idScaleZValue: "scale-z-value",
 };
 
 function changeInnerText(id: string, amount: string) {

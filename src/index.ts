@@ -1,29 +1,34 @@
+import { AnimationRunner, Animator } from "./components/Animator";
+import { LightComponent } from "./components/Light";
+import { TextureComponent } from "./components/Texture";
 import { Buffer } from "./engine/Buffer";
 import { Canvas } from "./engine/Canvas";
+import { ExtensionBuilder } from "./engine/ExtensionBuilder";
 import RenderEngine from "./engine/RenderEngine";
 import { ShaderProgram } from "./engine/Shader";
+import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
 import { CameraManager } from "./manager/CameraManager";
 import { EnvironmentManager } from "./manager/EnvironmentManager";
+import { ObjectManager } from "./manager/ObjectManager";
+import { ObjectRenderer } from "./manager/ObjectRenderer";
 import { ProjectionManager } from "./manager/ProjectionManager";
+import { TextureManager } from "./manager/TextureManager";
+import { TransformManager } from "./manager/TransformManager";
 import { Color } from "./object/Color";
+import { TRANSFORM_IDX } from "./object/Object3D";
+import { Object3DBuilder } from "./object/Object3DBuilder";
+import { Rotation } from "./transform/Rotation";
+import { Scaling } from "./transform/Scaling";
+import { Translation } from "./transform/Translation";
+import { AnimationUi } from "./ui/AnimationUi";
 import { CameraUi } from "./ui/CameraUi";
 import { LightUi } from "./ui/LightUi";
 import { ProjectionUi } from "./ui/ProjectionUi";
-import { TransformUi } from "./ui/TransformUi";
 import { TextureUi } from "./ui/TextureUI";
-import { Importer } from "./util/Importer";
-import { reset } from "./util/reset";
-import { ExtensionBuilder } from "./engine/ExtensionBuilder";
-import { RenderModeExtension } from "./engine/extensions/initial/RenderMode";
-import { Object3DBuilder } from "./object/Object3DBuilder";
-import { LightComponent } from "./components/Light";
-import { ObjectManager } from "./manager/ObjectManager";
-import { ObjectRenderer } from "./manager/ObjectRenderer";
-import { TextureComponent } from "./components/Texture";
-import { AnimationRunner, Animator } from "./components/Animator";
-import { TextureManager } from "./manager/TextureManager";
+import { TransformUi } from "./ui/TransformUi";
 import { TreeUi } from "./ui/TreeUi";
-import { AnimationUi } from "./ui/AnimationUi";
+import { Importer } from "./util/Importer";
+import { reset, resetTransformation } from "./util/reset";
 
 function main() {
   const canvas = new Canvas("drawing-canvas");
@@ -114,6 +119,7 @@ function main() {
     projManager.add(projectionUi.currentProjector);
     rerender();
   });
+
   lightUi.subscribe(() => {
     envManager.update({
       sourceLight: lightUi.lightPosition,
@@ -136,12 +142,62 @@ function main() {
     rerender();
   });
 
-  objManager.subscribe(() => {
-    treeUi.updateRootLists(objManager.getList());
-  });
-
   treeUi.subscribeType("select-root", () => {
     treeUi.updateComponent(objManager.get(treeUi.selectedRootIdx));
+  });
+
+  treeUi.subscribeType("select-object", () => {
+    transformUi.reset();
+  });
+
+  transformUi.subscribe(() => {
+    const idx = treeUi.selectedRootIdx;
+
+    if (idx == -1) return;
+
+    const [_, map] = objManager.get(idx);
+
+    const obj = map.get(treeUi.selectedObjectIdx);
+    const transformManager = new TransformManager();
+
+    const translation = new Translation();
+    const rotation = new Rotation();
+    const scaling = new Scaling();
+
+    // Rotation
+    rotation.configure({
+      angleX: transformUi.rotation.rotationAngleX,
+      angleY: transformUi.rotation.rotationAngleY,
+      angleZ: transformUi.rotation.rotationAngleZ,
+      center: obj.joinPoint,
+    });
+    transformManager.add(rotation);
+
+    // Scaling
+    scaling.configure({
+      sx: transformUi.scale.Sx,
+      sy: transformUi.scale.Sy,
+      sz: transformUi.scale.Sz,
+      center: obj.joinPoint,
+    });
+    transformManager.add(scaling);
+
+    // Translation
+    translation.configure({
+      x: transformUi.translation.X,
+      y: transformUi.translation.Y,
+      z: transformUi.translation.Z,
+    });
+    transformManager.add(translation);
+
+    const wMatrix = transformManager.matrix;
+
+    obj.setTransform(TRANSFORM_IDX, wMatrix);
+    rerender();
+  });
+
+  objManager.subscribe(() => {
+    treeUi.updateRootLists(objManager.getList());
   });
 
   objManager.subscribe(rerender);

@@ -1,11 +1,10 @@
 import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix";
 import { Transform } from "../matrix/Transform";
-import { Color } from "./Color";
 import { Component } from "./Component";
 import { Face } from "./Face";
 import { Vertex } from "./Vertices";
 
-const TRANSFORM_IDX = 0;
+export const TRANSFORM_IDX = 0;
 
 export class Object3D {
   private childList: Object3D[] = [];
