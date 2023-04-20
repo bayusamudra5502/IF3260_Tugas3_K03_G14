@@ -24,6 +24,31 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import { StateComponent } from "../object/Component.js";
 import { Rotation } from "../transform/Rotation.js";
 import { Scaling } from "../transform/Scaling.js";
@@ -41,9 +66,6 @@ var Animator = /** @class */ (function (_super) {
         _this.matrixCache = [];
         _this.currentFrame = 0;
         _this.isActive = false;
-        _this.currentFrameStatus = new Map();
-        _this.nextFrameIdx = 0;
-        _this.lastFramePointNumber = 0;
         _this.isInverted = false;
         /* Frame validation */
         if (framePoints.length == 0) {
@@ -58,6 +80,7 @@ var Animator = /** @class */ (function (_super) {
         }
         _this.maxFrame = framePoints[framePoints.length - 1].frame_number;
         _this.matrixCache = Array(_this.maxFrame).fill(null);
+        _this.frameRenderer();
         return _this;
     }
     Animator.prototype.setInverted = function (inverted) {
@@ -69,59 +92,55 @@ var Animator = /** @class */ (function (_super) {
     Animator.prototype.setActive = function (active) {
         this.isActive = active;
     };
+    Animator.prototype.increaseFrame = function () {
+        this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
+        var matrix = this.matrixCache[this.currentFrame];
+        this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+    };
+    Animator.prototype.decreaseFrame = function () {
+        this.currentFrame = (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
+        var matrix = this.matrixCache[this.currentFrame];
+        this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
+    };
     Animator.prototype.run = function () {
         if (!this.isActive || this.framePoints.length == 0)
             return;
-        var nextFrame = this.framePoints[this.nextFrameIdx];
-        console.log("FRAME #".concat(this.currentFrame));
-        var matrix;
-        if (this.matrixCache[this.currentFrame]) {
-            matrix = this.matrixCache[this.currentFrame];
-        }
-        else {
-            var progress = (this.currentFrame - this.lastFramePointNumber) /
-                (nextFrame.frame_number - this.lastFramePointNumber);
-            matrix = this.doTransform(nextFrame, progress);
-            if (this.cacheFrame) {
-                this.matrixCache[this.currentFrame] = matrix;
-            }
-        }
+        var matrix = this.matrixCache[this.currentFrame];
         this.object.setTransform(ANIMATOR_TRANSFORM, matrix);
         this.updateFrame();
         return null;
     };
+    Animator.prototype.frameRenderer = function () {
+        var currentFrameStatus = new Map();
+        var nextFrameIdx = 0;
+        var lastFramePointNumber = 0;
+        for (var i = 0; i < this.maxFrame; i++) {
+            var nextFrame = this.framePoints[nextFrameIdx];
+            var matrix = void 0;
+            var progress = (this.currentFrame - lastFramePointNumber) /
+                (nextFrame.frame_number - lastFramePointNumber);
+            matrix = this.doTransform(nextFrame, progress, currentFrameStatus);
+            this.matrixCache[this.currentFrame] = matrix;
+            if (nextFrame.frame_number == this.currentFrame) {
+                currentFrameStatus.set(nextFrame.transform.type, nextFrame);
+                lastFramePointNumber = this.currentFrame;
+                nextFrameIdx = (nextFrameIdx + 1) % this.framePoints.length;
+            }
+            this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
+        }
+    };
     Animator.prototype.updateFrame = function () {
         if (this.isInverted) {
-            var lastFrameIdx = this.nextFrameIdx - 1;
-            lastFrameIdx =
-                lastFrameIdx < 0
-                    ? lastFrameIdx + this.framePoints.length
-                    : lastFrameIdx;
-            var lastFrame = this.framePoints[lastFrameIdx];
-            if (lastFrame.frame_number == this.currentFrame) {
-                this.currentFrameStatus.set(lastFrame.transform.type, lastFrame);
-                this.lastFramePointNumber = lastFrameIdx;
-                this.nextFrameIdx = this.currentFrame;
-            }
             this.currentFrame =
                 (this.currentFrame - 1 + this.maxFrame) % this.maxFrame;
         }
         else {
-            var nextFrame = this.framePoints[this.nextFrameIdx];
-            if (nextFrame.frame_number == this.currentFrame) {
-                this.currentFrameStatus.set(nextFrame.transform.type, nextFrame);
-                this.lastFramePointNumber = this.currentFrame;
-                this.nextFrameIdx = (this.nextFrameIdx + 1) % this.framePoints.length;
-            }
             this.currentFrame = (this.currentFrame + 1) % this.maxFrame;
         }
-        if (this.currentFrame == 0) {
-            this.currentFrameStatus.clear();
-        }
     };
-    Animator.prototype.doTransform = function (nextFrame, progress) {
+    Animator.prototype.doTransform = function (nextFrame, progress, frameStatus) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
-        var status = this.currentFrameStatus.get(nextFrame.transform.type);
+        var status = frameStatus.get(nextFrame.transform.type);
         var matrix;
         switch (nextFrame.transform.type) {
             case "rotation": {
@@ -204,9 +223,23 @@ var AnimationRunner = /** @class */ (function (_super) {
     function AnimationRunner(fps) {
         var _this = _super.call(this) || this;
         _this.fps = fps;
-        _this.objectList = [];
+        _this.objectList = null;
         return _this;
     }
+    Object.defineProperty(AnimationRunner.prototype, "isRun", {
+        get: function () {
+            return !!this.objectList;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(AnimationRunner.prototype, "animatedObjects", {
+        get: function () {
+            return this.objectList;
+        },
+        enumerable: false,
+        configurable: true
+    });
     AnimationRunner.prototype.setActivate = function (root, activate) {
         var e_2, _a;
         var queue = [root];
@@ -229,31 +262,17 @@ var AnimationRunner = /** @class */ (function (_super) {
             }
         }
     };
-    AnimationRunner.prototype.updateFps = function (fps) {
-        var objList = null;
-        if (this.objectList) {
-            objList = this.objectList;
-            this.stop();
-        }
-        this.fps = fps;
-        if (objList) {
-            this.run(objList);
-        }
-    };
-    AnimationRunner.prototype.run = function () {
+    AnimationRunner.prototype.nextFrame = function () {
         var e_3, _a;
         var objects = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             objects[_i] = arguments[_i];
         }
-        if (this.objectList) {
-            this.stop();
-        }
-        this.objectList = objects;
         try {
             for (var objects_1 = __values(objects), objects_1_1 = objects_1.next(); !objects_1_1.done; objects_1_1 = objects_1.next()) {
-                var object = objects_1_1.value;
-                this.setActivate(object, true);
+                var obj = objects_1_1.value;
+                var animator = obj.findComponent(Animator);
+                animator.increaseFrame();
             }
         }
         catch (e_3_1) { e_3 = { error: e_3_1 }; }
@@ -263,10 +282,68 @@ var AnimationRunner = /** @class */ (function (_super) {
             }
             finally { if (e_3) throw e_3.error; }
         }
+        this.notify();
+    };
+    AnimationRunner.prototype.previousFrame = function () {
+        var e_4, _a;
+        var objects = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            objects[_i] = arguments[_i];
+        }
+        try {
+            for (var objects_2 = __values(objects), objects_2_1 = objects_2.next(); !objects_2_1.done; objects_2_1 = objects_2.next()) {
+                var obj = objects_2_1.value;
+                var animator = obj.findComponent(Animator);
+                animator.decreaseFrame();
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (objects_2_1 && !objects_2_1.done && (_a = objects_2.return)) _a.call(objects_2);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        this.notify();
+    };
+    AnimationRunner.prototype.updateFps = function (fps) {
+        var objList = null;
+        if (this.objectList) {
+            objList = this.objectList;
+            this.stop();
+        }
+        this.fps = fps;
+        if (objList) {
+            this.run.apply(this, __spreadArray([], __read(objList), false));
+        }
+    };
+    AnimationRunner.prototype.run = function () {
+        var e_5, _a;
+        var objects = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            objects[_i] = arguments[_i];
+        }
+        if (this.objectList) {
+            this.stop();
+        }
+        this.objectList = objects;
+        try {
+            for (var objects_3 = __values(objects), objects_3_1 = objects_3.next(); !objects_3_1.done; objects_3_1 = objects_3.next()) {
+                var object = objects_3_1.value;
+                this.setActivate(object, true);
+            }
+        }
+        catch (e_5_1) { e_5 = { error: e_5_1 }; }
+        finally {
+            try {
+                if (objects_3_1 && !objects_3_1.done && (_a = objects_3.return)) _a.call(objects_3);
+            }
+            finally { if (e_5) throw e_5.error; }
+        }
         this.rerenderFrame();
     };
     AnimationRunner.prototype.stop = function () {
-        var e_4, _a;
+        var e_6, _a;
         clearInterval(this.intervalId);
         try {
             for (var _b = __values(this.objectList), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -274,12 +351,12 @@ var AnimationRunner = /** @class */ (function (_super) {
                 this.setActivate(object, false);
             }
         }
-        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        catch (e_6_1) { e_6 = { error: e_6_1 }; }
         finally {
             try {
                 if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
-            finally { if (e_4) throw e_4.error; }
+            finally { if (e_6) throw e_6.error; }
         }
         this.objectList = null;
     };
