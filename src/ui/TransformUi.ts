@@ -1,7 +1,5 @@
-import { Vertex } from "../object/Vertices";
 import { Rotation, RotationAxis } from "../transform/Rotation";
 import { Scaling } from "../transform/Scaling";
-import { Transformable } from "../transform/Transformable";
 import { Translation } from "../transform/Translation";
 import { Listenable } from "../util/Listenable";
 
@@ -10,7 +8,6 @@ export class TransformUi extends Listenable {
   private currentTranslation: Translation;
   private currentRotation: Rotation;
   private currentScale: Scaling;
-//   private currentRotationAxis: RotationAxis;
 
   constructor(
     private options: TransformUiOptions = TRANSFORM_UI_DEFAULT_OPTIONS
@@ -21,7 +18,6 @@ export class TransformUi extends Listenable {
     this.currentTranslation = new Translation();
     this.currentRotation = new Rotation();
     this.currentScale = new Scaling();
-    // this.currentRotationAxis = RotationAxis.X;
 
     this.bind();
     this.update();
@@ -63,21 +59,15 @@ export class TransformUi extends Listenable {
       this.options.idTranslationZ
     ) as HTMLInputElement;
 
-    // const rotationType = document.getElementById(
-    //   this.options.idRotationType
-    // ) as HTMLSelectElement;
-    // const rotationValue = document.getElementById(
-    //   this.options.idRotationValue
-    // ) as HTMLInputElement;
-        const anglex = document.getElementById(
-        this.options.idRotationValueX
-        ) as HTMLInputElement;
-        const angley = document.getElementById(
-        this.options.idRotationValueY
-        ) as HTMLInputElement;
-        const anglez = document.getElementById(
-        this.options.idRotationValueZ
-        ) as HTMLInputElement;
+    const anglex = document.getElementById(
+      this.options.idRotationValueX
+    ) as HTMLInputElement;
+    const angley = document.getElementById(
+      this.options.idRotationValueY
+    ) as HTMLInputElement;
+    const anglez = document.getElementById(
+      this.options.idRotationValueZ
+    ) as HTMLInputElement;
 
     const scaleX = document.getElementById(
       this.options.idScaleX
@@ -95,14 +85,6 @@ export class TransformUi extends Listenable {
     translationY.value = `${this.currentTranslation.Y}`;
     translationZ.value = `${this.currentTranslation.Z}`;
 
-    // rotationType.value = `${this.currentRotation.rotationAxis}`;
-    // if (this.currentRotation.rotationAxis === RotationAxis.X) {
-    //     rotationValue.value = `${this.currentRotation.rotationAngleX}`;
-    // } else if (this.currentRotation.rotationAxis === RotationAxis.Y) {
-    //     rotationValue.value = `${this.currentRotation.rotationAngleY}`;
-    // } else if (this.currentRotation.rotationAxis === RotationAxis.Z) {
-    //     rotationValue.value = `${this.currentRotation.rotationAngleZ}`;
-    // }
     anglex.value = `${this.currentRotation.rotationAngleX}`;
     angley.value = `${this.currentRotation.rotationAngleY}`;
     anglez.value = `${this.currentRotation.rotationAngleZ}`;
@@ -127,21 +109,14 @@ export class TransformUi extends Listenable {
       this.options.idTranslationZ
     ) as HTMLInputElement;
 
-    // const rotationType = document.getElementById(
-    //   this.options.idRotationType
-    // ) as HTMLSelectElement;
-    // const rotationValue = document.getElementById(
-    //   this.options.idRotationValue
-    // ) as HTMLInputElement;
-
     const anglex = document.getElementById(
-    this.options.idRotationValueX
+      this.options.idRotationValueX
     ) as HTMLInputElement;
     const angley = document.getElementById(
-    this.options.idRotationValueY
+      this.options.idRotationValueY
     ) as HTMLInputElement;
     const anglez = document.getElementById(
-    this.options.idRotationValueZ
+      this.options.idRotationValueZ
     ) as HTMLInputElement;
 
     const scaleX = document.getElementById(
@@ -154,127 +129,121 @@ export class TransformUi extends Listenable {
       this.options.idScaleZ
     ) as HTMLInputElement;
 
-    transformIndex.onchange = () => {
+    transformIndex.oninput = () => {
       const value = parseInt(transformIndex.value);
       !Number.isNaN(value) && (this.currentTransformIndex = value);
       this.update();
     };
 
-    translationX.onchange = () => {
+    translationX.oninput = () => {
       const value = parseFloat(translationX.value);
       !Number.isNaN(value) &&
-        // this.currentTranslation.X = value
         this.currentTranslation.configure({
           x: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idTranslationX}-value`, value.toString());
     };
 
-    translationY.onchange = () => {
+    translationY.oninput = () => {
       const value = parseFloat(translationY.value);
       !Number.isNaN(value) &&
-        // this.currentTranslation.y = value
         this.currentTranslation.configure({
           y: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idTranslationY}-value`, value.toString());
     };
 
-    translationZ.onchange = () => {
+    translationZ.oninput = () => {
       const value = parseFloat(translationZ.value);
       !Number.isNaN(value) &&
-        // this.currentTranslation.z = value
         this.currentTranslation.configure({
           z: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idTranslationZ}-value`, value.toString());
     };
 
-    // rotationType.onchange = () => {
-    //   const value = rotationType.value as RotationAxis;
-    //   this.currentRotation.configure({
-    //     axis: value,
-    //   });
-    //   this.update();
-    // };
+    anglex.oninput = () => {
+      const value = parseFloat(anglex.value);
+      !Number.isNaN(value) &&
+        this.currentRotation.configure({
+          axis: RotationAxis.X,
+          angleX: value,
+        });
+      this.update();
 
-    // rotationValue.onchange = () => {
-    //   const value = parseFloat(rotationValue.value);
-    //   !Number.isNaN(value) &&
-    //     (this.currentRotation.rotationAxis === RotationAxis.X
-    //         ? this.currentRotation.configure({
-    //             angleX: value,
-    //             })
-    //         : this.currentRotation.rotationAxis === RotationAxis.Y
-    //         ? this.currentRotation.configure({
-    //             angleY: value,
-    //             })
-    //         : 
-    //         this.currentRotation.configure({
-    //             angleZ: value,
-    //             })
-    //     );
-    //   this.update();
-    // };
-
-    anglex.onchange = () => {
-        // this.currentRotationAxis = RotationAxis.X;
-        const value = parseFloat(anglex.value);
-        !Number.isNaN(value) &&
-            this.currentRotation.configure({
-                axis: RotationAxis.X,
-                angleX: value,
-            });
-        this.update();
+      changeInnerText(
+        `${this.options.idRotationValueX}-value`,
+        value.toString()
+      );
     };
 
-    angley.onchange = () => {
-        // this.currentRotationAxis = RotationAxis.Y;
-        const value = parseFloat(angley.value);
-        !Number.isNaN(value) &&
-            this.currentRotation.configure({
-                axis: RotationAxis.Y,
-                angleY: value,
-            });
-        this.update();
+    angley.oninput = () => {
+      const value = parseFloat(angley.value);
+      !Number.isNaN(value) &&
+        this.currentRotation.configure({
+          axis: RotationAxis.Y,
+          angleY: value,
+        });
+      this.update();
+
+      changeInnerText(
+        `${this.options.idRotationValueY}-value`,
+        value.toString()
+      );
     };
 
-    anglez.onchange = () => {
-        // this.currentRotationAxis = RotationAxis.Z;
-        const value = parseFloat(anglez.value);
-        !Number.isNaN(value) &&
-            this.currentRotation.configure({
-                axis: RotationAxis.Z,
-                angleZ: value,
-            });
-        this.update();
+    anglez.oninput = () => {
+      const value = parseFloat(anglez.value);
+      !Number.isNaN(value) &&
+        this.currentRotation.configure({
+          axis: RotationAxis.Z,
+          angleZ: value,
+        });
+      this.update();
+
+      changeInnerText(
+        `${this.options.idRotationValueZ}-value`,
+        value.toString()
+      );
     };
 
-    scaleX.onchange = () => {
+    scaleX.oninput = () => {
       const value = parseFloat(scaleX.value);
       !Number.isNaN(value) &&
         this.currentScale.configure({
           sx: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idScaleX}-value`, value.toString());
     };
 
-    scaleY.onchange = () => {
+    scaleY.oninput = () => {
       const value = parseFloat(scaleY.value);
       !Number.isNaN(value) &&
         this.currentScale.configure({
           sy: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idScaleY}-value`, value.toString());
     };
 
-    scaleZ.onchange = () => {
+    scaleZ.oninput = () => {
       const value = parseFloat(scaleZ.value);
       !Number.isNaN(value) &&
         this.currentScale.configure({
           sz: value,
         });
       this.update();
+
+      changeInnerText(`${this.options.idScaleZ}-value`, value.toString());
     };
   }
 }
@@ -286,11 +255,9 @@ export interface TransformUiOptions {
   idTranslationY: string;
   idTranslationZ: string;
 
-//   idRotationType: string;
-//   idRotationValue: string;
-    idRotationValueX: string;
-    idRotationValueY: string;
-    idRotationValueZ: string;
+  idRotationValueX: string;
+  idRotationValueY: string;
+  idRotationValueZ: string;
 
   idScaleX: string;
   idScaleY: string;
@@ -304,13 +271,16 @@ export const TRANSFORM_UI_DEFAULT_OPTIONS: TransformUiOptions = {
   idTranslationY: "translation-y",
   idTranslationZ: "translation-z",
 
-//   idRotationType: "rotation-type",
-//   idRotationValue: "rotation-value",
-    idRotationValueX: "rotation-x",
-    idRotationValueY: "rotation-y",
-    idRotationValueZ: "rotation-z",
+  idRotationValueX: "rotation-x",
+  idRotationValueY: "rotation-y",
+  idRotationValueZ: "rotation-z",
 
   idScaleX: "scale-x",
   idScaleY: "scale-y",
   idScaleZ: "scale-z",
 };
+
+function changeInnerText(id: string, amount: string) {
+  const element = document.getElementById(id) as HTMLInputElement;
+  element.innerText = amount;
+}
