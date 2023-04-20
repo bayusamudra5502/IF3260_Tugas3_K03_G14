@@ -14,24 +14,43 @@ export function reset(rerender) {
     // Reset index
     resetElementValue("transform-index", "change", "0");
     // Reset translation
-    resetElementValue("translation-x", "change", "0");
-    resetElementValue("translation-y", "change", "0");
-    resetElementValue("translation-z", "change", "0");
+    resetElementValue("translation-x", "input", "0");
+    resetElementValue("translation-y", "input", "0");
+    resetElementValue("translation-z", "input", "0");
     // Reset rotation
-    resetElementValue("rotation-x", "change", "0");
-    resetElementValue("rotation-y", "change", "0");
-    resetElementValue("rotation-z", "change", "0");
+    resetElementValue("rotation-x", "input", "0");
+    resetElementValue("rotation-y", "input", "0");
+    resetElementValue("rotation-z", "input", "0");
     // Reset scale
-    resetElementValue("scale-x", "change", "1");
-    resetElementValue("scale-y", "change", "1");
-    resetElementValue("scale-z", "change", "1");
+    resetElementValue("scale-x", "input", "1");
+    resetElementValue("scale-y", "input", "1");
+    resetElementValue("scale-z", "input", "1");
+    // TODO:
+    // Reset animation and texture
     setTimeout(function () {
         rerender();
     }, 0);
 }
+export function resetTransformation() {
+    // Reset translation
+    resetElementValue("translation-x", "input", "0");
+    resetElementValue("translation-y", "input", "0");
+    resetElementValue("translation-z", "input", "0");
+    // Reset rotation
+    resetElementValue("rotation-x", "input", "0");
+    resetElementValue("rotation-y", "input", "0");
+    resetElementValue("rotation-z", "input", "0");
+    // Reset scale
+    resetElementValue("scale-x", "input", "1");
+    resetElementValue("scale-y", "input", "1");
+    resetElementValue("scale-z", "input", "1");
+}
 function resetElementValue(id, eventName, value) {
     var element = document.getElementById(id);
+    console.log("Ubah nilai elemen");
+    console.log("b", element.value);
     element.value = value;
+    console.log("a", element.value);
     element.dispatchEvent(new Event(eventName));
 }
 function resetCheckedValue(id, eventName, value) {

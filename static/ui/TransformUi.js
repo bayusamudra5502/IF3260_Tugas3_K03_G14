@@ -42,12 +42,20 @@ var TransformUi = /** @class */ (function (_super) {
         get: function () {
             return this.currentTranslation;
         },
+        set: function (trans) {
+            this.currentTranslation = trans;
+            this.setValue();
+        },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(TransformUi.prototype, "rotation", {
         get: function () {
             return this.currentRotation;
+        },
+        set: function (rot) {
+            this.currentRotation = rot;
+            this.setValue();
         },
         enumerable: false,
         configurable: true
@@ -56,15 +64,24 @@ var TransformUi = /** @class */ (function (_super) {
         get: function () {
             return this.currentScale;
         },
+        set: function (size) {
+            this.currentScale = size;
+            this.setValue();
+        },
         enumerable: false,
         configurable: true
     });
+    TransformUi.prototype.reset = function () {
+        this.currentTranslation = new Translation();
+        this.currentScale = new Scaling();
+        this.currentRotation = new Rotation();
+        this.setValue();
+    };
     TransformUi.prototype.update = function () {
         this.setValue();
         this.notify();
     };
     TransformUi.prototype.setValue = function () {
-        var transformIndex = document.getElementById(this.options.idTransformIndex);
         var translationX = document.getElementById(this.options.idTranslationX);
         var translationY = document.getElementById(this.options.idTranslationY);
         var translationZ = document.getElementById(this.options.idTranslationZ);
@@ -74,7 +91,15 @@ var TransformUi = /** @class */ (function (_super) {
         var scaleX = document.getElementById(this.options.idScaleX);
         var scaleY = document.getElementById(this.options.idScaleY);
         var scaleZ = document.getElementById(this.options.idScaleZ);
-        transformIndex.value = "".concat(this.currentTransformIndex);
+        var translationXValue = document.getElementById(this.options.idTranslationXValue);
+        var translationYValue = document.getElementById(this.options.idTranslationYValue);
+        var translationZValue = document.getElementById(this.options.idTranslationZValue);
+        var anglexVal = document.getElementById(this.options.idRotationValueXValue);
+        var angleyVal = document.getElementById(this.options.idRotationValueYValue);
+        var anglezVal = document.getElementById(this.options.idRotationValueZValue);
+        var scaleXVal = document.getElementById(this.options.idScaleXValue);
+        var scaleYVal = document.getElementById(this.options.idScaleYValue);
+        var scaleZVal = document.getElementById(this.options.idScaleZValue);
         translationX.value = "".concat(this.currentTranslation.X);
         translationY.value = "".concat(this.currentTranslation.Y);
         translationZ.value = "".concat(this.currentTranslation.Z);
@@ -84,10 +109,18 @@ var TransformUi = /** @class */ (function (_super) {
         scaleX.value = "".concat(this.currentScale.Sx);
         scaleY.value = "".concat(this.currentScale.Sy);
         scaleZ.value = "".concat(this.currentScale.Sz);
+        translationXValue.innerText = "".concat(this.currentTranslation.X);
+        translationYValue.innerText = "".concat(this.currentTranslation.Y);
+        translationZValue.innerText = "".concat(this.currentTranslation.Z);
+        anglexVal.innerText = "".concat(this.currentRotation.rotationAngleX);
+        angleyVal.innerText = "".concat(this.currentRotation.rotationAngleY);
+        anglezVal.innerText = "".concat(this.currentRotation.rotationAngleZ);
+        scaleXVal.innerText = "".concat(this.currentScale.Sx);
+        scaleYVal.innerText = "".concat(this.currentScale.Sy);
+        scaleZVal.innerText = "".concat(this.currentScale.Sz);
     };
     TransformUi.prototype.bind = function () {
         var _this = this;
-        var transformIndex = document.getElementById(this.options.idTransformIndex);
         var translationX = document.getElementById(this.options.idTranslationX);
         var translationY = document.getElementById(this.options.idTranslationY);
         var translationZ = document.getElementById(this.options.idTranslationZ);
@@ -97,11 +130,6 @@ var TransformUi = /** @class */ (function (_super) {
         var scaleX = document.getElementById(this.options.idScaleX);
         var scaleY = document.getElementById(this.options.idScaleY);
         var scaleZ = document.getElementById(this.options.idScaleZ);
-        transformIndex.oninput = function () {
-            var value = parseInt(transformIndex.value);
-            !Number.isNaN(value) && (_this.currentTransformIndex = value);
-            _this.update();
-        };
         translationX.oninput = function () {
             var value = parseFloat(translationX.value);
             !Number.isNaN(value) &&
@@ -191,7 +219,6 @@ var TransformUi = /** @class */ (function (_super) {
 }(Listenable));
 export { TransformUi };
 export var TRANSFORM_UI_DEFAULT_OPTIONS = {
-    idTransformIndex: "transform-index",
     idTranslationX: "translation-x",
     idTranslationY: "translation-y",
     idTranslationZ: "translation-z",
@@ -201,6 +228,15 @@ export var TRANSFORM_UI_DEFAULT_OPTIONS = {
     idScaleX: "scale-x",
     idScaleY: "scale-y",
     idScaleZ: "scale-z",
+    idTranslationXValue: "translation-x-value",
+    idTranslationYValue: "translation-y-value",
+    idTranslationZValue: "translation-z-value",
+    idRotationValueXValue: "rotation-x-value",
+    idRotationValueYValue: "rotation-y-value",
+    idRotationValueZValue: "rotation-z-value",
+    idScaleXValue: "scale-x-value",
+    idScaleYValue: "scale-y-value",
+    idScaleZValue: "scale-z-value",
 };
 function changeInnerText(id, amount) {
     var element = document.getElementById(id);

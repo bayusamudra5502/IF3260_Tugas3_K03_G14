@@ -36,7 +36,7 @@ var __values = (this && this.__values) || function(o) {
 };
 import { IDENTITY_MATRIX, Matrix } from "../matrix/Matrix.js";
 import { Transform } from "../matrix/Transform.js";
-var TRANSFORM_IDX = 0;
+export var TRANSFORM_IDX = 0;
 var Object3D = /** @class */ (function () {
     function Object3D(name, facesList, joinPointvert) {
         this.name = name;

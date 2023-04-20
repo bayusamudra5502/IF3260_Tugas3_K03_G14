@@ -28,6 +28,9 @@ var ObjectManager = /** @class */ (function (_super) {
     ObjectManager.prototype.get = function (idx) {
         return this.objectsList[idx];
     };
+    ObjectManager.prototype.getObject3D = function (idx) {
+        return this.objectsList[idx][0];
+    };
     ObjectManager.prototype.getList = function () {
         return this.objectsList;
     };

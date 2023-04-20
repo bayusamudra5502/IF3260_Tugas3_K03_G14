@@ -61,7 +61,6 @@ var TreeUi = /** @class */ (function (_super) {
             .querySelectorAll("input[name=\"object-id\"]")
             .forEach(function (el) {
             el.onchange = function () {
-                console.log("Mbee");
                 callback();
             };
         });

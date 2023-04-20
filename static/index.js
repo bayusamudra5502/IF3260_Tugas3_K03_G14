@@ -34,32 +34,37 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+import { AnimationRunner, Animator } from "./components/Animator.js";
+import { LightComponent } from "./components/Light.js";
+import { TextureComponent } from "./components/Texture.js";
 import { Buffer } from "./engine/Buffer.js";
 import { Canvas } from "./engine/Canvas.js";
+import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
 import RenderEngine from "./engine/RenderEngine.js";
 import { ShaderProgram } from "./engine/Shader.js";
+import { RenderModeExtension } from "./engine/extensions/initial/RenderMode.js";
 import { CameraManager } from "./manager/CameraManager.js";
 import { EnvironmentManager } from "./manager/EnvironmentManager.js";
+import { ObjectManager } from "./manager/ObjectManager.js";
+import { ObjectRenderer } from "./manager/ObjectRenderer.js";
 import { ProjectionManager } from "./manager/ProjectionManager.js";
+import { TextureManager } from "./manager/TextureManager.js";
+import { TransformManager } from "./manager/TransformManager.js";
 import { Color } from "./object/Color.js";
+import { TRANSFORM_IDX } from "./object/Object3D.js";
+import { Object3DBuilder } from "./object/Object3DBuilder.js";
+import { Rotation } from "./transform/Rotation.js";
+import { Scaling } from "./transform/Scaling.js";
+import { Translation } from "./transform/Translation.js";
+import { AnimationUi } from "./ui/AnimationUi.js";
 import { CameraUi } from "./ui/CameraUi.js";
 import { LightUi } from "./ui/LightUi.js";
 import { ProjectionUi } from "./ui/ProjectionUi.js";
-import { TransformUi } from "./ui/TransformUi.js";
 import { TextureUi } from "./ui/TextureUI.js";
+import { TransformUi } from "./ui/TransformUi.js";
+import { TreeUi } from "./ui/TreeUi.js";
 import { Importer } from "./util/Importer.js";
 import { reset } from "./util/reset.js";
-import { ExtensionBuilder } from "./engine/ExtensionBuilder.js";
-import { RenderModeExtension } from "./engine/extensions/initial/RenderMode.js";
-import { Object3DBuilder } from "./object/Object3DBuilder.js";
-import { LightComponent } from "./components/Light.js";
-import { ObjectManager } from "./manager/ObjectManager.js";
-import { ObjectRenderer } from "./manager/ObjectRenderer.js";
-import { TextureComponent } from "./components/Texture.js";
-import { AnimationRunner, Animator } from "./components/Animator.js";
-import { TextureManager } from "./manager/TextureManager.js";
-import { TreeUi } from "./ui/TreeUi.js";
-import { AnimationUi } from "./ui/AnimationUi.js";
 function main() {
     var canvas = new Canvas("drawing-canvas");
     var buffer = new Buffer(canvas);
@@ -150,11 +155,51 @@ function main() {
         });
         rerender();
     });
-    objManager.subscribe(function () {
-        treeUi.updateRootLists(objManager.getList());
-    });
     treeUi.subscribeType("select-root", function () {
         treeUi.updateComponent(objManager.get(treeUi.selectedRootIdx));
+    });
+    treeUi.subscribeType("select-object", function () {
+        transformUi.reset();
+    });
+    transformUi.subscribe(function () {
+        var idx = treeUi.selectedRootIdx;
+        if (idx == -1)
+            return;
+        var _a = __read(objManager.get(idx), 2), _ = _a[0], map = _a[1];
+        var obj = map.get(treeUi.selectedObjectIdx);
+        var transformManager = new TransformManager();
+        var translation = new Translation();
+        var rotation = new Rotation();
+        var scaling = new Scaling();
+        // Rotation
+        rotation.configure({
+            angleX: transformUi.rotation.rotationAngleX,
+            angleY: transformUi.rotation.rotationAngleY,
+            angleZ: transformUi.rotation.rotationAngleZ,
+            center: obj.joinPoint,
+        });
+        transformManager.add(rotation);
+        // Scaling
+        scaling.configure({
+            sx: transformUi.scale.Sx,
+            sy: transformUi.scale.Sy,
+            sz: transformUi.scale.Sz,
+            center: obj.joinPoint,
+        });
+        transformManager.add(scaling);
+        // Translation
+        translation.configure({
+            x: transformUi.translation.X,
+            y: transformUi.translation.Y,
+            z: transformUi.translation.Z,
+        });
+        transformManager.add(translation);
+        var wMatrix = transformManager.matrix;
+        obj.setTransform(TRANSFORM_IDX, wMatrix);
+        rerender();
+    });
+    objManager.subscribe(function () {
+        treeUi.updateRootLists(objManager.getList());
     });
     objManager.subscribe(rerender);
     projManager.subscribe(rerender);
