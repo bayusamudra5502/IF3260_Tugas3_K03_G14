@@ -13,6 +13,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -31,8 +47,8 @@ var Matrix = /** @class */ (function (_super) {
     Matrix.inverse = function (matrix) {
         var _a, _b;
         // create a copy of the matrix
-        var copy = matrix.map(function (row) { return __spreadArray([], row, true); });
-        var result = IDENTITY_MATRIX.map(function (row) { return __spreadArray([], row, true); });
+        var copy = matrix.map(function (row) { return __spreadArray([], __read(row), false); });
+        var result = IDENTITY_MATRIX.map(function (row) { return __spreadArray([], __read(row), false); });
         // loop through each row
         for (var i = 0; i < copy.length; i++) {
             // find the row with the largest first element
@@ -43,8 +59,8 @@ var Matrix = /** @class */ (function (_super) {
                 }
             }
             // swap the rows
-            _a = [copy[largest], copy[i]], copy[i] = _a[0], copy[largest] = _a[1];
-            _b = [result[largest], result[i]], result[i] = _b[0], result[largest] = _b[1];
+            _a = __read([copy[largest], copy[i]], 2), copy[i] = _a[0], copy[largest] = _a[1];
+            _b = __read([result[largest], result[i]], 2), result[i] = _b[0], result[largest] = _b[1];
             // divide the row by the first element
             var divisor = copy[i][i];
             for (var j = 0; j < copy.length; j++) {

@@ -13,6 +13,33 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 import { Listenable } from "../util/Listenable.js";
 var TreeUi = /** @class */ (function (_super) {
     __extends(TreeUi, _super);
@@ -62,15 +89,25 @@ var TreeUi = /** @class */ (function (_super) {
         }
     };
     TreeUi.prototype.updateComponent = function (_a) {
-        var root = _a[0], _ = _a[1];
+        var e_1, _b;
+        var _c = __read(_a, 2), root = _c[0], _ = _c[1];
         var queue = [[root, 0]];
         this.componentTree.innerHTML = "";
         while (queue.length > 0) {
-            var _b = queue.shift(), current = _b[0], level = _b[1];
+            var _d = __read(queue.shift(), 2), current = _d[0], level = _d[1];
             this.componentTree.innerHTML += "<div><label style=\"margin-left: ".concat(this.treeIndent * level, "rem;\"><input type=\"radio\" name=\"object-id\" value=\"").concat(current.id, "\">").concat(current.id, "</label></div>");
-            for (var _i = 0, _c = current.childs; _i < _c.length; _i++) {
-                var child = _c[_i];
-                queue.push([child, level + 1]);
+            try {
+                for (var _e = (e_1 = void 0, __values(current.childs)), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    var child = _f.value;
+                    queue.push([child, level + 1]);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_f && !_f.done && (_b = _e.return)) _b.call(_e);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
         }
         this.updateNotifier();

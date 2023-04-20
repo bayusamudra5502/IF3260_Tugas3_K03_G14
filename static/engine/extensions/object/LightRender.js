@@ -13,6 +13,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 import { RenderExtension } from "../../RenderExtension.js";
 var LightRenderExtension = /** @class */ (function (_super) {
     __extends(LightRenderExtension, _super);
@@ -40,14 +51,33 @@ var LightRenderExtension = /** @class */ (function (_super) {
         };
     };
     LightRenderExtension.prototype.primitiveData = function () {
+        var e_1, _a, e_2, _b;
         var flatNormal = [];
-        for (var _i = 0, _a = this.normals; _i < _a.length; _i++) {
-            var i = _a[_i];
-            var value = i.getArray();
-            for (var _b = 0, value_1 = value; _b < value_1.length; _b++) {
-                var j = value_1[_b];
-                flatNormal.push(j);
+        try {
+            for (var _c = __values(this.normals), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var i = _d.value;
+                var value = i.getArray();
+                try {
+                    for (var value_1 = (e_2 = void 0, __values(value)), value_1_1 = value_1.next(); !value_1_1.done; value_1_1 = value_1.next()) {
+                        var j = value_1_1.value;
+                        flatNormal.push(j);
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (value_1_1 && !value_1_1.done && (_b = value_1.return)) _b.call(value_1);
+                    }
+                    finally { if (e_2) throw e_2.error; }
+                }
             }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
         return {
             normals: new Float32Array(flatNormal),

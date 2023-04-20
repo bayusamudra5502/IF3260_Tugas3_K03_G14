@@ -1,3 +1,30 @@
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import { Buffer } from "./engine/Buffer.js";
 import { Canvas } from "./engine/Canvas.js";
 import RenderEngine from "./engine/RenderEngine.js";
@@ -67,11 +94,21 @@ function main() {
     /* Setup manager */
     var rerender = function () {
         setTimeout(function () {
+            var e_1, _a;
             var objs = objManager.getList();
-            for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
-                var obj = objs_1[_i];
-                var infos = objectRenderer.generateDrawInfo(obj[0]);
-                infos.forEach(function (info) { return engine.render(info); });
+            try {
+                for (var objs_1 = __values(objs), objs_1_1 = objs_1.next(); !objs_1_1.done; objs_1_1 = objs_1.next()) {
+                    var obj = objs_1_1.value;
+                    var infos = objectRenderer.generateDrawInfo(obj[0]);
+                    infos.forEach(function (info) { return engine.render(info); });
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (objs_1_1 && !objs_1_1.done && (_a = objs_1.return)) _a.call(objs_1);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
         }, 0);
     };
@@ -118,7 +155,7 @@ function main() {
     var check = document.querySelector("#check-run-animation");
     check.onchange = function () {
         if (check.checked) {
-            var _a = objManager.get(0), obj = _a[0], _ = _a[1];
+            var _a = __read(objManager.get(0), 2), obj = _a[0], _ = _a[1];
             animationRunner.run(obj);
         }
         else {

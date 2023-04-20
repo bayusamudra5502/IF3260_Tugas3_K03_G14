@@ -1,3 +1,14 @@
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 import { Color } from "../object/Color.js";
 import { drawableToPrimitive, isPowerOf2 } from "../util/util.js";
 var RenderEngine = /** @class */ (function () {
@@ -32,12 +43,22 @@ var RenderEngine = /** @class */ (function () {
         return this;
     };
     RenderEngine.prototype.clear = function () {
+        var e_1, _a;
         this.webglContext.clearColor(this.backColor.r, this.backColor.g, this.backColor.b, this.backColor.a);
         this.renderCanvas.setViewPort();
-        /* Run all global extensions */
-        for (var _i = 0, _a = this.initialExtensions; _i < _a.length; _i++) {
-            var extension = _a[_i];
-            extension.run(this.webglContext, this.buffer);
+        try {
+            /* Run all global extensions */
+            for (var _b = __values(this.initialExtensions), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var extension = _c.value;
+                extension.run(this.webglContext, this.buffer);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
     };
     RenderEngine.prototype.loadEnvMap = function () {
@@ -170,10 +191,20 @@ var RenderEngine = /** @class */ (function () {
         return primitive;
     };
     RenderEngine.prototype.render = function (object) {
-        /* Run all local extension */
-        for (var _i = 0, _a = object.extensions; _i < _a.length; _i++) {
-            var renderExtension = _a[_i];
-            renderExtension.run(this.webglContext, this.buffer);
+        var e_2, _a;
+        try {
+            /* Run all local extension */
+            for (var _b = __values(object.extensions), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var renderExtension = _c.value;
+                renderExtension.run(this.webglContext, this.buffer);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_2) throw e_2.error; }
         }
         /* Bind all object to buffer */
         var primitive = this.prepareBuffer(object);
