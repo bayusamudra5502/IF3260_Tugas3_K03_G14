@@ -56,6 +56,11 @@ var Object3D = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object3D.prototype.clearTransform = function () {
+        this.transformMapData.clear();
+        this.transformCache = IDENTITY_MATRIX;
+        this.transformMapData.set(TRANSFORM_IDX, new Transform());
+    };
     Object3D.prototype.getTransform = function (key) {
         var result = this.transformMapData.get(key);
         if (!result) {

@@ -288,6 +288,33 @@ function main() {
     var resetButton = document.querySelector("#reset-button");
     var rerenderButton = document.querySelector("#rerender-button");
     resetButton.addEventListener("click", function () {
+        var e_4, _a, e_5, _b;
+        try {
+            for (var _c = __values(objManager.getList()), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var _e = __read(_d.value, 2), _ = _e[0], objMap = _e[1];
+                try {
+                    for (var _f = (e_5 = void 0, __values(objMap.values())), _g = _f.next(); !_g.done; _g = _f.next()) {
+                        var obj = _g.value;
+                        obj.clearTransform();
+                    }
+                }
+                catch (e_5_1) { e_5 = { error: e_5_1 }; }
+                finally {
+                    try {
+                        if (_g && !_g.done && (_b = _f.return)) _b.call(_f);
+                    }
+                    finally { if (e_5) throw e_5.error; }
+                }
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        transformUi.reset();
         reset(rerender);
     });
     rerenderButton.addEventListener("click", function () {
