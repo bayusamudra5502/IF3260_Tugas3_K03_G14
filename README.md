@@ -3,6 +3,9 @@
 Repository ini merupakan tugas terakhir dari IF3260 Grafika Komputer.
 Jika ingin berinteraksi dan melihat hasil secara langsung, silakan kunjungi https://articulated-model.bayusamudra.my.id/. 
 
+## Preview
+![image](https://user-images.githubusercontent.com/71018093/233359432-bdeffa3a-1861-42f9-8d04-4f8ae79be86e.png)
+
 ## Cara Menjalankan Program
 
 1. Jalankan `compile.sh` di terminal `bash`.
