@@ -30,8 +30,11 @@ export function reset(rerender: () => void) {
   resetElementValue("scale-y", "input", "1");
   resetElementValue("scale-z", "input", "1");
 
-  // TODO:
   // Reset animation and texture
+  resetCheckedValue("check-run-animation", "input", false);
+  resetCheckedValue("check-inverted-animation", "input", false);
+  resetElementValue("frame-fps", "input", "20");
+  resetElementValue("texture-mode", "input", "0");
 
   setTimeout(() => {
     rerender();
