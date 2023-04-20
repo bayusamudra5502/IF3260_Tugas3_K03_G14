@@ -25,6 +25,13 @@ export class Object3D {
     return this.name;
   }
 
+  clearTransform() {
+    this.transformMapData.clear();
+
+    this.transformCache = IDENTITY_MATRIX;
+    this.transformMapData.set(TRANSFORM_IDX, new Transform());
+  }
+
   getTransform(key: number) {
     let result = this.transformMapData.get(key);
 

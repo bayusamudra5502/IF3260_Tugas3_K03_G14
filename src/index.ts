@@ -276,6 +276,13 @@ function main() {
   const rerenderButton = document.querySelector("#rerender-button");
 
   resetButton.addEventListener("click", () => {
+    for (const [_, objMap] of objManager.getList()) {
+      for (const obj of objMap.values()) {
+        obj.clearTransform();
+      }
+    }
+
+    transformUi.reset();
     reset(rerender);
   });
 
