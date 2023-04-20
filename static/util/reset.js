@@ -50,10 +50,7 @@ export function resetTransformation() {
 }
 function resetElementValue(id, eventName, value) {
     var element = document.getElementById(id);
-    console.log("Ubah nilai elemen");
-    console.log("b", element.value);
     element.value = value;
-    console.log("a", element.value);
     element.dispatchEvent(new Event(eventName));
 }
 function resetCheckedValue(id, eventName, value) {
