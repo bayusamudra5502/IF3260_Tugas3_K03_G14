@@ -55,6 +55,7 @@ export function resetTransformation() {
 
 function resetElementValue(id: string, eventName: string, value: string) {
   const element = document.getElementById(id) as HTMLInputElement;
+  console.log("Ubah nilai elemen");
   console.log("b", element.value);
   element.value = value;
   console.log("a", element.value);
