@@ -29,6 +29,7 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         _this = _super.call(this, program, options) || this;
         _this.texture = options.texture;
         _this.textureBump = options.textureBump;
+        _this.textureCustom = options.textureCustom;
         _this.cameraPosition = options.cameraPosition;
         _this.textureCoordinates = options.textureCoordinates;
         _this.mode = options.mode;
@@ -78,6 +79,8 @@ var TextureRenderExtension = /** @class */ (function (_super) {
         // Bind the texture to texture unit 0
         if (this.mode == TEXTURE_MODE.BUMP_MAPPING)
             gl.bindTexture(gl.TEXTURE_2D, this.textureBump);
+        else if (this.mode == TEXTURE_MODE.CUSTOM_MAPPING)
+            gl.bindTexture(gl.TEXTURE_2D, this.textureCustom);
         else
             gl.bindTexture(gl.TEXTURE_2D, this.texture);
         // Tell the shader we bound the texture to texture unit 0
@@ -95,5 +98,6 @@ export var TEXTURE_MODE;
     TEXTURE_MODE[TEXTURE_MODE["TEXTURE_MAPPING"] = 0] = "TEXTURE_MAPPING";
     TEXTURE_MODE[TEXTURE_MODE["ENVIRONMENT_MAPPING"] = 1] = "ENVIRONMENT_MAPPING";
     TEXTURE_MODE[TEXTURE_MODE["BUMP_MAPPING"] = 2] = "BUMP_MAPPING";
+    TEXTURE_MODE[TEXTURE_MODE["CUSTOM_MAPPING"] = 3] = "CUSTOM_MAPPING";
 })(TEXTURE_MODE || (TEXTURE_MODE = {}));
 //# sourceMappingURL=TextureRender.js.map
